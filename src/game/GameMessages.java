@@ -28,7 +28,7 @@ public class GameMessages extends GameBase {
                     .getOccupiedTerritories()) + " verfügbar)";
 
         if (humanPlayerAction() == PlayerActions.ArmyReinforcement)
-            return "Verteilen Sie noch " + data.getHumanPlayer().getReinforcementsAvailable() + " Armeen.";
+            return "Verteilen Sie noch " + data.getHumanPlayer().getReinforcements() + " Armeen.";
         if (humanPlayerAction() == PlayerActions.ArmySelected)
             return "Wählen Sie ein benachbartes Ziel aus.";
         if (humanPlayerAction() == PlayerActions.ArmyAttacked)

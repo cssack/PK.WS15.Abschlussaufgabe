@@ -16,9 +16,9 @@ public class Player {
 
 
     private ArrayList<Continent> ownedContinents = new ArrayList<>();
+    private ArrayList<Territory> ownedTerritories = new ArrayList<>();
     private int reinforcementGain;
-    private int reinforcementsAvailable;
-    private int territoriesCount;
+    private int reinforcements;
     private PlayerActions action = PlayerActions.ArmyReinforcement;
 
     /**
@@ -33,20 +33,6 @@ public class Player {
     }
 
 
-    /**
-     * @return the current amount of territories owned by this player.
-     */
-    public int getTerritoriesCount() {
-        return territoriesCount;
-    }
-
-    public void increaseTerritoriesCount() {
-        this.territoriesCount++;
-    }
-
-    public void decreaseTerritoriesCount() {
-        this.territoriesCount--;
-    }
 
     /**
      * @return The amount of reinforcements the player gains on the next round.
@@ -62,12 +48,12 @@ public class Player {
     /**
      * @return The amount of reinforcements the player can distribute on his territory.
      */
-    public int getReinforcementsAvailable() {
-        return reinforcementsAvailable;
+    public int getReinforcements() {
+        return reinforcements;
     }
 
-    public void setReinforcementsAvailable(int reinforcementsAvailable) {
-        this.reinforcementsAvailable = reinforcementsAvailable;
+    public void setReinforcements(int reinforcements) {
+        this.reinforcements = reinforcements;
     }
 
     /**
@@ -77,13 +63,28 @@ public class Player {
         return ownedContinents;
     }
 
+    /**
+     * @return a list of owned territories.
+     */
+    public ArrayList<Territory> getOwnedTerritories() {
+        return ownedTerritories;
+    }
+
 
     public void setContinentOwnerShip(Continent continent, boolean belongsToMe) {
-        assert ownedContinents.contains(continent);
         if (belongsToMe && !ownedContinents.contains(continent)) {
             ownedContinents.add(continent);
         } else if (!belongsToMe && ownedContinents.contains(continent)) {
             ownedContinents.remove(continent);
         }
     }
+
+    public void setTerritoryOwnership(Territory territory, boolean belongsToMe) {
+        if (belongsToMe && !ownedTerritories.contains(territory)) {
+            ownedTerritories.add(territory);
+        } else if (!belongsToMe && ownedTerritories.contains(territory)) {
+            ownedTerritories.remove(territory);
+        }
+    }
+
 }

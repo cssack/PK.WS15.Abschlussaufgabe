@@ -91,10 +91,10 @@ public class GameState extends GameBase {
             occupiedTerritories++;
             territory.setArmyCount(1);
         } else {
-            previousOccupant.decreaseTerritoriesCount();
+            previousOccupant.setTerritoryOwnership(territory, false);
         }
 
-        newOccupant.increaseTerritoriesCount();
+        newOccupant.setTerritoryOwnership(territory, true);
         territory.setOccupant(newOccupant);
 
         reload_ContinentOwners();
@@ -109,7 +109,7 @@ public class GameState extends GameBase {
     public void reinforceTerritory(Territory territory) {
         Player occupant = territory.getOccupant();
         territory.setArmyCount(territory.getArmyCount() + 1);
-        occupant.setReinforcementsAvailable(occupant.getReinforcementsAvailable() - 1);
+        occupant.setReinforcements(occupant.getReinforcements() - 1);
 
 
         repaintRequired = true;
@@ -173,7 +173,7 @@ public class GameState extends GameBase {
     }
 
     private void reload_ReinforcementGains(Player player) {
-        int gain = player.getTerritoriesCount() / 3;
+        int gain = player.getOwnedTerritories().size() / 3;
         for (Continent continent : player.getOwnedContinents()) {
             gain += continent.getReinforcementBonus();
         }
@@ -181,7 +181,7 @@ public class GameState extends GameBase {
     }
 
     private void reload_Reinforcements(Player player) {
-        player.setReinforcementsAvailable(player.getReinforcementGain());
+        player.setReinforcements(player.getReinforcementGain());
     }
 
     public boolean getWaitingForUserInput() {
