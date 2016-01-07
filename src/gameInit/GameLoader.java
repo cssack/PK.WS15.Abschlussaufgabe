@@ -10,6 +10,8 @@ import exceptions.MapFileFormatException;
 import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 
 /**
  * Created by chris on 07.01.2016.
@@ -39,7 +41,7 @@ public class GameLoader extends GameBase {
         game.getDesign().setCapitalImage(ImageIO.read(new File(getFilePath_FromResource("CapitalIcon.png"))));
     }
 
-    private String getFilePath_FromResource(String path) {
-        return ClassLoader.getSystemResource("resources/" + path).getPath();
+    private String getFilePath_FromResource(String path) throws UnsupportedEncodingException {
+        return URLDecoder.decode(ClassLoader.getSystemResource("resources/" + path).getPath(), "UTF-8");
     }
 }
