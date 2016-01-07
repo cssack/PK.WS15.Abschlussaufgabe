@@ -5,6 +5,7 @@
 package game;
 
 import bases.GameBase;
+import dataObjects.Continent;
 import dataObjects.Player;
 import dataObjects.Territory;
 import dataObjects.enums.Phases;
@@ -81,18 +82,15 @@ public class GameState extends GameBase {
      * Sets the territory's occupant state
      */
     public void setTerritoryOccupant(Territory territory, Player occupant) {
-        territory.setOccupant(occupant);
         occupiedTerritories++;
+        occupant.setTerritoriesCount(occupant.getTerritoriesCount() + 1);
+        territory.setOccupant(occupant);
+
+        reload_ReinforcementGains(occupant);
         reload_GamePhase();
         reload_MouseTargetClickable();
     }
 
-    private void reload_GamePhase() {
-        if (occupiedTerritories == data.getAllTerritories().size())
-            gamePhase = Phases.Eroberungen;
-        else
-            gamePhase = Phases.Landerwerb;
-    }
 
     private void reload_MouseTargetClickable() {
         boolean newVal;
@@ -104,5 +102,26 @@ public class GameState extends GameBase {
 
         mouseTargetClickable = newVal;
         repaintRequired = true;
+    }
+
+    private void reload_GamePhase() {
+        if (occupiedTerritories == data.getAllTerritories().size()) {
+            gamePhase = Phases.Eroberungen;
+            reload_Reinforcements(data.getCompPlayer());
+            reload_Reinforcements(data.getHumanPlayer());
+        } else
+            gamePhase = Phases.Landerwerb;
+    }
+
+    private void reload_ReinforcementGains(Player player) {
+        int gain = player.getTerritoriesCount() / 3;
+        for (Continent continent : player.getOwnedContinents()) {
+            gain += continent.getReinforcementBonus();
+        }
+        player.setReinforcementGain(gain);
+    }
+
+    private void reload_Reinforcements(Player player) {
+        player.setReinforcementsAvailable(player.getReinforcementGain());
     }
 }

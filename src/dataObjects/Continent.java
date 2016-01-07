@@ -40,6 +40,10 @@ public class Continent {
         this.territories.add(territory);
     }
 
+    public int getReinforcementBonus() {
+        return reinforcementBonus;
+    }
+
     public void setReinforcementBonus(int reinforcementBonus) {
         this.reinforcementBonus = reinforcementBonus;
     }

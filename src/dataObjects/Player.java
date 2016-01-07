@@ -13,9 +13,12 @@ import java.util.ArrayList;
  * A player data object stores all relevant data for a player.
  */
 public class Player {
+
+
     private ArrayList<Continent> ownedContinents = new ArrayList<>();
     private int reinforcementGain;
     private int reinforcementsAvailable;
+    private int territoriesCount;
     private PlayerActions action = PlayerActions.ArmyReinforcement;
 
     /**
@@ -27,6 +30,18 @@ public class Player {
 
     public void setAction(PlayerActions action) {
         this.action = action;
+    }
+
+
+    /**
+     * @return the current amount of territories owned by this player.
+     */
+    public int getTerritoriesCount() {
+        return territoriesCount;
+    }
+
+    public void setTerritoriesCount(int territoriesCount) {
+        this.territoriesCount = territoriesCount;
     }
 
     /**
@@ -51,6 +66,13 @@ public class Player {
         this.reinforcementsAvailable = reinforcementsAvailable;
     }
 
+    /**
+     * @return a list of owned continents.
+     */
+    public ArrayList<Continent> getOwnedContinents() {
+        return ownedContinents;
+    }
+
     public void AddOwnedContinents(Continent continent) {
         assert !ownedContinents.contains(continent);
 
@@ -62,5 +84,4 @@ public class Player {
 
         ownedContinents.remove(continent);
     }
-
 }
