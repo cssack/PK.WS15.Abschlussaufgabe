@@ -6,7 +6,7 @@ package drawing;
 
 import dataObjects.Patch;
 import dataObjects.Territory;
-import dataObjects.game.*;
+import game.*;
 
 import javax.swing.*;
 import java.awt.*;

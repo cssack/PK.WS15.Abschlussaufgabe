@@ -2,11 +2,9 @@
  * Copyright (c) 2016. Tobias Patzl, Christian Sack
  */
 
-package dataObjects.game;
+package game;
 
 import drawing.GameDrawingBoard;
-import engine.GameEngine;
-import engine.PcPlayerEngine;
 import exceptions.MapFileFormatException;
 import gameInit.GameLoader;
 
@@ -21,7 +19,7 @@ public class Game {
     private final GameDesign design;
     private final GameState state;
     private final GameEngine engine;
-    private final PcPlayerEngine pcPlayer;
+    private final GameKi pcPlayer;
     private final GameDrawingBoard drawingBoard;
     private final GameMessages messages;
 
@@ -31,7 +29,7 @@ public class Game {
         state = new GameState();
         drawingBoard = new GameDrawingBoard();
         engine = new GameEngine();
-        pcPlayer = new PcPlayerEngine();
+        pcPlayer = new GameKi();
         messages = new GameMessages();
 
         data.init(this);
@@ -74,7 +72,7 @@ public class Game {
     /**
      * @return Gets the pc player engine. This is where the pc players logic is described. This is the perfect place for an KI
      */
-    public PcPlayerEngine getPcPlayer() {
+    public GameKi getPcPlayer() {
         return pcPlayer;
     }
 

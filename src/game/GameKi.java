@@ -2,7 +2,7 @@
  * Copyright (c) 2016. Tobias Patzl, Christian Sack
  */
 
-package engine;
+package game;
 
 import bases.GameBase;
 import dataObjects.Territory;
@@ -14,10 +14,10 @@ import java.util.Random;
  * The engine used for the pc player.
  * This is the place where the KI can be configured.
  */
-public class PcPlayerEngine extends GameBase {
+public class GameKi extends GameBase {
     private final Random rand = new Random();
 
-    public PcPlayerEngine() {
+    public GameKi() {
     }
 
     public void ChooseSomeTerritory() {

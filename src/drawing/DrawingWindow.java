@@ -5,7 +5,7 @@
 package drawing;
 
 
-import dataObjects.game.Game;
+import game.Game;
 
 import javax.swing.*;
 import java.awt.*;

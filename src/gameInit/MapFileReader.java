@@ -6,8 +6,8 @@ package gameInit;
 
 import dataObjects.Continent;
 import dataObjects.Territory;
-import dataObjects.game.GameData;
 import exceptions.MapFileFormatException;
+import game.GameData;
 
 import java.awt.*;
 import java.io.IOException;

@@ -2,7 +2,7 @@
  * Copyright (c) 2016. Tobias Patzl, Christian Sack
  */
 
-package dataObjects.game;
+package game;
 
 import bases.GameBase;
 import dataObjects.Territory;
