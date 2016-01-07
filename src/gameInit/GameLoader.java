@@ -27,13 +27,7 @@ public class GameLoader extends GameBase {
     }
 
     public void load() throws IOException, MapFileFormatException, URISyntaxException {
-        try {
-            readImages();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
+        readImages();
         readMapFiles();
     }
 
@@ -46,13 +40,7 @@ public class GameLoader extends GameBase {
 
     private void readImages() throws IOException, URISyntaxException {
         game.getDesign().setBackgroundImage(ImageIO.read(new File(getFilePath_FromResource("waterTexture.jpg"))));
-        try {
-            game.getDesign().setCapitalImage(ImageIO.read(new File(getFilePath_FromResource("CapitalIcon.png"))));
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
+        game.getDesign().setCapitalImage(ImageIO.read(new File(getFilePath_FromResource("CapitalIcon.png"))));
     }
 
     private String getFilePath_FromResource(String path) throws URISyntaxException {
