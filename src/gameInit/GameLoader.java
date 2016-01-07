@@ -10,7 +10,6 @@ import exceptions.MapFileFormatException;
 import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException;
-import java.net.URLDecoder;
 
 /**
  * Created by chris on 07.01.2016.
@@ -30,20 +29,17 @@ public class GameLoader extends GameBase {
 
     private void readMapFiles() throws IOException, MapFileFormatException {
         for (String mapFile : mapFiles) {
-            MapFileReader mapFileReader = new MapFileReader(data, getFile_FromResource(mapFile));
+            MapFileReader mapFileReader = new MapFileReader(data, getFilePath_FromResource(mapFile));
             mapFileReader.start_Interpret();
         }
     }
 
     private void readImages() throws IOException {
-        game.getDesign().setBackgroundImage(ImageIO.read(new File(getFile_FromResource("waterTexture.jpg"))));
-        game.getDesign().setCapitalImage(ImageIO.read(new File(getFile_FromResource("CapitalIcon.png"))));
+        game.getDesign().setBackgroundImage(ImageIO.read(new File(getFilePath_FromResource("waterTexture.jpg"))));
+        game.getDesign().setCapitalImage(ImageIO.read(new File(getFilePath_FromResource("CapitalIcon.png"))));
     }
 
-    private String getFile_FromResource(String path) {
-        ClassLoader classLoader = getClass().getClassLoader();
-        //TODO find a method which finds a file in the out directory which is not deprecated.
-        return URLDecoder.decode((new File(classLoader.getResource("resources/" + path)
-                .getFile()).getAbsolutePath()));
+    private String getFilePath_FromResource(String path) {
+        return ClassLoader.getSystemResource("resources/" + path).getPath();
     }
 }
