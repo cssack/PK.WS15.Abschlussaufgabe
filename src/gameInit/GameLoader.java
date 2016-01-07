@@ -10,6 +10,10 @@ import exceptions.MapFileFormatException;
 import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URISyntaxException;
+import java.net.URLDecoder;
+import java.nio.file.Paths;
 
 /**
  * Created by chris on 07.01.2016.
@@ -22,30 +26,36 @@ public class GameLoader extends GameBase {
     public GameLoader() {
     }
 
-    public void load() throws IOException, MapFileFormatException {
-        readImages();
+    public void load() throws IOException, MapFileFormatException, URISyntaxException {
+        try {
+            readImages();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
         readMapFiles();
     }
 
-    private void readMapFiles() throws IOException, MapFileFormatException {
+    private void readMapFiles() throws IOException, MapFileFormatException, URISyntaxException {
         for (String mapFile : mapFiles) {
             MapFileReader mapFileReader = new MapFileReader(data, getFilePath_FromResource(mapFile));
             mapFileReader.start_Interpret();
         }
     }
 
-    private void readImages() throws IOException {
+    private void readImages() throws IOException, URISyntaxException {
         game.getDesign().setBackgroundImage(ImageIO.read(new File(getFilePath_FromResource("waterTexture.jpg"))));
-        game.getDesign().setCapitalImage(ImageIO.read(new File(getFilePath_FromResource("CapitalIcon.png"))));
+        try {
+            game.getDesign().setCapitalImage(ImageIO.read(new File(getFilePath_FromResource("CapitalIcon.png"))));
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
     }
 
-    private String getFilePath_FromResource(String path) {
-        //following lines are necessary to provide functionality on different OS and directory paths
-        String file = ClassLoader.getSystemResource("resources/" + path).getPath();
-        if (file.startsWith("/")) // this is not a valid path remove first slash
-            file = file.substring(1);
-        if (file.contains("%20")) // spaces in file path
-            file = file.replace("%20", " ");
-        return file;
+    private String getFilePath_FromResource(String path) throws URISyntaxException {
+        return Paths.get(ClassLoader.getSystemResource("resources/" + path).toURI()).toString();
     }
 }

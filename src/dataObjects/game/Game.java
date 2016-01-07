@@ -11,6 +11,7 @@ import exceptions.MapFileFormatException;
 import gameInit.GameLoader;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 
 /**
  * Created by chris on 07.01.2016.
@@ -87,7 +88,7 @@ public class Game {
      *
      * @throws IOException
      */
-    public void load() throws IOException, MapFileFormatException {
+    public void load() throws IOException, MapFileFormatException, URISyntaxException {
         GameLoader loader = new GameLoader();
         loader.init(this);
         loader.load();
