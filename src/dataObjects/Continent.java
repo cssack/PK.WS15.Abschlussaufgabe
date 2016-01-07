@@ -1,6 +1,6 @@
 package dataObjects;
 
-import java.util.Map;
+import java.util.ArrayList;
 
 /**
  * Created by chris on 06.01.2016.
@@ -9,7 +9,7 @@ public class Continent {
     private String name;
 
 
-    private Map<String, Territory> patches;
+    private ArrayList<Territory> territories = new ArrayList<>();
 
     public Continent(String name) {
         this.name = name;
@@ -20,11 +20,20 @@ public class Continent {
         return name;
     }
 
-    public Map<String, Territory> getPatches() {
-        return patches;
+    public ArrayList<Territory> getTerritories() {
+        return territories;
     }
 
-    public void setPatches(Map<String, Territory> patches) {
-        this.patches = patches;
+
+    public Territory getTerritory_ByName(String Name) {
+        for (Territory territory : territories) {
+            if (territory.getName().equals(Name))
+                return territory;
+        }
+        return null;
+    }
+
+    public void addTerritory(Territory territory) {
+        this.territories.add(territory);
     }
 }

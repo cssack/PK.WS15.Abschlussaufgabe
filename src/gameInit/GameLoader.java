@@ -2,7 +2,6 @@ package gameInit;
 
 import dataObjects.Territory;
 import dataObjects.game.Game;
-import dataObjects.game.GameData;
 
 import javax.imageio.ImageIO;
 import java.io.File;
@@ -16,10 +15,9 @@ import java.util.Map;
  */
 public class GameLoader {
 
-    private static String[] mapFiles = new String[]{"africa.map", "three-continents.map", "world.map"};
-
-    private Map<String, Territory> territories = new HashMap<>();
+    private static String[] mapFiles = new String[]{"world.map"};
     Game game;
+    private Map<String, Territory> territories = new HashMap<>();
 
     public GameLoader(Game game) {
         this.game = game;

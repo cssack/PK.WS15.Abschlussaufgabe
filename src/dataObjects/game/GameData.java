@@ -4,7 +4,6 @@ import dataObjects.Continent;
 import dataObjects.Territory;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Objects;
 
 /**
@@ -12,7 +11,7 @@ import java.util.Objects;
  */
 public class GameData {
     private ArrayList<Territory> allTerritories = new ArrayList<>();
-    private HashMap<String, Continent> allContinents = new HashMap<>();
+    private ArrayList<Continent> allContinents = new ArrayList<>();
 
 
     private Game game;
@@ -23,11 +22,30 @@ public class GameData {
     }
 
 
-
-
-
-    public HashMap<String, Continent> getAllContinents() {
+    public ArrayList<Continent> getAllContinents() {
         return allContinents;
+    }
+
+
+    /**
+     * @param name the name of the continent.
+     * @return the continent by name or null if not exists.
+     */
+    public Continent getContinent_ByName(String name) {
+        for (Continent continent : allContinents) {
+            if (Objects.equals(continent.getName(), name))
+                return continent;
+        }
+        return null;
+    }
+
+    /**
+     * Adds a new continent to the list.
+     *
+     * @param continent the continent to add
+     */
+    public void addContinent(Continent continent) {
+        allContinents.add(continent);
     }
 
 

@@ -1,5 +1,6 @@
 package gameInit;
 
+import dataObjects.Continent;
 import dataObjects.Territory;
 import dataObjects.game.GameData;
 
@@ -7,7 +8,7 @@ import java.awt.*;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -19,6 +20,7 @@ public class MapFileReader {
     private static Pattern patchNamePattern = Pattern.compile("[a-z-].*? (.*?) [0-9:]");
     private static Pattern coordinatesPattern = Pattern.compile("([0-9]+) ([0-9]+) ?");
     private static Pattern neighborsPattern = Pattern.compile(": (.*)");
+    private static Pattern continentPattern = Pattern.compile("continent (.*?) ([0-9]+) : (.*)");
 
     private String dataSource;
     private GameData gameData;
@@ -38,8 +40,11 @@ public class MapFileReader {
                 parseCapital(line);
             else if (line.startsWith("neighbors-of"))
                 parseNeighbors(line);
+            else if (line.startsWith("continent"))
+                parseContinent(line);
         }
     }
+
 
     private void parseTerritory(String line)
     {
@@ -80,6 +85,24 @@ public class MapFileReader {
         targetTerritory.setNeighbors(neighborTerritories);
     }
 
+    private void parseContinent(String line) {
+        Matcher matcher = continentPattern.matcher(line);
+        matcher.find();
+
+        String continentName = matcher.group(1);
+        int reinforcementBooster = Integer.parseInt(matcher.group(2));
+        String[] territories = matcher.group(3).split(" - ");
+
+
+        Continent continent = getOrCreate_Continent_ByName(continentName);
+
+        for (String territoryName : territories) {
+            Territory territory = getOrCreate_Territory_ByName(territoryName);
+            continent.addTerritory(territory);
+        }
+
+    }
+
 
     private Territory getOrCreate_Territory_ByName(String name)
     {
@@ -90,6 +113,15 @@ public class MapFileReader {
             gameData.addTerritory(territory);
         }
         return territory;
+    }
+
+    private Continent getOrCreate_Continent_ByName(String name) {
+        Continent continent = gameData.getContinent_ByName(name);
+        if (continent == null) {
+            continent = new Continent(name);
+            gameData.addContinent(continent);
+        }
+        return continent;
     }
 
     private String getTerritoryName_FromLine(String line)
