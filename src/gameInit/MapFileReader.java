@@ -8,7 +8,6 @@ import java.awt.*;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -77,12 +76,10 @@ public class MapFileReader {
         matcher.find(); //TODO capture exception if matcher find is false.
 
         String[] neighbors = matcher.group(1).split(" - ");
-        ArrayList<Territory> neighborTerritories = new ArrayList<>();
-        for (String neighbor : neighbors) {
-            neighborTerritories.add(getOrCreate_Territory_ByName(neighbor));
-        }
 
-        targetTerritory.setNeighbors(neighborTerritories);
+        for (String neighbor : neighbors) {
+            targetTerritory.addNeighbor(getOrCreate_Territory_ByName(neighbor));
+        }
     }
 
     private void parseContinent(String line) {

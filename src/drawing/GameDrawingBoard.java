@@ -10,6 +10,7 @@ import engine.GameEngine;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.HashSet;
 
 /**
  * Created by chris on 07.01.2016.
@@ -38,6 +39,7 @@ public class GameDrawingBoard extends JComponent {
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
         DrawBackground(g2);
+        DrawCapitalLines(g2);
         DrawTerritories(g2);
         g2.drawString(""+number++, 10,10);
 
@@ -47,6 +49,7 @@ public class GameDrawingBoard extends JComponent {
     {
         g.drawImage(design.getBackgroundImage(),0,0, null);
     }
+
     private void DrawTerritories(Graphics2D g)
     {
         Color prevColor = g.getColor();
@@ -81,5 +84,35 @@ public class GameDrawingBoard extends JComponent {
         g.drawString(t.getName(), x,y);
 
     }
+
+    private void DrawCapitalLines(Graphics2D g) {
+        Color prevColor = g.getColor();
+        Stroke prevStroke = g.getStroke();
+        g.setColor(design.getCapitalLineColor());
+        g.setStroke(design.getCapitalLineStroke());
+
+        HashSet<Territory> visitedNodes = new HashSet<>();
+        Territory currentNode = data.getAllTerritories().get(0);
+        DrawCapitalLines(g, visitedNodes, currentNode);
+
+        g.setColor(prevColor);
+        g.setStroke(prevStroke);
+    }
+
+    private void DrawCapitalLines(Graphics2D g, HashSet<Territory> visitedNodes, Territory currentNode) {
+        for (Territory neighbor : currentNode.getNeighbors()) {
+            if (visitedNodes.contains(neighbor))
+                continue;
+
+            Point capitalA = currentNode.getCapital().getPoint();
+            Point capitalB = neighbor.getCapital().getPoint();
+            g.drawLine(capitalA.x, capitalA.y, capitalB.x, capitalB.y);
+
+            visitedNodes.add(neighbor);
+            DrawCapitalLines(g, visitedNodes, neighbor);
+        }
+    }
+
+
 
 }

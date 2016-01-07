@@ -16,21 +16,24 @@ public class GameDesign {
     private Game game;
 
 
+
     public GameDesign(Game gd) {
         this.game = gd;
     }
 
-
-
-    public void setBackgroundImage(BufferedImage backgroundImage) {
-        this.backgroundImage = backgroundImage;
-    }
-    public void setCapitalImage(BufferedImage capitalImage) {
-        this.capitalImage = capitalImage;
+    /**
+     * @return the color for the sea connections between two territory's.
+     */
+    public Color getCapitalLineColor() {
+        return Color.WHITE;
     }
 
-
-
+    /**
+     * @return the size for the sea connections between two territory's.
+     */
+    public Stroke getCapitalLineStroke() {
+        return new BasicStroke(2f);
+    }
 
     /**
      * @return the current valid background color for a territory.
@@ -61,16 +64,14 @@ public class GameDesign {
     /**
      * @return the current valid boundary color for a territory.
      */
-    public Color getTerritoryBoundaryColor(Territory t)
-    {
+    public Color getTerritoryBoundaryColor(Territory t) {
         return Color.decode("#4C4A48");
     }
 
     /**
      * @return the current valid stroke for a territory.
      */
-    public Stroke getTerritoryBoundaryStroke(Territory t)
-    {
+    public Stroke getTerritoryBoundaryStroke(Territory t) {
         return new BasicStroke(3.0f);
     }
 
@@ -81,10 +82,20 @@ public class GameDesign {
         return backgroundImage;
     }
 
+    public void setBackgroundImage(BufferedImage backgroundImage) {
+        this.backgroundImage = backgroundImage;
+    }
+
     /**
      * @return the image placed at the capital position.
      */
     public BufferedImage getCapitalImage() {
         return capitalImage;
     }
+
+    public void setCapitalImage(BufferedImage capitalImage) {
+        this.capitalImage = capitalImage;
+    }
+
+
 }

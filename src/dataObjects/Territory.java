@@ -11,7 +11,7 @@ import java.util.ArrayList;
 public class Territory {
     private String name;
     private ArrayList<Patch> patches = new ArrayList<>();
-    private ArrayList<Territory> neighbors;
+    private ArrayList<Territory> neighbors = new ArrayList<>();
     private Capital capital;
     private Occupants Occupant = Occupants.NotDef;
 
@@ -32,9 +32,6 @@ public class Territory {
         return neighbors;
     }
 
-    public void setNeighbors(ArrayList<Territory> neighbors) {
-        this.neighbors = neighbors;
-    }
 
     public Capital getCapital() {
         return capital;
@@ -67,5 +64,15 @@ public class Territory {
 
     public void addPatch(Polygon p) {
         patches.add(new Patch(this, p));
+    }
+
+    public void addNeighbor(Territory t) {
+        neighbors.add(t);
+    }
+
+
+    @Override
+    public int hashCode() {
+        return getName().hashCode();
     }
 }
