@@ -25,7 +25,6 @@ public class Game {
     private final GameDrawingBoard drawingBoard;
 
     public Game() {
-        // CAVE: The sequence of the following lines is importend.
         data = new GameData();
         design = new GameDesign();
         state = new GameState();
