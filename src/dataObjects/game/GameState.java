@@ -4,6 +4,7 @@
 
 package dataObjects.game;
 
+import bases.GameBase;
 import dataObjects.Territory;
 import dataObjects.enums.Occupants;
 import dataObjects.enums.Phases;
@@ -12,8 +13,7 @@ import dataObjects.enums.Phases;
  * Created by chris on 07.01.2016.
  * The game state is the main vector to populate
  */
-public class GameState {
-    private Game game;
+public class GameState extends GameBase {
     private Territory mouseOverTerritory;
     private boolean mouseTargetClickable;
     private Phases gamePhase = Phases.Landerwerb;
@@ -22,9 +22,6 @@ public class GameState {
     private int remainingReinforcementsPc;
     private boolean repaintRequired;
 
-    public GameState(Game game) {
-        this.game = game;
-    }
 
     public Phases getGamePhase() {
         return gamePhase;
@@ -49,7 +46,7 @@ public class GameState {
     }
 
     /**
-     * @return true if the underlaying object of the mouse is click able.
+     * @return true if the under laying object of the mouse is click able.
      */
     public boolean isMouseTargetClickable() {
         return mouseTargetClickable;
@@ -96,7 +93,7 @@ public class GameState {
     }
 
     private void reload_GamePhase() {
-        if (occupantedTerritories == game.getData().getAllTerritories().size())
+        if (occupantedTerritories == data.getAllTerritories().size())
             gamePhase = Phases.Eroberungen;
         else
             gamePhase = Phases.Landerwerb;

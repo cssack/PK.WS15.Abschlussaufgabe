@@ -7,6 +7,7 @@ package gameInit;
 import dataObjects.Continent;
 import dataObjects.Territory;
 import dataObjects.game.GameData;
+import exceptions.MapFileFormatException;
 
 import java.awt.*;
 import java.io.IOException;
@@ -20,21 +21,21 @@ import java.util.regex.Pattern;
  * Created by chris on 06.01.2016.
  * The map file reader interprets a map file into the corresponding data objects.
  */
-public class MapFileReader {
-    private static Pattern patchNamePattern = Pattern.compile("[a-z-].*? (.*?) [0-9:]");
-    private static Pattern coordinatesPattern = Pattern.compile("([0-9]+) ([0-9]+) ?");
-    private static Pattern neighborsPattern = Pattern.compile(": (.*)");
-    private static Pattern continentPattern = Pattern.compile("continent (.*?) ([0-9]+) : (.*)");
+class MapFileReader {
+    private static final Pattern patchNamePattern = Pattern.compile("[a-z-].*? (.*?) [0-9:]");
+    private static final Pattern coordinatesPattern = Pattern.compile("([0-9]+) ([0-9]+) ?");
+    private static final Pattern neighborsPattern = Pattern.compile(": (.*)");
+    private static final Pattern continentPattern = Pattern.compile("continent (.*?) ([0-9]+) : (.*)");
 
-    private String dataSource;
-    private GameData gameData;
+    private final String dataSource;
+    private final GameData gameData;
 
     public MapFileReader(GameData gameData, String file) {
         this.gameData = gameData;
         dataSource = file;
     }
 
-    public void start_Interpret() throws IOException {
+    public void start_Interpret() throws IOException, MapFileFormatException {
         List<String> lines = loadFileLines(dataSource);
 
         for (String line : lines) {
@@ -49,7 +50,7 @@ public class MapFileReader {
         }
     }
 
-    private void parseTerritory(String line) {
+    private void parseTerritory(String line) throws MapFileFormatException {
         Territory targetTerritory = getOrCreate_Territory_ByName(getTerritoryName_FromLine(line));
         Polygon polygon = new Polygon();
 
@@ -63,18 +64,23 @@ public class MapFileReader {
         targetTerritory.addPatch(polygon);
     }
 
-    private void parseCapital(String line) {
+    private void parseCapital(String line) throws MapFileFormatException {
         Territory targetTerritory = getOrCreate_Territory_ByName(getTerritoryName_FromLine(line));
         Matcher matcher = coordinatesPattern.matcher(line);
-        matcher.find(); //TODO capture exception if matcher find is false.
+
+        if (!matcher.find())
+            throw new MapFileFormatException(dataSource, line);
 
         targetTerritory.setCapital(getCurrentPoint(matcher));
     }
 
-    private void parseNeighbors(String line) {
+    private void parseNeighbors(String line) throws MapFileFormatException {
         Territory targetTerritory = getOrCreate_Territory_ByName(getTerritoryName_FromLine(line));
         Matcher matcher = neighborsPattern.matcher(line);
-        matcher.find(); //TODO capture exception if matcher find is false.
+
+
+        if (!matcher.find())
+            throw new MapFileFormatException(dataSource, line);
 
         String[] neighbors = matcher.group(1)
                 .split(" - ");
@@ -84,9 +90,11 @@ public class MapFileReader {
         }
     }
 
-    private void parseContinent(String line) {
+    private void parseContinent(String line) throws MapFileFormatException {
         Matcher matcher = continentPattern.matcher(line);
-        matcher.find();
+
+        if (!matcher.find())
+            throw new MapFileFormatException(dataSource, line);
 
         String continentName = matcher.group(1);
         int reinforcementBooster = Integer.parseInt(matcher.group(2));
@@ -120,9 +128,12 @@ public class MapFileReader {
         return continent;
     }
 
-    private String getTerritoryName_FromLine(String line) {
+    private String getTerritoryName_FromLine(String line) throws MapFileFormatException {
         Matcher matcher = patchNamePattern.matcher(line);
-        matcher.find();
+
+        if (!matcher.find())
+            throw new MapFileFormatException(dataSource, line);
+
         return matcher.group(1);
     }
 

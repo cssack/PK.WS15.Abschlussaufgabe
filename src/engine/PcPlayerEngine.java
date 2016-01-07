@@ -4,9 +4,9 @@
 
 package engine;
 
+import bases.GameBase;
 import dataObjects.Territory;
 import dataObjects.enums.Occupants;
-import dataObjects.game.Game;
 
 import java.util.Random;
 
@@ -15,12 +15,10 @@ import java.util.Random;
  * The engine used for the pc player.
  * This is the place where the KI can be configured.
  */
-public class PcPlayerEngine {
-    private Game game;
-    private Random rand = new Random();
+public class PcPlayerEngine extends GameBase {
+    private final Random rand = new Random();
 
-    public PcPlayerEngine(Game game) {
-        this.game = game;
+    public PcPlayerEngine() {
     }
 
     public void ChooseSomeTerritory() {
@@ -28,10 +26,10 @@ public class PcPlayerEngine {
         while (chosen.getOccupant() != Occupants.NotDef) {
             chosen = getRandomTerritory();
         }
-        game.getState().setTerritoryOccupant(chosen, Occupants.Pc);
+        state.setTerritoryOccupant(chosen, Occupants.Pc);
     }
 
     private Territory getRandomTerritory() {
-        return game.getData().getAllTerritories().get(rand.nextInt(game.getData().getAllTerritories().size()));
+        return game.getData().getAllTerritories().get(rand.nextInt(data.getAllTerritories().size()));
     }
 }

@@ -4,13 +4,11 @@
 
 package engine;
 
+import bases.GameBase;
 import dataObjects.Territory;
 import dataObjects.enums.Occupants;
 import dataObjects.enums.Phases;
 import dataObjects.game.Game;
-import dataObjects.game.GameData;
-import dataObjects.game.GameState;
-import drawing.GameDrawingBoard;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
@@ -21,21 +19,13 @@ import java.awt.event.MouseMotionListener;
  * Created by chris on 07.01.2016.
  * The game engine handles events and changes the game state accordingly.
  */
-public class GameEngine implements MouseMotionListener, MouseListener {
-    private Game game;
-    private GameState state;
-    private GameData data;
-    private GameDrawingBoard canvas;
-    private PcPlayerEngine pcPlayer;
+public class GameEngine extends GameBase implements MouseMotionListener, MouseListener {
+    @Override
+    public void init(Game game) {
+        super.init(game);
 
-    public GameEngine(Game owner) {
-        game = owner;
-        state = game.getState();
-        data = game.getData();
-        pcPlayer = game.getPcPlayer();
-        canvas = game.getDrawingBoard();
-        canvas.addMouseMotionListener(this);
-        canvas.addMouseListener(this);
+        drawingBoard.addMouseMotionListener(this);
+        drawingBoard.addMouseListener(this);
     }
 
     @Override
@@ -49,7 +39,7 @@ public class GameEngine implements MouseMotionListener, MouseListener {
 
         state.setMouseOverTerritory(GetTerritoryAtPos(e.getPoint()));
 
-        if (state.isRepaintRequired()) canvas.repaint();
+        if (state.isRepaintRequired()) drawingBoard.repaint();
     }
 
     @Override
@@ -63,11 +53,11 @@ public class GameEngine implements MouseMotionListener, MouseListener {
 
         if (state.getGamePhase() == Phases.Landerwerb) {
             state.setTerritoryOccupant(mouseOverTerritory, Occupants.Human);
-            pcPlayer.ChooseSomeTerritory();
+            pcPlayerEngine.ChooseSomeTerritory();
         }
 
         if (state.isRepaintRequired())
-            canvas.repaint();
+            drawingBoard.repaint();
     }
 
     @Override

@@ -7,6 +7,7 @@ package dataObjects.game;
 import drawing.GameDrawingBoard;
 import engine.GameEngine;
 import engine.PcPlayerEngine;
+import exceptions.MapFileFormatException;
 import gameInit.GameLoader;
 
 import java.io.IOException;
@@ -16,12 +17,29 @@ import java.io.IOException;
  * The game collapses all machines and data objects required by one game.
  */
 public class Game {
-    private PcPlayerEngine pcPlayer = new PcPlayerEngine(this);
-    private GameData data = new GameData(this);
-    private GameDesign design = new GameDesign(this);
-    private GameState state = new GameState(this);
-    private GameDrawingBoard drawingBoard = new GameDrawingBoard(this);
-    private GameEngine engine = new GameEngine(this);
+    private final GameData data;
+    private final GameDesign design;
+    private final GameState state;
+    private final GameEngine engine;
+    private final PcPlayerEngine pcPlayer;
+    private final GameDrawingBoard drawingBoard;
+
+    public Game() {
+        // CAVE: The sequence of the following lines is importend.
+        data = new GameData();
+        design = new GameDesign();
+        state = new GameState();
+        drawingBoard = new GameDrawingBoard();
+        engine = new GameEngine();
+        pcPlayer = new PcPlayerEngine();
+
+        data.init(this);
+        design.init(this);
+        state.init(this);
+        engine.init(this);
+        pcPlayer.init(this);
+        drawingBoard.init(this);
+    }
 
     /**
      * @return Gets the gama data scope. This is where all Territories and continents are stored.
@@ -59,7 +77,7 @@ public class Game {
     }
 
     /**
-     * @return Gets the drawing board. This is the component where evrything is drawn at.
+     * @return Gets the drawing board. This is the component where everything is drawn at.
      */
     public GameDrawingBoard getDrawingBoard() {
         return drawingBoard;
@@ -70,8 +88,9 @@ public class Game {
      *
      * @throws IOException
      */
-    public void load() throws IOException {
-        GameLoader loader = new GameLoader(this);
+    public void load() throws IOException, MapFileFormatException {
+        GameLoader loader = new GameLoader();
+        loader.init(this);
         loader.load();
     }
 }

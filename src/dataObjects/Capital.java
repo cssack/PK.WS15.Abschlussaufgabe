@@ -11,8 +11,8 @@ import java.awt.*;
  * The capital of a territory.
  */
 public class Capital {
-    Territory owner;
-    Point point;
+    private final Territory owner;
+    private final Point point;
 
     public Capital(Territory owner, Point point) {
         this.owner = owner;

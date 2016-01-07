@@ -20,12 +20,12 @@ import java.util.HashSet;
  * The drawing board draws the content of a game by using the game data the state and the design.
  */
 public class GameDrawingBoard extends JComponent {
-    private int number;
+    private int paintCount;
     private GameData data;
     private GameDesign design;
     private GameState state;
 
-    public GameDrawingBoard(Game game) {
+    public void init(Game game) {
         this.data = game.getData();
         this.design = game.getDesign();
         this.state = game.getState();
@@ -41,7 +41,7 @@ public class GameDrawingBoard extends JComponent {
         DrawBackground(g2);
         DrawCapitalLines(g2);
         DrawTerritories(g2);
-        g2.drawString("" + number++, 10, 10);
+        g2.drawString("" + paintCount++, 10, 10);
         DrawInfoBar(g2);
 
     }

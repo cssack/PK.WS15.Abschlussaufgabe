@@ -4,6 +4,7 @@
 
 package dataObjects.game;
 
+import bases.GameBase;
 import dataObjects.Territory;
 import dataObjects.enums.Occupants;
 
@@ -14,14 +15,10 @@ import java.awt.image.BufferedImage;
  * Created by chris on 07.01.2016.
  * The game design implements the logic for the colors, images,... for the drawing routines
  */
-public class GameDesign {
+public class GameDesign extends GameBase {
     private BufferedImage backgroundImage;
     private BufferedImage capitalImage;
-    private Game game;
 
-    public GameDesign(Game gd) {
-        this.game = gd;
-    }
 
     /**
      * @return the color for the sea connections between two territory's.
@@ -41,9 +38,7 @@ public class GameDesign {
      * @return the current valid background color for a territory.
      */
     public Color getTerritoryBackgroundColor(Territory t) {
-        boolean highlighted = game.getState()
-                .isMouseTargetClickable() && game.getState()
-                .getMouseOverTerritory() == t;
+        boolean highlighted = state.isMouseTargetClickable() && state.getMouseOverTerritory() == t;
         if (t.getOccupant() == Occupants.NotDef)
             if (highlighted)
                 return Color.YELLOW;

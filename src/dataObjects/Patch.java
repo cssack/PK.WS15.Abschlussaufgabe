@@ -12,8 +12,8 @@ import java.awt.*;
  * A territory consist of one or more patches.
  */
 public class Patch {
-    private Territory territory;
-    private Polygon polygon;
+    private final Territory territory;
+    private final Polygon polygon;
 
     public Patch(Territory territory, Polygon polygon) {
         this.territory = territory;
@@ -26,9 +26,5 @@ public class Patch {
 
     public Polygon getPolygon() {
         return polygon;
-    }
-
-    public void setPolygon(Polygon polygon) {
-        this.polygon = polygon;
     }
 }

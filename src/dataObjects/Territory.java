@@ -15,9 +15,9 @@ import java.util.ArrayList;
  * The territory consists of one or more patches.
  */
 public class Territory {
-    private String name;
-    private ArrayList<Patch> patches = new ArrayList<>();
-    private ArrayList<Territory> neighbors = new ArrayList<>();
+    private final String name;
+    private final ArrayList<Patch> patches = new ArrayList<>();
+    private final ArrayList<Territory> neighbors = new ArrayList<>();
     private Capital capital;
     private Occupants Occupant = Occupants.NotDef;
 

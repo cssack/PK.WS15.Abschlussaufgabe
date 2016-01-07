@@ -12,9 +12,9 @@ import java.util.ArrayList;
  * If a player has all territories on a continent he gains a reinforcementBonus.
  */
 public class Continent {
-    private String name;
+    private final String name;
+    private final ArrayList<Territory> territories = new ArrayList<>();
     private int reinforcementBonus;
-    private ArrayList<Territory> territories = new ArrayList<>();
 
     public Continent(String name) {
         this.name = name;

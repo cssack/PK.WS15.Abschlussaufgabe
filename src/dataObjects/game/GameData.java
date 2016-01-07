@@ -4,6 +4,7 @@
 
 package dataObjects.game;
 
+import bases.GameBase;
 import dataObjects.Continent;
 import dataObjects.Territory;
 
@@ -14,14 +15,10 @@ import java.util.ArrayList;
  * The game data is the place where all data items are stored.
  * This includes the continents the territories, the players and their stats and so on.
  */
-public class GameData {
-    private ArrayList<Territory> allTerritories = new ArrayList<>();
-    private ArrayList<Continent> allContinents = new ArrayList<>();
-    private Game game;
+public class GameData extends GameBase {
+    private final ArrayList<Territory> allTerritories = new ArrayList<>();
+    private final ArrayList<Continent> allContinents = new ArrayList<>();
 
-    public GameData(Game game) {
-        this.game = game;
-    }
 
     public ArrayList<Continent> getAllContinents() {
         return allContinents;
