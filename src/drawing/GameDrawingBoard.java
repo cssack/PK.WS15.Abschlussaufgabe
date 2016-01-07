@@ -20,6 +20,7 @@ public class GameDrawingBoard extends JComponent {
     private final int toolBarHeight = 50;
     private final Dimension worldMapSize = new Dimension(1250, 650);
     private final Font toolBarFont = new Font("Verdana", Font.PLAIN, 20);
+    private final Font armyFont = new Font("Verdana", Font.BOLD, 16);
     private int paintCount;
     private GameData data;
     private GameDesign design;
@@ -84,11 +85,23 @@ public class GameDrawingBoard extends JComponent {
     }
 
     private void DrawCapital(Graphics2D g, Territory t) {
-        int x = t.getCapital().getPoint().x - design.getCapitalImage().getWidth() / 2;
-        int y = t.getCapital().getPoint().y - design.getCapitalImage().getHeight() / 2;
+        if (t.getOccupant() == null)
+            return;
 
-        //g.drawImage(design.getCapitalImage(), x, y, null);
-        g.drawString(t.getName(), x, y);
+        Font prevFont = g.getFont();
+        Color prevColor = g.getColor();
+
+        g.setColor(Color.WHITE);
+        g.setFont(armyFont);
+
+        int x = t.getCapital().getPoint().x - SwingUtilities
+                .computeStringWidth(g.getFontMetrics(), String.valueOf(t.getArmyCount())) / 2;
+        int y = t.getCapital().getPoint().y;
+
+        g.drawString(String.valueOf(t.getArmyCount()), x, y);
+
+        g.setFont(prevFont);
+        g.setColor(prevColor);
     }
 
     private void DrawCapitalLines(Graphics2D g) {
