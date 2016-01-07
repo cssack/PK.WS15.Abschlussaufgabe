@@ -25,7 +25,7 @@ public class PcPlayerEngine extends GameBase {
         while (chosen.getOccupant() != null) {
             chosen = getRandomTerritory();
         }
-        state.setTerritoryOccupant(chosen, data.getPcPlayer());
+        state.setTerritoryOccupant(chosen, data.getCompPlayer());
     }
 
     private Territory getRandomTerritory() {

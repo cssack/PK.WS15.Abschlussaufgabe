@@ -4,10 +4,7 @@
 
 package bases;
 
-import dataObjects.game.Game;
-import dataObjects.game.GameData;
-import dataObjects.game.GameDesign;
-import dataObjects.game.GameState;
+import dataObjects.game.*;
 import drawing.GameDrawingBoard;
 import engine.GameEngine;
 import engine.PcPlayerEngine;
@@ -25,6 +22,8 @@ public class GameBase {
     protected GameDesign design;
     protected PcPlayerEngine pcPlayerEngine;
     protected GameDrawingBoard drawingBoard;
+    protected GameMessages messages;
+
 
     public void init(Game game) {
         this.game = game;
@@ -34,5 +33,6 @@ public class GameBase {
         this.design = game.getDesign();
         this.pcPlayerEngine = game.getPcPlayer();
         this.drawingBoard = game.getDrawingBoard();
+        this.messages = game.getMessages();
     }
 }

@@ -22,14 +22,14 @@ public class GameData extends GameBase {
     private final ArrayList<Territory> allTerritories = new ArrayList<>();
     private final ArrayList<Continent> allContinents = new ArrayList<>();
     private Player humanPlayer;
-    private Player pcPlayer;
+    private Player compPlayer;
 
 
     @Override
     public void init(Game game) {
         super.init(game);
         humanPlayer = new Player();
-        pcPlayer = new Player();
+        compPlayer = new Player();
     }
 
     /**
@@ -40,10 +40,10 @@ public class GameData extends GameBase {
     }
 
     /**
-     * @return the pc player data.
+     * @return the computer player data.
      */
-    public Player getPcPlayer() {
-        return pcPlayer;
+    public Player getCompPlayer() {
+        return compPlayer;
     }
 
 

@@ -23,6 +23,7 @@ public class Game {
     private final GameEngine engine;
     private final PcPlayerEngine pcPlayer;
     private final GameDrawingBoard drawingBoard;
+    private final GameMessages messages;
 
     public Game() {
         data = new GameData();
@@ -31,6 +32,7 @@ public class Game {
         drawingBoard = new GameDrawingBoard();
         engine = new GameEngine();
         pcPlayer = new PcPlayerEngine();
+        messages = new GameMessages();
 
         data.init(this);
         design.init(this);
@@ -38,6 +40,7 @@ public class Game {
         engine.init(this);
         pcPlayer.init(this);
         drawingBoard.init(this);
+        messages.init(this);
     }
 
     /**
@@ -82,6 +85,16 @@ public class Game {
         return drawingBoard;
     }
 
+
+    /**
+     * @return Gets the messaging scope. This is used for the output messages presented to the user in the toolbar.
+     */
+    public GameMessages getMessages() {
+        return messages;
+    }
+
+
+
     /**
      * Loads all required data from resource files (Images, map files, ....).
      *
@@ -92,4 +105,5 @@ public class Game {
         loader.init(this);
         loader.load();
     }
+
 }

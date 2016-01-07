@@ -48,7 +48,7 @@ public class GameDesign extends GameBase {
                 return Color.decode("#107C0F");
             else
                 return Color.decode("#108840");
-        else if (t.getOccupant() == data.getPcPlayer())
+        else if (t.getOccupant() == data.getCompPlayer())
             if (highlighted)
                 return Color.decode("#E81123");
             else
