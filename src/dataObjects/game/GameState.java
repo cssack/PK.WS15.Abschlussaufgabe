@@ -7,6 +7,7 @@ package dataObjects.game;
 import bases.GameBase;
 import dataObjects.Player;
 import dataObjects.Territory;
+import dataObjects.enums.EroberungsPhases;
 import dataObjects.enums.Phases;
 
 /**
@@ -16,16 +17,24 @@ import dataObjects.enums.Phases;
 public class GameState extends GameBase {
     private Territory mouseOverTerritory;
     private boolean mouseTargetClickable;
-    private Phases gamePhase = Phases.Landerwerb;
     private int occupantedTerritories;
     private boolean repaintRequired;
+    private Phases gamePhase = Phases.Landerwerb;
+    private EroberungsPhases eroberungsPhase = EroberungsPhases.VerstaerkungVerteilen;
 
 
     /**
-     * @return the current active game phase. Take a look at Phases to gather more informations.
+     * @return the current active game phase. Take a look at Phases to gather more information's.
      */
     public Phases getGamePhase() {
         return gamePhase;
+    }
+
+    /**
+     * @return the current active eroberungs phase. Take a look at EroberungsPhases to gather more information's.
+     */
+    public EroberungsPhases getEroberungsPhase() {
+        return eroberungsPhase;
     }
 
     /**
