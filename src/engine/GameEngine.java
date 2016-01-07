@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2016. Tobias Patzl, Christian Sack
+ */
+
 package engine;
 
 import dataObjects.Territory;
@@ -15,6 +19,7 @@ import java.awt.event.MouseMotionListener;
 
 /**
  * Created by chris on 07.01.2016.
+ * The game engine handles events and changes the game state accordingly.
  */
 public class GameEngine implements MouseMotionListener, MouseListener {
     private Game game;

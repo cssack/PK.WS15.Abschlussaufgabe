@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2016. Tobias Patzl, Christian Sack
+ */
+
 package drawing;
 
 
@@ -8,6 +12,8 @@ import java.awt.*;
 
 /**
  * Created by chris on 07.01.2016.
+ * The drawing window is a window which displays a drawing board.
+ * Use this window to start a game.
  */
 public class DrawingWindow extends JFrame {
     public DrawingWindow(Game game) throws HeadlessException {
@@ -18,7 +24,7 @@ public class DrawingWindow extends JFrame {
         this.getContentPane().setLayout(null);
         this.getContentPane().add(game.getDrawingBoard());
 
-        game.getDrawingBoard().setBounds(0, 000, 1250, 690);
+        game.getDrawingBoard().setBounds(0, 0, 1250, 690);
         this.setVisible(true);
     }
 }

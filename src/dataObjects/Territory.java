@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2016. Tobias Patzl, Christian Sack
+ */
+
 package dataObjects;
 
 import dataObjects.enums.Occupants;
@@ -7,6 +11,8 @@ import java.util.ArrayList;
 
 /**
  * Created by chris on 06.01.2016.
+ * A territory is occupied by an occupant which can be a player or a computer.
+ * The territory consists of one or more patches.
  */
 public class Territory {
     private String name;

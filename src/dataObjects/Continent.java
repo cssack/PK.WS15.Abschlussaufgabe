@@ -1,9 +1,15 @@
+/*
+ * Copyright (c) 2016. Tobias Patzl, Christian Sack
+ */
+
 package dataObjects;
 
 import java.util.ArrayList;
 
 /**
  * Created by chris on 06.01.2016.
+ * A continent consists of multiple territories.
+ * If a player has all territories on a continent he gains a reinforcementBonus.
  */
 public class Continent {
     private String name;

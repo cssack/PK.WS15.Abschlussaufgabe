@@ -1,9 +1,14 @@
+/*
+ * Copyright (c) 2016. Tobias Patzl, Christian Sack
+ */
+
 package dataObjects;
 
 import java.awt.*;
 
 /**
  * Created by chris on 06.01.2016.
+ * The capital of a territory.
  */
 public class Capital {
     Territory owner;

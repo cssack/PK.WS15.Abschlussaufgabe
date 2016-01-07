@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2016. Tobias Patzl, Christian Sack
+ */
+
 package drawing;
 
 import dataObjects.Patch;
@@ -6,7 +10,6 @@ import dataObjects.game.Game;
 import dataObjects.game.GameData;
 import dataObjects.game.GameDesign;
 import dataObjects.game.GameState;
-import engine.GameEngine;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,18 +17,15 @@ import java.util.HashSet;
 
 /**
  * Created by chris on 07.01.2016.
+ * The drawing board draws the content of a game by using the game data the state and the design.
  */
 public class GameDrawingBoard extends JComponent {
     private int number;
-    private Game game;
-    private GameEngine engine;
     private GameData data;
     private GameDesign design;
     private GameState state;
 
     public GameDrawingBoard(Game game) {
-        this.game = game;
-        this.engine = game.getEngine();
         this.data = game.getData();
         this.design = game.getDesign();
         this.state = game.getState();
@@ -121,11 +121,11 @@ public class GameDrawingBoard extends JComponent {
         int top = infobarHeight / 2 - textHeight / 2;
 
         g.fillRect(0, 650, 1250, infobarHeight);
+        //noinspection SuspiciousNameCombination
         g.drawString(state.getGamePhase().name(), top, top + 650);
 
 
     }
-
 
 
 }

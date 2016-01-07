@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2016. Tobias Patzl, Christian Sack
+ */
+
 import dataObjects.game.Game;
 import drawing.DrawingWindow;
 

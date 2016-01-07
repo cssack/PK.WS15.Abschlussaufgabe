@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2016. Tobias Patzl, Christian Sack
+ */
+
 package dataObjects.game;
 
 import dataObjects.Territory;
@@ -6,6 +10,7 @@ import dataObjects.enums.Phases;
 
 /**
  * Created by chris on 07.01.2016.
+ * The game state is the main vector to populate
  */
 public class GameState {
     private Game game;
@@ -33,6 +38,17 @@ public class GameState {
     }
 
     /**
+     * Sets the current territory where the mouse is over.
+     */
+    public void setMouseOverTerritory(Territory territory) {
+        if (this.mouseOverTerritory == territory)
+            return;
+        this.mouseOverTerritory = territory;
+        reload_MouseTargetClickable();
+        repaintRequired = true;
+    }
+
+    /**
      * @return true if the underlaying object of the mouse is click able.
      */
     public boolean isMouseTargetClickable() {
@@ -43,8 +59,16 @@ public class GameState {
         return remainingReinforcements;
     }
 
+    public void setRemainingReinforcements(int remainingReinforcements) {
+        this.remainingReinforcements = remainingReinforcements;
+    }
+
     public int getRemainingReinforcementsPc() {
         return remainingReinforcementsPc;
+    }
+
+    public void setRemainingReinforcementsPc(int remainingReinforcementsPc) {
+        this.remainingReinforcementsPc = remainingReinforcementsPc;
     }
 
     /**
@@ -61,14 +85,6 @@ public class GameState {
         return repaintRequired;
     }
 
-    public void setRemainingReinforcements(int remainingReinforcements) {
-        this.remainingReinforcements = remainingReinforcements;
-    }
-
-    public void setRemainingReinforcementsPc(int remainingReinforcementsPc) {
-        this.remainingReinforcementsPc = remainingReinforcementsPc;
-    }
-
     /**
      * Sets the territory's occupant state
      */
@@ -77,17 +93,6 @@ public class GameState {
         occupantedTerritories++;
         reload_GamePhase();
         reload_MouseTargetClickable();
-    }
-
-    /**
-     * Sets the current territory where the mouse is over.
-     */
-    public void setMouseOverTerritory(Territory territory) {
-        if (this.mouseOverTerritory == territory)
-            return;
-        this.mouseOverTerritory = territory;
-        reload_MouseTargetClickable();
-        repaintRequired = true;
     }
 
     private void reload_GamePhase() {

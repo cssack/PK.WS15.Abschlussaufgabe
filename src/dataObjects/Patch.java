@@ -1,9 +1,15 @@
+/*
+ * Copyright (c) 2016. Tobias Patzl, Christian Sack
+ */
+
 package dataObjects;
 
 import java.awt.*;
 
 /**
  * Created by chris on 07.01.2016.
+ * A patch of land for a territory.
+ * A territory consist of one or more patches.
  */
 public class Patch {
     private Territory territory;

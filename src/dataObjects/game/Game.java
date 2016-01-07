@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2016. Tobias Patzl, Christian Sack
+ */
+
 package dataObjects.game;
 
 import drawing.GameDrawingBoard;
@@ -9,6 +13,7 @@ import java.io.IOException;
 
 /**
  * Created by chris on 07.01.2016.
+ * The game collapses all machines and data objects required by one game.
  */
 public class Game {
     private PcPlayerEngine pcPlayer = new PcPlayerEngine(this);

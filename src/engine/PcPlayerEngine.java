@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2016. Tobias Patzl, Christian Sack
+ */
+
 package engine;
 
 import dataObjects.Territory;
@@ -8,6 +12,8 @@ import java.util.Random;
 
 /**
  * Created by chris on 07.01.2016.
+ * The engine used for the pc player.
+ * This is the place where the KI can be configured.
  */
 public class PcPlayerEngine {
     private Game game;

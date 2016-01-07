@@ -1,7 +1,12 @@
+/*
+ * Copyright (c) 2016. Tobias Patzl, Christian Sack
+ */
+
 package dataObjects.enums;
 
 /**
  * Created by chris on 07.01.2016.
+ * Used to define who owns a territory.
  */
 
 public enum Occupants {

@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2016. Tobias Patzl, Christian Sack
+ */
+
 package gameInit;
 
 import dataObjects.Territory;
@@ -12,6 +16,7 @@ import java.util.Map;
 
 /**
  * Created by chris on 07.01.2016.
+ * The game loader loads and interprets the files which are needed by a game.
  */
 public class GameLoader {
 
@@ -42,6 +47,7 @@ public class GameLoader {
 
     private String getFile_FromResource(String path) {
         ClassLoader classLoader = getClass().getClassLoader();
+        //TODO find a method which finds a file in the out directory which is not depricated.
         return URLDecoder.decode((new File(classLoader.getResource("resources/" + path)
                 .getFile()).getAbsolutePath()));
     }

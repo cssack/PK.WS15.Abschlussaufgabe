@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2016. Tobias Patzl, Christian Sack
+ */
+
 package dataObjects.game;
 
 import dataObjects.Territory;
@@ -8,6 +12,7 @@ import java.awt.image.BufferedImage;
 
 /**
  * Created by chris on 07.01.2016.
+ * The game design implements the logic for the colors, images,... for the drawing routines
  */
 public class GameDesign {
     private BufferedImage backgroundImage;

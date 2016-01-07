@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2016. Tobias Patzl, Christian Sack
+ */
+
 package gameInit;
 
 import dataObjects.Continent;
@@ -14,6 +18,7 @@ import java.util.regex.Pattern;
 
 /**
  * Created by chris on 06.01.2016.
+ * The map file reader interprets a map file into the corresponding data objects.
  */
 public class MapFileReader {
     private static Pattern patchNamePattern = Pattern.compile("[a-z-].*? (.*?) [0-9:]");

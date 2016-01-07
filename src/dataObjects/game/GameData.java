@@ -1,13 +1,18 @@
+/*
+ * Copyright (c) 2016. Tobias Patzl, Christian Sack
+ */
+
 package dataObjects.game;
 
 import dataObjects.Continent;
 import dataObjects.Territory;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 /**
  * Created by chris on 07.01.2016.
+ * The game data is the place where all data items are stored.
+ * This includes the continents the territories, the players and their stats and so on.
  */
 public class GameData {
     private ArrayList<Territory> allTerritories = new ArrayList<>();
