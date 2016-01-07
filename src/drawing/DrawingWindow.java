@@ -13,6 +13,8 @@ public class DrawingWindow extends JFrame {
     public DrawingWindow(Game game) throws HeadlessException {
         this.setTitle("RISK");
         this.setBounds(0,0,1250,750);
+        this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+
         this.getContentPane().setLayout(null);
         this.getContentPane().add(game.getDrawingBoard());
 

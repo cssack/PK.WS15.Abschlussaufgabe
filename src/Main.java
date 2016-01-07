@@ -1,6 +1,5 @@
 import dataObjects.game.Game;
 import drawing.DrawingWindow;
-import engine.GameEngine;
 
 import java.io.IOException;
 
