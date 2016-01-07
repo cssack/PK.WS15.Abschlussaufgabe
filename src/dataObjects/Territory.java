@@ -9,8 +9,8 @@ import java.util.ArrayList;
  * Created by chris on 06.01.2016.
  */
 public class Territory {
-    private Polygon polygon;
     private String name;
+    private ArrayList<Patch> patches = new ArrayList<>();
     private ArrayList<Territory> neighbors;
     private Capital capital;
     private Occupants Occupant = Occupants.NotDef;
@@ -22,35 +22,26 @@ public class Territory {
     }
 
 
-    public void setNeighbors(ArrayList<Territory> neighbors) {
-        this.neighbors = neighbors;
-    }
 
-    public void setCapital(Point point) {
-        this.capital = new Capital(this, point);
-    }
 
-    public Polygon getPolygon() {
-
-        return polygon;
-    }
-
-    public void setPolygon(Polygon polygon) {
-        this.polygon = polygon;
-    }
 
     public String getName() {
         return name;
     }
-
     public ArrayList<Territory> getNeighbors() {
         return neighbors;
     }
 
-
+    public void setNeighbors(ArrayList<Territory> neighbors) {
+        this.neighbors = neighbors;
+    }
 
     public Capital getCapital() {
         return capital;
+    }
+
+    public void setCapital(Point point) {
+        this.capital = new Capital(this, point);
     }
 
     public Occupants getOccupant() {
@@ -59,5 +50,22 @@ public class Territory {
 
     public void setOccupant(Occupants occupant) {
         Occupant = occupant;
+    }
+
+
+    public boolean contains(Point p) {
+        for (Patch patch : patches) {
+            if (patch.getPolygon().contains(p))
+                return true;
+        }
+        return false;
+    }
+
+    public ArrayList<Patch> getPaches() {
+        return patches;
+    }
+
+    public void addPatch(Polygon p) {
+        patches.add(new Patch(this, p));
     }
 }

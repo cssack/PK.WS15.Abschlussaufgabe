@@ -59,7 +59,7 @@ public class MapFileReader {
             polygon.addPoint(currentPoint.x, currentPoint.y);
         }
 
-        targetTerritory.setPolygon(polygon);
+        targetTerritory.addPatch(polygon);
 
     }
     private void parseCapital(String line)

@@ -1,5 +1,6 @@
 package drawing;
 
+import dataObjects.Patch;
 import dataObjects.Territory;
 import dataObjects.game.Game;
 import dataObjects.game.GameData;
@@ -55,11 +56,15 @@ public class GameDrawingBoard extends JComponent {
             Territory territory = data.getAllTerritories().get(i);
 
             g.setColor(design.getTerritoryBackgroundColor(territory));
-            g.fillPolygon(territory.getPolygon());
+            for (Patch patch : territory.getPaches()) {
+                g.fillPolygon(patch.getPolygon());
+            }
 
             g.setColor(design.getTerritoryBoundaryColor(territory));
             g.setStroke(design.getTerritoryBoundaryStroke(territory));
-            g.drawPolygon(territory.getPolygon());
+            for (Patch patch : territory.getPaches()) {
+                g.drawPolygon(patch.getPolygon());
+            }
 
             DrawCapital(g, territory);
         }

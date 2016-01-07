@@ -2,14 +2,16 @@ package engine;
 
 import dataObjects.Territory;
 import dataObjects.enums.Occupants;
+import dataObjects.enums.Phases;
 import dataObjects.game.Game;
 import dataObjects.game.GameData;
-import dataObjects.enums.Phases;
 import dataObjects.game.GameState;
 import drawing.GameDrawingBoard;
 
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 
 /**
  * Created by chris on 07.01.2016.
@@ -92,7 +94,7 @@ public class GameEngine implements MouseMotionListener, MouseListener {
     private Territory GetTerritoryAtPos(Point p)
     {
         for (Territory territory : data.getAllTerritories()) {
-            if (!territory.getPolygon().contains(p))
+            if (!territory.contains(p))
                 continue;
             return territory;
         }
