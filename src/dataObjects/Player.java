@@ -73,15 +73,13 @@ public class Player {
         return ownedContinents;
     }
 
-    public void AddOwnedContinents(Continent continent) {
-        assert !ownedContinents.contains(continent);
 
-        ownedContinents.add(continent);
-    }
-
-    public void RemoveOwnedContinents(Continent continent) {
+    public void setContinentOwnerShip(Continent continent, boolean belongsToMe) {
         assert ownedContinents.contains(continent);
-
-        ownedContinents.remove(continent);
+        if (belongsToMe && !ownedContinents.contains(continent)) {
+            ownedContinents.add(continent);
+        } else if (!belongsToMe && ownedContinents.contains(continent)) {
+            ownedContinents.remove(continent);
+        }
     }
 }

@@ -86,6 +86,7 @@ public class GameState extends GameBase {
         occupant.setTerritoriesCount(occupant.getTerritoriesCount() + 1);
         territory.setOccupant(occupant);
 
+        reload_ContinentOwners();
         reload_ReinforcementGains(occupant);
         reload_GamePhase();
         reload_MouseTargetClickable();
@@ -102,6 +103,32 @@ public class GameState extends GameBase {
 
         mouseTargetClickable = newVal;
         repaintRequired = true;
+    }
+
+    private void reload_ContinentOwners() {
+        for (Continent continent : data.getAllContinents()) {
+            Player owner = continent.getTerritories().get(0).getOccupant();
+            if (owner == null) { // this continent belongs to nobody
+                data.getCompPlayer().setContinentOwnerShip(continent, false);
+                data.getHumanPlayer().setContinentOwnerShip(continent, false);
+                continue;
+            }
+            boolean consistentOwnerShip = true;
+            for (int i = 1; i < continent.getTerritories().size(); i++) {
+                Territory territory = continent.getTerritories().get(i);
+                if (owner != territory
+                        .getOccupant()) { // if there are two different occupants the continent belongs to nobody
+                    data.getHumanPlayer().setContinentOwnerShip(continent, false);
+                    data.getCompPlayer().setContinentOwnerShip(continent, false);
+                    consistentOwnerShip = false;
+                    break;
+                }
+            }
+            if (!consistentOwnerShip)
+                continue;
+
+            owner.setContinentOwnerShip(continent, true);
+        }
     }
 
     private void reload_GamePhase() {
