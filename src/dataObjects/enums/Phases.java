@@ -1,7 +1,6 @@
 package dataObjects.enums;
 
-public enum Phases
-{
+public enum Phases {
     /**
      * Current game phase is Landerwerb see Aufgabenstellung for further explanation.
      */

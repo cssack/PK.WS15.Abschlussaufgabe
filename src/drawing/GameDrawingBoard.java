@@ -35,23 +35,20 @@ public class GameDrawingBoard extends JComponent {
     public void paint(Graphics g) {
         super.paint(g);
 
-        Graphics2D g2 = (Graphics2D)g;
+        Graphics2D g2 = (Graphics2D) g;
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
         DrawBackground(g2);
         DrawCapitalLines(g2);
         DrawTerritories(g2);
-        g2.drawString(""+number++, 10,10);
-
+        g2.drawString("" + number++, 10, 10);
     }
 
-    private void DrawBackground(Graphics2D g)
-    {
-        g.drawImage(design.getBackgroundImage(),0,0, null);
+    private void DrawBackground(Graphics2D g) {
+        g.drawImage(design.getBackgroundImage(), 0, 0, null);
     }
 
-    private void DrawTerritories(Graphics2D g)
-    {
+    private void DrawTerritories(Graphics2D g) {
         Color prevColor = g.getColor();
         Stroke prevStroke = g.getStroke();
 
@@ -59,13 +56,13 @@ public class GameDrawingBoard extends JComponent {
             Territory territory = data.getAllTerritories().get(i);
 
             g.setColor(design.getTerritoryBackgroundColor(territory));
-            for (Patch patch : territory.getPaches()) {
+            for (Patch patch : territory.getPatches()) {
                 g.fillPolygon(patch.getPolygon());
             }
 
             g.setColor(design.getTerritoryBoundaryColor(territory));
             g.setStroke(design.getTerritoryBoundaryStroke(territory));
-            for (Patch patch : territory.getPaches()) {
+            for (Patch patch : territory.getPatches()) {
                 g.drawPolygon(patch.getPolygon());
             }
 
@@ -75,14 +72,13 @@ public class GameDrawingBoard extends JComponent {
         g.setColor(prevColor);
         g.setStroke(prevStroke);
     }
-    private void DrawCapital(Graphics2D g, Territory t)
-    {
-        int x = t.getCapital().getPoint().x - design.getCapitalImage().getWidth()/2;
-        int y = t.getCapital().getPoint().y - design.getCapitalImage().getHeight()/2;
+
+    private void DrawCapital(Graphics2D g, Territory t) {
+        int x = t.getCapital().getPoint().x - design.getCapitalImage().getWidth() / 2;
+        int y = t.getCapital().getPoint().y - design.getCapitalImage().getHeight() / 2;
 
         //g.drawImage(design.getCapitalImage(), x, y, null);
-        g.drawString(t.getName(), x,y);
-
+        g.drawString(t.getName(), x, y);
     }
 
     private void DrawCapitalLines(Graphics2D g) {
@@ -112,7 +108,4 @@ public class GameDrawingBoard extends JComponent {
             DrawCapitalLines(g, visitedNodes, neighbor);
         }
     }
-
-
-
 }

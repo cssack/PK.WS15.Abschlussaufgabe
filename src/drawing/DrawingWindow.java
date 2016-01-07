@@ -20,6 +20,5 @@ public class DrawingWindow extends JFrame {
 
         game.getDrawingBoard().setBounds(0, 000, 1250, 650);
         this.setVisible(true);
-
     }
 }

@@ -44,38 +44,35 @@ public class MapFileReader {
         }
     }
 
-
-    private void parseTerritory(String line)
-    {
+    private void parseTerritory(String line) {
         Territory targetTerritory = getOrCreate_Territory_ByName(getTerritoryName_FromLine(line));
         Polygon polygon = new Polygon();
 
         Matcher polygonMatcher = coordinatesPattern.matcher(line);
 
-        while (polygonMatcher.find())
-        {
+        while (polygonMatcher.find()) {
             Point currentPoint = getCurrentPoint(polygonMatcher);
             polygon.addPoint(currentPoint.x, currentPoint.y);
         }
 
         targetTerritory.addPatch(polygon);
-
     }
-    private void parseCapital(String line)
-    {
+
+    private void parseCapital(String line) {
         Territory targetTerritory = getOrCreate_Territory_ByName(getTerritoryName_FromLine(line));
         Matcher matcher = coordinatesPattern.matcher(line);
         matcher.find(); //TODO capture exception if matcher find is false.
 
         targetTerritory.setCapital(getCurrentPoint(matcher));
     }
-    private void parseNeighbors(String line)
-    {
+
+    private void parseNeighbors(String line) {
         Territory targetTerritory = getOrCreate_Territory_ByName(getTerritoryName_FromLine(line));
         Matcher matcher = neighborsPattern.matcher(line);
         matcher.find(); //TODO capture exception if matcher find is false.
 
-        String[] neighbors = matcher.group(1).split(" - ");
+        String[] neighbors = matcher.group(1)
+                .split(" - ");
 
         for (String neighbor : neighbors) {
             targetTerritory.addNeighbor(getOrCreate_Territory_ByName(neighbor));
@@ -90,22 +87,19 @@ public class MapFileReader {
         int reinforcementBooster = Integer.parseInt(matcher.group(2));
         String[] territories = matcher.group(3).split(" - ");
 
-
         Continent continent = getOrCreate_Continent_ByName(continentName);
+
+        continent.setReinforcementBonus(reinforcementBooster);
 
         for (String territoryName : territories) {
             Territory territory = getOrCreate_Territory_ByName(territoryName);
             continent.addTerritory(territory);
         }
-
     }
 
-
-    private Territory getOrCreate_Territory_ByName(String name)
-    {
+    private Territory getOrCreate_Territory_ByName(String name) {
         Territory territory = gameData.getTerritory_ByName(name);
-        if (territory == null)
-        {
+        if (territory == null) {
             territory = new Territory(name);
             gameData.addTerritory(territory);
         }
@@ -121,20 +115,17 @@ public class MapFileReader {
         return continent;
     }
 
-    private String getTerritoryName_FromLine(String line)
-    {
+    private String getTerritoryName_FromLine(String line) {
         Matcher matcher = patchNamePattern.matcher(line);
         matcher.find();
         return matcher.group(1);
     }
 
-    private Point getCurrentPoint(Matcher matcher)
-    {
+    private Point getCurrentPoint(Matcher matcher) {
         Integer x = Integer.parseInt(matcher.group(1));
         Integer y = Integer.parseInt(matcher.group(2));
-        return new Point(x,y);
+        return new Point(x, y);
     }
-
 
     private List<String> loadFileLines(String file) throws IOException {
         return Files.readAllLines(Paths.get(file));

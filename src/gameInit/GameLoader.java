@@ -34,18 +34,15 @@ public class GameLoader {
             mapFileReader.start_Interpret();
         }
     }
+
     private void readImages() throws IOException {
-
-        game.getDesign().setBackgroundImage (ImageIO.read(new File(getFile_FromResource("waterTexture.jpg"))));
-        game.getDesign().setCapitalImage (ImageIO.read(new File(getFile_FromResource("CapitalIcon.png"))));
+        game.getDesign().setBackgroundImage(ImageIO.read(new File(getFile_FromResource("waterTexture.jpg"))));
+        game.getDesign().setCapitalImage(ImageIO.read(new File(getFile_FromResource("CapitalIcon.png"))));
     }
 
-    private String getFile_FromResource(String path)
-    {
+    private String getFile_FromResource(String path) {
         ClassLoader classLoader = getClass().getClassLoader();
-        return URLDecoder.decode( (new File(classLoader.getResource("resources/" + path).getFile()).getAbsolutePath()));
+        return URLDecoder.decode((new File(classLoader.getResource("resources/" + path)
+                .getFile()).getAbsolutePath()));
     }
-
-
-
 }

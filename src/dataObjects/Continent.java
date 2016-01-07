@@ -7,8 +7,7 @@ import java.util.ArrayList;
  */
 public class Continent {
     private String name;
-
-
+    private int reinforcementBonus;
     private ArrayList<Territory> territories = new ArrayList<>();
 
     public Continent(String name) {
@@ -16,14 +15,12 @@ public class Continent {
     }
 
     public String getName() {
-
         return name;
     }
 
     public ArrayList<Territory> getTerritories() {
         return territories;
     }
-
 
     public Territory getTerritory_ByName(String Name) {
         for (Territory territory : territories) {
@@ -35,5 +32,9 @@ public class Continent {
 
     public void addTerritory(Territory territory) {
         this.territories.add(territory);
+    }
+
+    public void setReinforcementBonus(int reinforcementBonus) {
+        this.reinforcementBonus = reinforcementBonus;
     }
 }

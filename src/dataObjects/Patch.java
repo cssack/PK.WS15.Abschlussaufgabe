@@ -9,13 +9,10 @@ public class Patch {
     private Territory territory;
     private Polygon polygon;
 
-
     public Patch(Territory territory, Polygon polygon) {
-
         this.territory = territory;
         this.polygon = polygon;
     }
-
 
     public Territory getTerritory() {
         return territory;

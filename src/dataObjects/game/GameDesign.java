@@ -12,10 +12,7 @@ import java.awt.image.BufferedImage;
 public class GameDesign {
     private BufferedImage backgroundImage;
     private BufferedImage capitalImage;
-
     private Game game;
-
-
 
     public GameDesign(Game gd) {
         this.game = gd;
@@ -38,9 +35,10 @@ public class GameDesign {
     /**
      * @return the current valid background color for a territory.
      */
-    public Color getTerritoryBackgroundColor(Territory t)
-    {
-        boolean highlighted = game.getState().isMouseTargetClickable() && game.getState().getMouseOverTerritory() == t;
+    public Color getTerritoryBackgroundColor(Territory t) {
+        boolean highlighted = game.getState()
+                .isMouseTargetClickable() && game.getState()
+                .getMouseOverTerritory() == t;
         if (t.getOccupant() == Occupants.NotDef)
             if (highlighted)
                 return Color.YELLOW;
@@ -96,6 +94,4 @@ public class GameDesign {
     public void setCapitalImage(BufferedImage capitalImage) {
         this.capitalImage = capitalImage;
     }
-
-
 }

@@ -23,7 +23,6 @@ public class GameEngine implements MouseMotionListener, MouseListener {
     private GameDrawingBoard canvas;
     private PcPlayerEngine pcPlayer;
 
-
     public GameEngine(Game owner) {
         game = owner;
         state = game.getState();
@@ -33,7 +32,6 @@ public class GameEngine implements MouseMotionListener, MouseListener {
         canvas.addMouseMotionListener(this);
         canvas.addMouseListener(this);
     }
-
 
     @Override
     public void mouseDragged(MouseEvent e) {
@@ -46,10 +44,8 @@ public class GameEngine implements MouseMotionListener, MouseListener {
 
         state.setMouseOverTerritory(GetTerritoryAtPos(e.getPoint()));
 
-        if (state.isRepaintRequired())canvas.repaint();
+        if (state.isRepaintRequired()) canvas.repaint();
     }
-
-
 
     @Override
     public void mouseClicked(MouseEvent e) {
@@ -58,17 +54,15 @@ public class GameEngine implements MouseMotionListener, MouseListener {
 
         state.resetRepaintRequired();
 
-
         Territory mouseOverTerritory = state.getMouseOverTerritory();
 
-        if (state.getGamePhase() == Phases.Landerwerb)
-        {
+        if (state.getGamePhase() == Phases.Landerwerb) {
             state.setTerritoryOccupant(mouseOverTerritory, Occupants.Human);
             pcPlayer.ChooseSomeTerritory();
         }
 
-
-        if (state.isRepaintRequired())canvas.repaint();
+        if (state.isRepaintRequired())
+            canvas.repaint();
     }
 
     @Override
@@ -91,12 +85,10 @@ public class GameEngine implements MouseMotionListener, MouseListener {
 
     }
 
-    private Territory GetTerritoryAtPos(Point p)
-    {
+    private Territory GetTerritoryAtPos(Point p) {
         for (Territory territory : data.getAllTerritories()) {
-            if (!territory.contains(p))
-                continue;
-            return territory;
+            if (territory.contains(p))
+                return territory;
         }
         return null;
     }

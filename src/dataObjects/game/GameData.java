@@ -12,20 +12,15 @@ import java.util.Objects;
 public class GameData {
     private ArrayList<Territory> allTerritories = new ArrayList<>();
     private ArrayList<Continent> allContinents = new ArrayList<>();
-
-
     private Game game;
-
 
     public GameData(Game game) {
         this.game = game;
     }
 
-
     public ArrayList<Continent> getAllContinents() {
         return allContinents;
     }
-
 
     /**
      * @param name the name of the continent.
@@ -33,7 +28,7 @@ public class GameData {
      */
     public Continent getContinent_ByName(String name) {
         for (Continent continent : allContinents) {
-            if (Objects.equals(continent.getName(), name))
+            if (continent.getName().equals(name))
                 return continent;
         }
         return null;
@@ -48,25 +43,25 @@ public class GameData {
         allContinents.add(continent);
     }
 
-
     /**
-     *
      * @param name the name of the territory.
      * @return the territory by name or null if not exists.
      */
     public Territory getTerritory_ByName(String name) {
         for (Territory territory : allTerritories) {
-            if (Objects.equals(territory.getName(), name))
+            if (territory.getName().equals(name))
                 return territory;
         }
         return null;
     }
+
     /**
      * @return A list of all available territories.
      */
     public ArrayList<Territory> getAllTerritories() {
         return allTerritories;
     }
+
     /**
      * Adds a new territory to the list.
      * @param territory the territory to add

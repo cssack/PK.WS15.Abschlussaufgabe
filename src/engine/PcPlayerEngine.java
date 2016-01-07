@@ -13,25 +13,19 @@ public class PcPlayerEngine {
     private Game game;
     private Random rand = new Random();
 
-
     public PcPlayerEngine(Game game) {
         this.game = game;
     }
 
-
-    public void ChooseSomeTerritory()
-    {
-        Territory choosen = getRandomTerritory();
-        while (choosen.getOccupant() != Occupants.NotDef)
-        {
-            choosen = getRandomTerritory();
+    public void ChooseSomeTerritory() {
+        Territory chosen = getRandomTerritory();
+        while (chosen.getOccupant() != Occupants.NotDef) {
+            chosen = getRandomTerritory();
         }
-        game.getState().setTerritoryOccupant(choosen, Occupants.Pc);
+        game.getState().setTerritoryOccupant(chosen, Occupants.Pc);
     }
 
-
-    private Territory getRandomTerritory()
-    {
+    private Territory getRandomTerritory() {
         return game.getData().getAllTerritories().get(rand.nextInt(game.getData().getAllTerritories().size()));
     }
 }

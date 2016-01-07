@@ -15,23 +15,17 @@ public class Territory {
     private Capital capital;
     private Occupants Occupant = Occupants.NotDef;
 
-
     public Territory(String name) {
         this.name = name;
-
     }
-
-
-
-
 
     public String getName() {
         return name;
     }
+
     public ArrayList<Territory> getNeighbors() {
         return neighbors;
     }
-
 
     public Capital getCapital() {
         return capital;
@@ -49,7 +43,6 @@ public class Territory {
         Occupant = occupant;
     }
 
-
     public boolean contains(Point p) {
         for (Patch patch : patches) {
             if (patch.getPolygon().contains(p))
@@ -58,7 +51,7 @@ public class Territory {
         return false;
     }
 
-    public ArrayList<Patch> getPaches() {
+    public ArrayList<Patch> getPatches() {
         return patches;
     }
 
@@ -69,7 +62,6 @@ public class Territory {
     public void addNeighbor(Territory t) {
         neighbors.add(t);
     }
-
 
     @Override
     public int hashCode() {
