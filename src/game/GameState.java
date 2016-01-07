@@ -2,12 +2,11 @@
  * Copyright (c) 2016. Tobias Patzl, Christian Sack
  */
 
-package dataObjects.game;
+package game;
 
 import bases.GameBase;
 import dataObjects.Player;
 import dataObjects.Territory;
-import dataObjects.enums.EroberungsPhases;
 import dataObjects.enums.Phases;
 
 /**
@@ -17,10 +16,11 @@ import dataObjects.enums.Phases;
 public class GameState extends GameBase {
     private Territory mouseOverTerritory;
     private boolean mouseTargetClickable;
-    private int occupantedTerritories;
+
+
+    private int occupiedTerritories;
     private boolean repaintRequired;
     private Phases gamePhase = Phases.Landerwerb;
-    private EroberungsPhases eroberungsPhase = EroberungsPhases.VerstaerkungVerteilen;
 
 
     /**
@@ -30,11 +30,12 @@ public class GameState extends GameBase {
         return gamePhase;
     }
 
+
     /**
-     * @return the current active eroberungs phase. Take a look at EroberungsPhases to gather more information's.
+     * @return the currently occupied territories. This field make only sense in the 'Landerwerb' phase
      */
-    public EroberungsPhases getEroberungsPhase() {
-        return eroberungsPhase;
+    public int getOccupiedTerritories() {
+        return occupiedTerritories;
     }
 
     /**
@@ -81,13 +82,13 @@ public class GameState extends GameBase {
      */
     public void setTerritoryOccupant(Territory territory, Player occupant) {
         territory.setOccupant(occupant);
-        occupantedTerritories++;
+        occupiedTerritories++;
         reload_GamePhase();
         reload_MouseTargetClickable();
     }
 
     private void reload_GamePhase() {
-        if (occupantedTerritories == data.getAllTerritories().size())
+        if (occupiedTerritories == data.getAllTerritories().size())
             gamePhase = Phases.Eroberungen;
         else
             gamePhase = Phases.Landerwerb;

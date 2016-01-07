@@ -2,12 +2,11 @@
  * Copyright (c) 2016. Tobias Patzl, Christian Sack
  */
 
-package engine;
+package game;
 
 import bases.GameBase;
 import dataObjects.Territory;
 import dataObjects.enums.Phases;
-import dataObjects.game.Game;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
@@ -52,7 +51,7 @@ public class GameEngine extends GameBase implements MouseMotionListener, MouseLi
 
         if (state.getGamePhase() == Phases.Landerwerb) {
             state.setTerritoryOccupant(mouseOverTerritory, data.getHumanPlayer());
-            pcPlayerEngine.ChooseSomeTerritory();
+            ki.ChooseSomeTerritory();
         }
 
         if (state.isRepaintRequired())

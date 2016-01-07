@@ -6,10 +6,7 @@ package drawing;
 
 import dataObjects.Patch;
 import dataObjects.Territory;
-import dataObjects.game.Game;
-import dataObjects.game.GameData;
-import dataObjects.game.GameDesign;
-import dataObjects.game.GameState;
+import game.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,21 +17,26 @@ import java.util.HashSet;
  * The drawing board draws the content of a game by using the game data the state and the design.
  */
 public class GameDrawingBoard extends JComponent {
+    private final int toolBarHeight = 50;
+    private final Dimension worldMapSize = new Dimension(1250, 650);
+    private final Font toolBarFont = new Font("Verdana", Font.PLAIN, 20);
     private int paintCount;
     private GameData data;
     private GameDesign design;
     private GameState state;
+    private GameMessages messages;
 
     public void init(Game game) {
         this.data = game.getData();
         this.design = game.getDesign();
         this.state = game.getState();
+        this.messages = game.getMessages();
 
     }
 
     @Override
     public Dimension getPreferredSize() {
-        return new Dimension(1250, 650 + 40);
+        return new Dimension(worldMapSize.width, worldMapSize.height + toolBarHeight);
     }
 
 
@@ -43,12 +45,11 @@ public class GameDrawingBoard extends JComponent {
         super.paint(g);
 
         Graphics2D g2 = (Graphics2D) g;
-        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        //g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
         DrawBackground(g2);
         DrawCapitalLines(g2);
         DrawTerritories(g2);
-        g2.drawString("" + paintCount++, 10, 10);
         DrawInfoBar(g2);
 
     }
@@ -121,20 +122,23 @@ public class GameDrawingBoard extends JComponent {
     private void DrawInfoBar(Graphics2D g) {
         // Currently in work by chris
         // A Toolbar on the bottom of the game which gives an overview of the current game and state
-        Font font = new Font("Tahoma", Font.PLAIN, 14);
-        g.setFont(font);
-        int textHeight = g.getFontMetrics().getHeight();
-        int infobarHeight = 40;
-        int top = infobarHeight / 2 - textHeight / 2;
 
-        g.fillRect(0, 650, 1250, infobarHeight);
+        Font prevFont = g.getFont();
+        Color prevColor = g.getColor();
 
+        g.fillRect(0, worldMapSize.height, worldMapSize.width, toolBarHeight);
+
+
+        g.setFont(toolBarFont);
         g.setColor(Color.WHITE);
+        int vertMiddlePos = g.getFontMetrics().getAscent() / 2 + toolBarHeight / 2 + worldMapSize.height;
 
         //noinspection SuspiciousNameCombination
-        g.drawString(state.getGamePhase().name(), top, top + 650);
+        g.drawString(messages.getCurrentPhase(), 20, vertMiddlePos);
 
 
+        g.setFont(prevFont);
+        g.setColor(prevColor);
     }
 
 

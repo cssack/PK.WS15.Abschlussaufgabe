@@ -4,6 +4,8 @@
 
 package dataObjects;
 
+import dataObjects.enums.PlayerActions;
+
 import java.util.ArrayList;
 
 /**
@@ -14,7 +16,18 @@ public class Player {
     private ArrayList<Continent> ownedContinents = new ArrayList<>();
     private int reinforcementGain;
     private int reinforcementsAvailable;
+    private PlayerActions action = PlayerActions.ArmyReinforcement;
 
+    /**
+     * @return the players active state. Further details in PlayerActions.
+     */
+    public PlayerActions getAction() {
+        return action;
+    }
+
+    public void setAction(PlayerActions action) {
+        this.action = action;
+    }
 
     /**
      * @return The amount of reinforcements the player gains on the next round.
@@ -37,4 +50,17 @@ public class Player {
     public void setReinforcementsAvailable(int reinforcementsAvailable) {
         this.reinforcementsAvailable = reinforcementsAvailable;
     }
+
+    public void AddOwnedContinents(Continent continent) {
+        assert !ownedContinents.contains(continent);
+
+        ownedContinents.add(continent);
+    }
+
+    public void RemoveOwnedContinents(Continent continent) {
+        assert ownedContinents.contains(continent);
+
+        ownedContinents.remove(continent);
+    }
+
 }
