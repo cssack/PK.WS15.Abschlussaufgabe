@@ -42,6 +42,8 @@ public class GameDrawingBoard extends JComponent {
         DrawCapitalLines(g2);
         DrawTerritories(g2);
         g2.drawString("" + number++, 10, 10);
+        DrawInfoBar(g2);
+
     }
 
     private void DrawBackground(Graphics2D g) {
@@ -108,4 +110,22 @@ public class GameDrawingBoard extends JComponent {
             DrawCapitalLines(g, visitedNodes, neighbor);
         }
     }
+
+    private void DrawInfoBar(Graphics2D g) {
+        // Currently in work by chris
+        // A Toolbar on the bottom of the game which gives an overview of the current game and state
+        Font font = new Font("Tahoma", Font.PLAIN, 14);
+        g.setFont(font);
+        int textHeight = g.getFontMetrics().getHeight();
+        int infobarHeight = 40;
+        int top = infobarHeight / 2 - textHeight / 2;
+
+        g.fillRect(0, 650, 1250, infobarHeight);
+        g.drawString(state.getGamePhase().name(), top, top + 650);
+
+
+    }
+
+
+
 }
