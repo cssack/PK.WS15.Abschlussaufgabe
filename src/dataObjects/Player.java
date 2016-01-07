@@ -19,7 +19,7 @@ public class Player {
     private ArrayList<Territory> ownedTerritories = new ArrayList<>();
     private int reinforcementGain;
     private int reinforcements;
-    private PlayerActions action = PlayerActions.ArmyReinforcement;
+    private PlayerActions action = PlayerActions.Reinforcement;
 
     /**
      * @return the players active state. Further details in PlayerActions.

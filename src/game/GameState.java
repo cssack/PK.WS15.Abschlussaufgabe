@@ -124,7 +124,7 @@ public class GameState extends GameBase {
         } else {
             if (gamePhase == Phases.Landerwerb) {
                 newVal = mouseOverTerritory != null && mouseOverTerritory.getOccupant() == null;
-            } else if (data.getHumanPlayer().getAction() == PlayerActions.ArmyReinforcement) {
+            } else if (data.getHumanPlayer().getAction() == PlayerActions.Reinforcement) {
                 newVal = mouseOverTerritory != null && mouseOverTerritory.getOccupant() == data.getHumanPlayer();
             }
         }

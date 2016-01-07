@@ -8,22 +8,24 @@ public enum PlayerActions {
     /**
      * Distributing the available reinforcements over the territories.
      */
-    ArmyReinforcement,
+    Reinforcement,
+
+
 
     /**
-     * Player has currently selected an army.
+     * Player has currently selected an territory. Now he can either attack or transport multiple army's.
      */
-    ArmySelected,
+    FirstTerritorySelected,
 
     /**
      * Player currently attacking with army.
      */
-    ArmyAttacking,
+    Attacking,
 
     /**
      * Player currently finished with attacking.
      */
-    ArmyAttacked,
+    Attacked,
 
     /**
      * Army got transferred.

@@ -27,11 +27,11 @@ public class GameMessages extends GameBase {
             return "Wählen Sie ein Land aus. (" + (data.getAllTerritories().size() - state
                     .getOccupiedTerritories()) + " verfügbar)";
 
-        if (humanPlayerAction() == PlayerActions.ArmyReinforcement)
+        if (humanPlayerAction() == PlayerActions.Reinforcement)
             return "Verteilen Sie noch " + data.getHumanPlayer().getReinforcements() + " Armeen.";
-        if (humanPlayerAction() == PlayerActions.ArmySelected)
+        if (humanPlayerAction() == PlayerActions.FirstTerritorySelected)
             return "Wählen Sie ein benachbartes Ziel aus.";
-        if (humanPlayerAction() == PlayerActions.ArmyAttacked)
+        if (humanPlayerAction() == PlayerActions.Attacked)
             return "";
         return "";
     }
