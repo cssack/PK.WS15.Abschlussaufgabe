@@ -18,6 +18,7 @@ public class Territory {
     private final ArrayList<Territory> neighbors = new ArrayList<>();
     private Capital capital;
     private Player occupant = null;
+    private int armyCount = 0;
 
     public Territory(String name) {
         this.name = name;
@@ -70,5 +71,13 @@ public class Territory {
     @Override
     public int hashCode() {
         return getName().hashCode();
+    }
+
+    public int getArmyCount() {
+        return armyCount;
+    }
+
+    public void setArmyCount(int armyCount) {
+        this.armyCount = armyCount;
     }
 }

@@ -7,6 +7,7 @@ package game;
 import bases.GameBase;
 import dataObjects.Territory;
 import dataObjects.enums.Phases;
+import dataObjects.enums.PlayerActions;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
@@ -52,6 +53,15 @@ public class GameEngine extends GameBase implements MouseMotionListener, MouseLi
         if (state.getGamePhase() == Phases.Landerwerb) {
             state.setTerritoryOccupant(mouseOverTerritory, data.getHumanPlayer());
             ki.ChooseSomeTerritory();
+        } else {
+            if (data.getCompPlayer().getAction() == PlayerActions.ArmyReinforcement) {
+                state.reinforceTerritory(mouseOverTerritory);
+
+                if (data.getCompPlayer().getReinforcementsAvailable() == 0) {
+                    //TODO start KI
+                    //TODO change player actions
+                }
+            }
         }
 
         if (state.isRepaintRequired())

@@ -9,6 +9,7 @@ import dataObjects.Continent;
 import dataObjects.Player;
 import dataObjects.Territory;
 import dataObjects.enums.Phases;
+import dataObjects.enums.PlayerActions;
 
 /**
  * Created by chris on 07.01.2016.
@@ -22,6 +23,7 @@ public class GameState extends GameBase {
     private int occupiedTerritories;
     private boolean repaintRequired;
     private Phases gamePhase = Phases.Landerwerb;
+    private boolean waitingForUserInput = true; //TODO implemented for future use like the bot takes his time to think or something else.
 
 
     /**
@@ -81,22 +83,52 @@ public class GameState extends GameBase {
     /**
      * Sets the territory's occupant state
      */
-    public void setTerritoryOccupant(Territory territory, Player occupant) {
-        occupiedTerritories++;
-        occupant.setTerritoriesCount(occupant.getTerritoriesCount() + 1);
-        territory.setOccupant(occupant);
+    public void setTerritoryOccupant(Territory territory, Player newOccupant) {
+        Player previousOccupant = territory.getOccupant();
+        assert previousOccupant != newOccupant;
+
+        if (previousOccupant == null) {
+            occupiedTerritories++;
+            territory.setArmyCount(1);
+        } else {
+            previousOccupant.decreaseTerritoriesCount();
+        }
+
+        newOccupant.increaseTerritoriesCount();
+        territory.setOccupant(newOccupant);
 
         reload_ContinentOwners();
-        reload_ReinforcementGains(occupant);
+        reload_ReinforcementGains(newOccupant);
         reload_GamePhase();
         reload_MouseTargetClickable();
     }
 
+    /**
+     * Sets the territory's occupant state
+     */
+    public void reinforceTerritory(Territory territory) {
+        Player occupant = territory.getOccupant();
+        territory.setArmyCount(territory.getArmyCount() + 1);
+        occupant.setReinforcementsAvailable(occupant.getReinforcementsAvailable() - 1);
+
+
+        repaintRequired = true;
+    }
+
 
     private void reload_MouseTargetClickable() {
-        boolean newVal;
-        newVal = gamePhase == Phases.Landerwerb && mouseOverTerritory != null
-                && mouseOverTerritory.getOccupant() == null;
+        boolean newVal = false;
+
+        if (!waitingForUserInput) {
+            newVal = false;
+        } else {
+            if (gamePhase == Phases.Landerwerb) {
+                newVal = mouseOverTerritory != null && mouseOverTerritory.getOccupant() == null;
+            } else if (data.getHumanPlayer().getAction() == PlayerActions.ArmyReinforcement) {
+                newVal = mouseOverTerritory != null && mouseOverTerritory.getOccupant() == data.getHumanPlayer();
+            }
+        }
+
 
         if (newVal == mouseTargetClickable)
             return;
@@ -151,4 +183,9 @@ public class GameState extends GameBase {
     private void reload_Reinforcements(Player player) {
         player.setReinforcementsAvailable(player.getReinforcementGain());
     }
+
+    public boolean getWaitingForUserInput() {
+        return waitingForUserInput;
+    }
+
 }

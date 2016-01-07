@@ -40,8 +40,12 @@ public class Player {
         return territoriesCount;
     }
 
-    public void setTerritoriesCount(int territoriesCount) {
-        this.territoriesCount = territoriesCount;
+    public void increaseTerritoriesCount() {
+        this.territoriesCount++;
+    }
+
+    public void decreaseTerritoriesCount() {
+        this.territoriesCount--;
     }
 
     /**
