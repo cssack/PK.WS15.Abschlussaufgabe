@@ -5,8 +5,8 @@
 package dataObjects.game;
 
 import bases.GameBase;
+import dataObjects.Player;
 import dataObjects.Territory;
-import dataObjects.enums.Occupants;
 import dataObjects.enums.Phases;
 
 /**
@@ -18,11 +18,12 @@ public class GameState extends GameBase {
     private boolean mouseTargetClickable;
     private Phases gamePhase = Phases.Landerwerb;
     private int occupantedTerritories;
-    private int remainingReinforcements;
-    private int remainingReinforcementsPc;
     private boolean repaintRequired;
 
 
+    /**
+     * @return the current active game phase. Take a look at Phases to gather more informations.
+     */
     public Phases getGamePhase() {
         return gamePhase;
     }
@@ -52,22 +53,6 @@ public class GameState extends GameBase {
         return mouseTargetClickable;
     }
 
-    public int getRemainingReinforcements() {
-        return remainingReinforcements;
-    }
-
-    public void setRemainingReinforcements(int remainingReinforcements) {
-        this.remainingReinforcements = remainingReinforcements;
-    }
-
-    public int getRemainingReinforcementsPc() {
-        return remainingReinforcementsPc;
-    }
-
-    public void setRemainingReinforcementsPc(int remainingReinforcementsPc) {
-        this.remainingReinforcementsPc = remainingReinforcementsPc;
-    }
-
     /**
      * Sets the repaint required field to false.
      */
@@ -85,7 +70,7 @@ public class GameState extends GameBase {
     /**
      * Sets the territory's occupant state
      */
-    public void setTerritoryOccupant(Territory territory, Occupants occupant) {
+    public void setTerritoryOccupant(Territory territory, Player occupant) {
         territory.setOccupant(occupant);
         occupantedTerritories++;
         reload_GamePhase();
@@ -102,7 +87,7 @@ public class GameState extends GameBase {
     private void reload_MouseTargetClickable() {
         boolean newVal;
         newVal = gamePhase == Phases.Landerwerb && mouseOverTerritory != null
-                && mouseOverTerritory.getOccupant() == Occupants.NotDef;
+                && mouseOverTerritory.getOccupant() == null;
 
         if (newVal == mouseTargetClickable)
             return;

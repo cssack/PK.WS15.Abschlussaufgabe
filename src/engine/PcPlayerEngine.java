@@ -6,7 +6,6 @@ package engine;
 
 import bases.GameBase;
 import dataObjects.Territory;
-import dataObjects.enums.Occupants;
 
 import java.util.Random;
 
@@ -23,10 +22,10 @@ public class PcPlayerEngine extends GameBase {
 
     public void ChooseSomeTerritory() {
         Territory chosen = getRandomTerritory();
-        while (chosen.getOccupant() != Occupants.NotDef) {
+        while (chosen.getOccupant() != null) {
             chosen = getRandomTerritory();
         }
-        state.setTerritoryOccupant(chosen, Occupants.Pc);
+        state.setTerritoryOccupant(chosen, data.getPcPlayer());
     }
 
     private Territory getRandomTerritory() {

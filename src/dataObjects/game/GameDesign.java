@@ -6,7 +6,6 @@ package dataObjects.game;
 
 import bases.GameBase;
 import dataObjects.Territory;
-import dataObjects.enums.Occupants;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -39,17 +38,17 @@ public class GameDesign extends GameBase {
      */
     public Color getTerritoryBackgroundColor(Territory t) {
         boolean highlighted = state.isMouseTargetClickable() && state.getMouseOverTerritory() == t;
-        if (t.getOccupant() == Occupants.NotDef)
+        if (t.getOccupant() == null)
             if (highlighted)
                 return Color.YELLOW;
             else
                 return Color.WHITE;
-        else if (t.getOccupant() == Occupants.Human)
+        else if (t.getOccupant() == data.getHumanPlayer())
             if (highlighted)
                 return Color.decode("#107C0F");
             else
                 return Color.decode("#108840");
-        else if (t.getOccupant() == Occupants.Pc)
+        else if (t.getOccupant() == data.getPcPlayer())
             if (highlighted)
                 return Color.decode("#E81123");
             else

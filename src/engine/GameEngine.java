@@ -6,7 +6,6 @@ package engine;
 
 import bases.GameBase;
 import dataObjects.Territory;
-import dataObjects.enums.Occupants;
 import dataObjects.enums.Phases;
 import dataObjects.game.Game;
 
@@ -52,7 +51,7 @@ public class GameEngine extends GameBase implements MouseMotionListener, MouseLi
         Territory mouseOverTerritory = state.getMouseOverTerritory();
 
         if (state.getGamePhase() == Phases.Landerwerb) {
-            state.setTerritoryOccupant(mouseOverTerritory, Occupants.Human);
+            state.setTerritoryOccupant(mouseOverTerritory, data.getHumanPlayer());
             pcPlayerEngine.ChooseSomeTerritory();
         }
 

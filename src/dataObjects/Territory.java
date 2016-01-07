@@ -4,8 +4,6 @@
 
 package dataObjects;
 
-import dataObjects.enums.Occupants;
-
 import java.awt.*;
 import java.util.ArrayList;
 
@@ -19,7 +17,7 @@ public class Territory {
     private final ArrayList<Patch> patches = new ArrayList<>();
     private final ArrayList<Territory> neighbors = new ArrayList<>();
     private Capital capital;
-    private Occupants Occupant = Occupants.NotDef;
+    private Player occupant = null;
 
     public Territory(String name) {
         this.name = name;
@@ -41,12 +39,12 @@ public class Territory {
         this.capital = new Capital(this, point);
     }
 
-    public Occupants getOccupant() {
-        return Occupant;
+    public Player getOccupant() {
+        return occupant;
     }
 
-    public void setOccupant(Occupants occupant) {
-        Occupant = occupant;
+    public void setOccupant(Player occupant) {
+        this.occupant = occupant;
     }
 
     public boolean contains(Point p) {
