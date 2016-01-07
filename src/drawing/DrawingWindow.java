@@ -12,13 +12,13 @@ import java.awt.*;
 public class DrawingWindow extends JFrame {
     public DrawingWindow(Game game) throws HeadlessException {
         this.setTitle("RISK");
-        this.setBounds(0,0,1250,750);
+        this.setBounds(0, 0, 1250, 650);
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         this.getContentPane().setLayout(null);
         this.getContentPane().add(game.getDrawingBoard());
 
-        game.getDrawingBoard().setBounds(0,100,1250, 650);
+        game.getDrawingBoard().setBounds(0, 000, 1250, 650);
         this.setVisible(true);
 
     }
