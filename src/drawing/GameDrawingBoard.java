@@ -29,7 +29,14 @@ public class GameDrawingBoard extends JComponent {
         this.data = game.getData();
         this.design = game.getDesign();
         this.state = game.getState();
+
     }
+
+    @Override
+    public Dimension getPreferredSize() {
+        return new Dimension(1250, 650 + 40);
+    }
+
 
     @Override
     public void paint(Graphics g) {
@@ -121,6 +128,9 @@ public class GameDrawingBoard extends JComponent {
         int top = infobarHeight / 2 - textHeight / 2;
 
         g.fillRect(0, 650, 1250, infobarHeight);
+
+        g.setColor(Color.WHITE);
+
         //noinspection SuspiciousNameCombination
         g.drawString(state.getGamePhase().name(), top, top + 650);
 
