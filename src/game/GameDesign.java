@@ -11,8 +11,8 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 
 /**
- * Created by chris on 07.01.2016.
- * The game design implements the logic for the colors, images,... for the drawing routines
+ * Created by chris on 07.01.2016. The game design implements the logic for the colors, images,... for the drawing
+ * routines
  */
 public class GameDesign extends GameBase {
     private BufferedImage backgroundImage;
@@ -67,6 +67,8 @@ public class GameDesign extends GameBase {
      * @return the current valid boundary color for a territory.
      */
     public Color getTerritoryBoundaryColor(Territory t) {
+        if (t == data.getHumanPlayer().getSelectedTerritory())
+            return Color.BLACK;
         return Color.decode("#4C4A48");
     }
 
