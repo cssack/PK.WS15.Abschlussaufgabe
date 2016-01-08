@@ -13,8 +13,8 @@ import java.awt.*;
 import java.util.HashSet;
 
 /**
- * Created by chris on 07.01.2016.
- * The drawing board draws the content of a game by using the game data the state and the design.
+ * Created by chris on 07.01.2016. The drawing board draws the content of a game by using the game data the state and
+ * the design.
  */
 public class GameDrawingBoard extends JComponent {
     private final int toolBarHeight = 50;
@@ -66,26 +66,35 @@ public class GameDrawingBoard extends JComponent {
         for (int i = data.getAllTerritories().size() - 1; i >= 0; i--) {
             Territory territory = data.getAllTerritories().get(i);
 
-            g.setColor(design.getTerritoryBackgroundColor(territory));
-            for (Patch patch : territory.getPatches()) {
-                g.fillPolygon(patch.getPolygon());
-            }
+            if (territory == data.getHumanPlayer().getSelectedTerritory())
+                continue;//skip if available so it can be drawn at last (correct border drawing)
 
-            g.setColor(design.getTerritoryBoundaryColor(territory));
-            g.setStroke(design.getTerritoryBoundaryStroke(territory));
-            for (Patch patch : territory.getPatches()) {
-                g.drawPolygon(patch.getPolygon());
-            }
-
-            DrawCapital(g, territory);
+            DrawTerritory(g, territory);
+        }
+        if (data.getHumanPlayer().getSelectedTerritory() != null) {
+            DrawTerritory(g, data.getHumanPlayer().getSelectedTerritory());
         }
 
         g.setColor(prevColor);
         g.setStroke(prevStroke);
     }
 
+    private void DrawTerritory(Graphics2D g, Territory territory) {
+        g.setColor(design.getTerritoryBackgroundColor(territory));
+        for (Patch patch : territory.getPatches()) {
+            g.fillPolygon(patch.getPolygon());
+        }
+
+        g.setColor(design.getTerritoryBoundaryColor(territory));
+        g.setStroke(design.getTerritoryBoundaryStroke(territory));
+        for (Patch patch : territory.getPatches()) {
+            g.drawPolygon(patch.getPolygon());
+        }
+
+        DrawCapital(g, territory);
+    }
+
     private void DrawCapital(Graphics2D g, Territory t) {
-        g.drawString(String.valueOf(t.getName()), t.getCapital().getPoint().x, t.getCapital().getPoint().y);
         if (t.getOccupant() == null)
             return;
 
