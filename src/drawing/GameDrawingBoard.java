@@ -85,6 +85,7 @@ public class GameDrawingBoard extends JComponent {
     }
 
     private void DrawCapital(Graphics2D g, Territory t) {
+        g.drawString(String.valueOf(t.getName()), t.getCapital().getPoint().x, t.getCapital().getPoint().y);
         if (t.getOccupant() == null)
             return;
 
@@ -119,15 +120,24 @@ public class GameDrawingBoard extends JComponent {
     }
 
     private void DrawCapitalLines(Graphics2D g, HashSet<Territory> visitedNodes, Territory currentNode) {
+        visitedNodes.add(currentNode);
         for (Territory neighbor : currentNode.getNeighbors()) {
             if (visitedNodes.contains(neighbor))
                 continue;
-
             Point capitalA = currentNode.getCapital().getPoint();
             Point capitalB = neighbor.getCapital().getPoint();
-            g.drawLine(capitalA.x, capitalA.y, capitalB.x, capitalB.y);
 
-            visitedNodes.add(neighbor);
+            if (currentNode.getCapital().getOwner().getName().equals("Alaska") && neighbor.getCapital().getOwner()
+                    .getName().equals("Kamchatka")) {
+                g.drawLine(capitalA.x, capitalA.y, 0, capitalB.y);
+                g.drawLine(capitalB.x, capitalB.y, worldMapSize.width, capitalA.y);
+            } else {
+                g.drawLine(capitalA.x, capitalA.y, capitalB.x, capitalB.y);
+            }
+        }
+        for (Territory neighbor : currentNode.getNeighbors()) {
+            if (visitedNodes.contains(neighbor))
+                continue;
             DrawCapitalLines(g, visitedNodes, neighbor);
         }
     }
