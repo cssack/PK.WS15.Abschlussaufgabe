@@ -86,8 +86,11 @@ class MapFileReader {
                 .split(" - ");
 
         for (String neighbor : neighbors) {
-            targetTerritory.addNeighbor(getOrCreate_Territory_ByName(neighbor));
+            Territory neighborTerritory = getOrCreate_Territory_ByName(neighbor);
+            neighborTerritory.addNeighbor(targetTerritory);
+            targetTerritory.addNeighbor(neighborTerritory);
         }
+
     }
 
     private void parseContinent(String line) throws MapFileFormatException {
