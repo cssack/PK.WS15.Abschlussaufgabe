@@ -13,12 +13,14 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.util.Random;
 
 /**
- * Created by chris on 07.01.2016.
- * The game engine handles events and changes the game state accordingly.
+ * Created by chris on 07.01.2016. The game engine handles events and changes the game state accordingly.
  */
 public class GameEngine extends GameBase implements MouseMotionListener, MouseListener {
+    Random rand = new Random();
+
     @Override
     public void init(Game game) {
         super.init(game);
@@ -78,8 +80,13 @@ public class GameEngine extends GameBase implements MouseMotionListener, MouseLi
             if (data.getHumanPlayer().getPhase() == PlayerPhases.FirstTerritorySelection) {
                 state.setSelectedTerritory(data.getHumanPlayer(), mouseOverTerritory);
             } else if (data.getHumanPlayer().getPhase() == PlayerPhases.FirstTerritorySelected) {
+                if (mouseOverTerritory.getOccupant() == data.getCompPlayer()) {
+                    handleUserAttack(mouseOverTerritory);
+                    state.setPlayerPhase(data
+                            .getHumanPlayer(), PlayerPhases.FirstTerritorySelection); // just for testing
+                }
                 //TODO start attacking or start movement.
-            } else if (data.getHumanPlayer().getPhase() == PlayerPhases.Attacked) {
+            } else if (data.getHumanPlayer().getPhase() == PlayerPhases.AttackedWin) {
                 //TODO Check if player wants to move from source territory to attacked territory
             }
         }
@@ -105,6 +112,46 @@ public class GameEngine extends GameBase implements MouseMotionListener, MouseLi
 
     @Override
     public void mouseExited(MouseEvent e) {
+
+    }
+
+    private void handleUserAttack(Territory defensingTerritory) {
+        Territory attackerTerritory = data.getHumanPlayer().getSelectedTerritory();
+
+        state.setPlayerPhase(data.getHumanPlayer(), PlayerPhases.Attacking);
+        int defenseArmy = defensingTerritory.getArmyCount();
+        int attackingArmy = attackerTerritory.getArmyCount();
+
+        if (attackingArmy > 3)
+            attackingArmy = 3;
+        else
+            attackingArmy = attackingArmy - 1;
+
+        attackerTerritory.setArmyCount(attackerTerritory.getArmyCount() - attackingArmy);
+
+        while (attackingArmy != 0) {
+            int defenseRand = rand.nextInt();
+            int attackingRand = rand.nextInt();
+
+            if (attackingRand > defenseRand)
+                defenseArmy--;
+            else
+                attackingArmy--;
+
+            if (defenseArmy == 0)
+                break;
+        }
+
+
+        if (attackingArmy == 0) {
+            defensingTerritory.setArmyCount(defenseArmy);
+            state.setPlayerPhase(data.getHumanPlayer(), PlayerPhases.AttackedLost);
+        } else {
+            state.setTerritoryOccupant(defensingTerritory, data.getHumanPlayer());
+            defensingTerritory.setArmyCount(attackingArmy);
+            state.setPlayerPhase(data.getHumanPlayer(), PlayerPhases.AttackedWin);
+        }
+
 
     }
 

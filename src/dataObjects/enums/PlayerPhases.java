@@ -32,9 +32,14 @@ public enum PlayerPhases {
     Attacking,
 
     /**
-     * Player currently finished with attacking.
+     * Player currently finished with attacking and won the territory.
      */
-    Attacked,
+    AttackedWin,
+
+    /**
+     * Player currently finished with attacking and lost the battle.
+     */
+    AttackedLost,
 
     /**
      * Army got transferred.

@@ -101,6 +101,8 @@ public class GameState extends GameBase {
 
     public void setPlayerPhase(Player player, PlayerPhases playersPhase) {
         player.setPhase(playersPhase);
+        if (playersPhase == PlayerPhases.FirstTerritorySelection)
+            player.setSelectedTerritory(null);
         reload_MouseTargetClickable();
     }
 
@@ -165,7 +167,7 @@ public class GameState extends GameBase {
             } else if (data.getHumanPlayer().getPhase() == PlayerPhases.FirstTerritorySelected) {
                 newVal = mouseOverTerritory != null && data.getHumanPlayer().getSelectedTerritory().getNeighbors()
                         .contains(mouseOverTerritory);
-            } else if (data.getHumanPlayer().getPhase() == PlayerPhases.Attacked) {
+            } else if (data.getHumanPlayer().getPhase() == PlayerPhases.AttackedWin) {
                 //TODO
             }
 

@@ -33,7 +33,7 @@ public class GameMessages extends GameBase {
             return "Wählen Sie ein Territorium aus von dem weg Sie einen Angriff oder Transport starten wollen.";
         if (humanPlayerAction() == PlayerPhases.FirstTerritorySelected)
             return "Wählen Sie ein benachbartes Ziel aus (Truppentransport oder Angriff). Rechte Maustaste um abzubrechen.";
-        if (humanPlayerAction() == PlayerPhases.Attacked)
+        if (humanPlayerAction() == PlayerPhases.AttackedWin)
             return "";
         if (humanPlayerAction() == PlayerPhases.Waiting)
             return "Bitte warten! Der Computer denkt gerade";
