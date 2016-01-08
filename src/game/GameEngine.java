@@ -7,7 +7,7 @@ package game;
 import bases.GameBase;
 import dataObjects.Territory;
 import dataObjects.enums.Phases;
-import dataObjects.enums.PlayerActions;
+import dataObjects.enums.PlayerPhases;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
@@ -25,6 +25,7 @@ public class GameEngine extends GameBase implements MouseMotionListener, MouseLi
 
         drawingBoard.addMouseMotionListener(this);
         drawingBoard.addMouseListener(this);
+        state.setGamePhase(Phases.Landerwerb);
     }
 
     @Override
@@ -53,16 +54,23 @@ public class GameEngine extends GameBase implements MouseMotionListener, MouseLi
         if (state.getGamePhase() == Phases.Landerwerb) {
             state.setTerritoryOccupant(mouseOverTerritory, data.getHumanPlayer());
             ki.ChooseSomeTerritory();
-        } else {
-            if (data.getCompPlayer().getAction() == PlayerActions.Reinforcement) {
-                state.reinforceTerritory(mouseOverTerritory);
 
-                if (data.getHumanPlayer().getReinforcements() == 0) {
-                    ki.ReinforceTerritorys();
+            if (state.getOccupiedTerritories() == data.getAllTerritories().size())
+                state.setGamePhase(Phases.Reinforcement);
 
-                    data.getHumanPlayer().setAction(PlayerActions.FirstTerritorySelected);
-                    //TODO change player actions
-                }
+        } else if (state.getGamePhase() == Phases.Reinforcement) {
+            state.reinforceTerritory(mouseOverTerritory);
+            if (data.getHumanPlayer().getReinforcements() == 0) {
+                ki.ReinforceTerritorys();
+                state.setGamePhase(Phases.AttackOrMove);
+            }
+        } else if (state.getGamePhase() == Phases.AttackOrMove) {
+            if (data.getHumanPlayer().getPhase() == PlayerPhases.FirstTerritorySelection) {
+                state.setSelectedTerritory(data.getHumanPlayer(), mouseOverTerritory);
+            } else if (data.getHumanPlayer().getPhase() == PlayerPhases.FirstTerritorySelected) {
+                //TODO start attacking or start movement.
+            } else if (data.getHumanPlayer().getPhase() == PlayerPhases.Attacked) {
+                //TODO Check if player wants to move from source territory to attacked territory
             }
         }
 

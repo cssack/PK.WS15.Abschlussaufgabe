@@ -6,12 +6,30 @@ package dataObjects.enums;
 
 public enum Phases {
     /**
-     * Current game phase is Landerwerb see Aufgabenstellung for further explanation.
+     * The game is currently not started.
+     */
+    NotStarted,
+
+
+    /**
+     * The players selects their starting territories each with one army recruited.
      */
     Landerwerb,
 
     /**
-     * Current game phase is Eroberungen see Aufgabenstellung for further explanation.
+     * Current game phase is reinforcement. In this phase the players gathers their reinforcement and apply's them to
+     * their territories.
      */
-    Eroberungen
+    Reinforcement,
+
+    /**
+     * Current game phase is attack or move. In this phase the players can attack other territories or move army from
+     * one owned territory to the other. Next game phase will be 'Reinforcement' or 'End'.
+     */
+    AttackOrMove,
+
+    /**
+     * The game has ended. The winner is the player which owns all territories.
+     */
+    End,
 }

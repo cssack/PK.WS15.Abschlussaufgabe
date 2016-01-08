@@ -9,11 +9,10 @@ import dataObjects.Continent;
 import dataObjects.Player;
 import dataObjects.Territory;
 import dataObjects.enums.Phases;
-import dataObjects.enums.PlayerActions;
+import dataObjects.enums.PlayerPhases;
 
 /**
- * Created by chris on 07.01.2016.
- * The game state is the main vector to populate
+ * Created by chris on 07.01.2016. The game state is the main vector to populate
  */
 public class GameState extends GameBase {
     private Territory mouseOverTerritory;
@@ -22,8 +21,7 @@ public class GameState extends GameBase {
 
     private int occupiedTerritories;
     private boolean repaintRequired;
-    private Phases gamePhase = Phases.Landerwerb;
-    private boolean waitingForUserInput = true; //TODO implemented for future use like the bot takes his time to think or something else.
+    private Phases gamePhase = Phases.NotStarted;
 
 
     /**
@@ -33,6 +31,27 @@ public class GameState extends GameBase {
         return gamePhase;
     }
 
+    public void setGamePhase(Phases phase) {
+        gamePhase = phase;
+        if (phase == Phases.Landerwerb) {
+            setPlayerPhase(data.getHumanPlayer(), PlayerPhases.Reinforcing);
+        } else if (phase == Phases.Reinforcement) {
+            reload_Reinforcements(data.getHumanPlayer());
+            reload_Reinforcements(data.getCompPlayer());
+
+            setPlayerPhase(data.getHumanPlayer(), PlayerPhases.Reinforcing);
+            setPlayerPhase(data.getCompPlayer(), PlayerPhases.Waiting);
+        } else if (phase == Phases.AttackOrMove) {
+            reload_Reinforcements(data.getHumanPlayer());
+            reload_Reinforcements(data.getCompPlayer());
+
+            setPlayerPhase(data.getHumanPlayer(), PlayerPhases.FirstTerritorySelection);
+            setPlayerPhase(data.getCompPlayer(), PlayerPhases.Waiting);
+        }
+
+        reload_MouseTargetClickable();
+        repaintRequired = true;
+    }
 
     /**
      * @return the currently occupied territories. This field make only sense in the 'Landerwerb' phase
@@ -80,6 +99,17 @@ public class GameState extends GameBase {
         return repaintRequired;
     }
 
+    public void setPlayerPhase(Player player, PlayerPhases playersPhase) {
+        player.setPhase(playersPhase);
+        reload_MouseTargetClickable();
+    }
+
+    public void setSelectedTerritory(Player player, Territory territory) {
+        player.setSelectedTerritory(territory);
+        setPlayerPhase(player, PlayerPhases.FirstTerritorySelected);
+        repaintRequired = true;
+    }
+
     /**
      * Sets the territory's occupant state
      */
@@ -99,7 +129,6 @@ public class GameState extends GameBase {
 
         reload_ContinentOwners();
         reload_ReinforcementGains(newOccupant);
-        reload_GamePhase();
         reload_MouseTargetClickable();
     }
 
@@ -119,14 +148,22 @@ public class GameState extends GameBase {
     private void reload_MouseTargetClickable() {
         boolean newVal = false;
 
-        if (!waitingForUserInput) {
+        if (data.getHumanPlayer().getPhase() == PlayerPhases.Waiting) {
             newVal = false;
         } else {
             if (gamePhase == Phases.Landerwerb) {
                 newVal = mouseOverTerritory != null && mouseOverTerritory.getOccupant() == null;
-            } else if (data.getHumanPlayer().getAction() == PlayerActions.Reinforcement) {
+            } else if (data.getHumanPlayer().getPhase() == PlayerPhases.Reinforcing) {
                 newVal = mouseOverTerritory != null && mouseOverTerritory.getOccupant() == data.getHumanPlayer();
+            } else if (data.getHumanPlayer().getPhase() == PlayerPhases.FirstTerritorySelection) {
+                newVal = mouseOverTerritory != null && mouseOverTerritory.getOccupant() == data.getHumanPlayer();
+            } else if (data.getHumanPlayer().getPhase() == PlayerPhases.FirstTerritorySelected) {
+                newVal = mouseOverTerritory != null && data.getHumanPlayer().getSelectedTerritory().getNeighbors()
+                        .contains(mouseOverTerritory);
+            } else if (data.getHumanPlayer().getPhase() == PlayerPhases.Attacked) {
+                //TODO
             }
+
         }
 
 
@@ -163,14 +200,6 @@ public class GameState extends GameBase {
         }
     }
 
-    private void reload_GamePhase() {
-        if (occupiedTerritories == data.getAllTerritories().size()) {
-            gamePhase = Phases.Eroberungen;
-            reload_Reinforcements(data.getCompPlayer());
-            reload_Reinforcements(data.getHumanPlayer());
-        } else
-            gamePhase = Phases.Landerwerb;
-    }
 
     private void reload_ReinforcementGains(Player player) {
         int gain = player.getOwnedTerritories().size() / 3;
@@ -184,8 +213,5 @@ public class GameState extends GameBase {
         player.setReinforcements(player.getReinforcementGain());
     }
 
-    public boolean getWaitingForUserInput() {
-        return waitingForUserInput;
-    }
 
 }

@@ -38,6 +38,11 @@ public class GameDesign extends GameBase {
      */
     public Color getTerritoryBackgroundColor(Territory t) {
         boolean highlighted = state.isMouseTargetClickable() && state.getMouseOverTerritory() == t;
+        if (t == data.getHumanPlayer().getSelectedTerritory())
+            if (t.getOccupant() == data.getHumanPlayer())
+                return Color.decode("#107C0F"); //TODO change selection color
+            else
+                return Color.decode("#E81123"); //TODO change selection color
         if (t.getOccupant() == null)
             if (highlighted)
                 return Color.YELLOW;

@@ -4,7 +4,7 @@
 
 package dataObjects;
 
-import dataObjects.enums.PlayerActions;
+import dataObjects.enums.PlayerPhases;
 
 import java.util.ArrayList;
 
@@ -19,17 +19,18 @@ public class Player {
     private ArrayList<Territory> ownedTerritories = new ArrayList<>();
     private int reinforcementGain;
     private int reinforcements;
-    private PlayerActions action = PlayerActions.Reinforcement;
+    private PlayerPhases phase = PlayerPhases.Waiting;
+    private Territory selectedTerritory;
 
     /**
      * @return the players active state. Further details in PlayerActions.
      */
-    public PlayerActions getAction() {
-        return action;
+    public PlayerPhases getPhase() {
+        return phase;
     }
 
-    public void setAction(PlayerActions action) {
-        this.action = action;
+    public void setPhase(PlayerPhases phase) {
+        this.phase = phase;
     }
 
 
@@ -87,4 +88,11 @@ public class Player {
         }
     }
 
+    public Territory getSelectedTerritory() {
+        return selectedTerritory;
+    }
+
+    public void setSelectedTerritory(Territory selectedTerritory) {
+        this.selectedTerritory = selectedTerritory;
+    }
 }

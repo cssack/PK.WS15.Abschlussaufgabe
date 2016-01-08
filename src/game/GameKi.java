@@ -6,6 +6,7 @@ package game;
 
 import bases.GameBase;
 import dataObjects.Territory;
+import dataObjects.enums.PlayerPhases;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -22,17 +23,25 @@ public class GameKi extends GameBase {
     }
 
     public void ChooseSomeTerritory() {
+
+        state.setPlayerPhase(data.getCompPlayer(), PlayerPhases.Reinforcing);
+
         Territory chosen = getRandomTerritory(game.getData().getAllTerritories());
         while (chosen.getOccupant() != null) {
             chosen = getRandomTerritory(game.getData().getAllTerritories());
         }
         state.setTerritoryOccupant(chosen, data.getCompPlayer());
+
+        state.setPlayerPhase(data.getCompPlayer(), PlayerPhases.Waiting);
     }
 
     public void ReinforceTerritorys() {
+        state.setPlayerPhase(data.getCompPlayer(), PlayerPhases.Reinforcing);
+
         while (data.getCompPlayer().getReinforcements() > 0) {
             state.reinforceTerritory(getRandomTerritory(data.getCompPlayer().getOwnedTerritories()));
         }
+        state.setPlayerPhase(data.getCompPlayer(), PlayerPhases.Waiting);
     }
 
     private Territory getRandomTerritory(ArrayList<Territory> from) {
