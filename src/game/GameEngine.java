@@ -57,7 +57,7 @@ public class GameEngine extends GameBase implements MouseMotionListener, MouseLi
             if (data.getCompPlayer().getAction() == PlayerActions.Reinforcement) {
                 state.reinforceTerritory(mouseOverTerritory);
 
-                if (data.getCompPlayer().getReinforcements() == 0) {
+                if (data.getHumanPlayer().getReinforcements() == 0) {
                     ki.ReinforceTerritorys();
 
                     data.getHumanPlayer().setAction(PlayerActions.FirstTerritorySelected);
