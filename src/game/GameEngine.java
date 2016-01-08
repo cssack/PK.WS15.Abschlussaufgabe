@@ -44,6 +44,16 @@ public class GameEngine extends GameBase implements MouseMotionListener, MouseLi
 
     @Override
     public void mouseClicked(MouseEvent e) {
+        if (e.getButton() == MouseEvent.BUTTON3) {
+            if (data.getHumanPlayer().getPhase() == PlayerPhases.FirstTerritorySelected) {
+                state.setSelectedTerritory(data.getHumanPlayer(), null);
+            }
+
+            if (state.isRepaintRequired())
+                drawingBoard.repaint();
+            return;
+        }
+
         if (!state.isMouseTargetClickable())
             return;
 

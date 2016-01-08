@@ -106,7 +106,11 @@ public class GameState extends GameBase {
 
     public void setSelectedTerritory(Player player, Territory territory) {
         player.setSelectedTerritory(territory);
-        setPlayerPhase(player, PlayerPhases.FirstTerritorySelected);
+        if (territory == null) {
+            setPlayerPhase(player, PlayerPhases.FirstTerritorySelection);
+        } else {
+            setPlayerPhase(player, PlayerPhases.FirstTerritorySelected);
+        }
         repaintRequired = true;
     }
 
