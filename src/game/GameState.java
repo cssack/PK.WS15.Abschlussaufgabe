@@ -179,7 +179,7 @@ public class GameState extends GameBase {
                     boolean groupTransportAvailable = human.getArmyTransport() == null || human.getArmyTransport()
                             .consitsOf(selectedTerritory, mouseOverTerritory);
 
-                    newVal = (isNeighbor && isHuman && hasMoreThenOneArmy) || //Used for left mouse button reselection
+                    newVal = (isHuman && hasMoreThenOneArmy) || //Used for left mouse button reselection
                             (isNeighbor && isHuman && groupTransportAvailable) || //Used for right mouse button available
                             (isNeighbor && !isHuman); //used for attackable territories
                 }
