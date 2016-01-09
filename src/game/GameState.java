@@ -10,6 +10,7 @@ import dataObjects.Player;
 import dataObjects.Territory;
 import dataObjects.enums.Phases;
 import dataObjects.enums.PlayerPhases;
+import dataObjects.tacticalMovements.ArmyTransport;
 
 /**
  * Created by chris on 07.01.2016. The game state is the main vector to populate
@@ -153,25 +154,38 @@ public class GameState extends GameBase {
 
     private void reload_MouseTargetClickable() {
         boolean newVal = false;
+        Player human = data.getHumanPlayer();
+        PlayerPhases humanPhase = human.getPhase();
 
-        if (data.getHumanPlayer().getPhase() == PlayerPhases.Waiting) {
+        if (humanPhase == PlayerPhases.Waiting) {
             newVal = false;
         } else {
             if (gamePhase == Phases.Landerwerb) {
                 newVal = mouseOverTerritory != null && mouseOverTerritory.getOccupant() == null;
-            } else if (data.getHumanPlayer().getPhase() == PlayerPhases.Reinforcing) {
-                newVal = mouseOverTerritory != null && mouseOverTerritory.getOccupant() == data.getHumanPlayer();
-            } else if (data.getHumanPlayer().getPhase() == PlayerPhases.FirstTerritorySelection) {
-                newVal = mouseOverTerritory != null && mouseOverTerritory.getOccupant() == data
-                        .getHumanPlayer() && mouseOverTerritory.getArmyCount() > 1;
-            } else if (data.getHumanPlayer().getPhase() == PlayerPhases.FirstTerritorySelected) {
-                newVal = mouseOverTerritory != null && (data.getHumanPlayer().getSelectedTerritory().getNeighbors()
-                        .contains(mouseOverTerritory) || (mouseOverTerritory.getOccupant() == data
-                        .getHumanPlayer() && mouseOverTerritory.getArmyCount() > 1));
-            } else if (data.getHumanPlayer().getPhase() == PlayerPhases.AttackedWin) {
+            } else if (humanPhase == PlayerPhases.Reinforcing) {
+                newVal = mouseOverTerritory != null && mouseOverTerritory.getOccupant() == human;
+            } else if (humanPhase == PlayerPhases.FirstTerritorySelection) {
+                newVal = mouseOverTerritory != null && mouseOverTerritory.getOccupant() == human && mouseOverTerritory
+                        .getArmyCount() > 1;
+            } else if (humanPhase == PlayerPhases.FirstTerritorySelected) {
+                if (mouseOverTerritory == null)
+                    newVal = false;
+                else {
+                    Territory selectedTerritory = human.getSelectedTerritory();
+
+                    boolean isNeighbor = selectedTerritory.getNeighbors().contains(mouseOverTerritory);
+                    boolean isHuman = mouseOverTerritory.getOccupant() == human;
+                    boolean hasMoreThenOneArmy = mouseOverTerritory.getArmyCount() > 1;
+                    boolean groupTransportAvailable = human.getArmyTransport() == null || human.getArmyTransport()
+                            .consitsOf(selectedTerritory, mouseOverTerritory);
+
+                    newVal = (isNeighbor && isHuman && hasMoreThenOneArmy) || //Used for left mouse button reselection
+                            (isNeighbor && isHuman && groupTransportAvailable) || //Used for right mouse button available
+                            (isNeighbor && !isHuman); //used for attackable territories
+                }
+            } else if (humanPhase == PlayerPhases.AttackedWin) {
                 //TODO
             }
-
         }
 
 
@@ -222,4 +236,40 @@ public class GameState extends GameBase {
     }
 
 
+    public void handleArmyTransport(Player p, Territory to) {
+        Territory from = p.getSelectedTerritory();
+        ArmyTransport armyTransport = p.getArmyTransport();
+
+        if (armyTransport == null) {
+            p.setArmyTransport(new ArmyTransport(from, to));
+
+            armyTransport = p.getArmyTransport();
+            from.decreaseArmyCount();
+
+            to.increaseArmyCount();
+            armyTransport.increaseArmys();
+
+            repaintRequired = true;
+        } else if (armyTransport.consitsOf(from, to)) {
+            from.decreaseArmyCount();
+            to.increaseArmyCount();
+
+            if (from == armyTransport.first) {
+                armyTransport.increaseArmys();
+
+            } else {
+                armyTransport.decreaseArmys();
+
+                if (armyTransport.getArmys() == 0)
+                    p.setArmyTransport(null);
+            }
+
+            if (from.getArmyCount() == 1) {
+                setSelectedTerritory(data.getHumanPlayer(), null);
+            }
+
+            repaintRequired = true;
+        }
+
+    }
 }

@@ -4,7 +4,9 @@
 
 package drawing;
 
+import bases.Pair;
 import dataObjects.Patch;
+import dataObjects.Player;
 import dataObjects.Territory;
 import game.*;
 
@@ -51,6 +53,8 @@ public class GameDrawingBoard extends JComponent {
         DrawBackground(g2);
         DrawCapitalLines(g2);
         DrawTerritories(g2);
+        DrawPlayersGroupTransport(g2);
+        DrawCapitals(g2);
         DrawInfoBar(g2);
 
     }
@@ -91,27 +95,37 @@ public class GameDrawingBoard extends JComponent {
             g.drawPolygon(patch.getPolygon());
         }
 
-        DrawCapital(g, territory);
+    }
+
+    private void DrawCapitals(Graphics2D g) {
+        Font prevFont = g.getFont();
+        Color prevColor = g.getColor();
+
+        g.setColor(Color.white);
+        g.setFont(armyFont);
+
+        for (Territory territory : data.getAllTerritories()) {
+            DrawCapital(g, territory);
+        }
+
+        g.setFont(prevFont);
+        g.setColor(prevColor);
     }
 
     private void DrawCapital(Graphics2D g, Territory t) {
         if (t.getOccupant() == null)
             return;
 
-        Font prevFont = g.getFont();
-        Color prevColor = g.getColor();
+        String capitalText = String.valueOf(t.getArmyCount());
 
-        g.setColor(Color.WHITE);
-        g.setFont(armyFont);
+        int stringWidth = SwingUtilities.computeStringWidth(g.getFontMetrics(), capitalText);
 
-        int x = t.getCapital().getPoint().x - SwingUtilities
-                .computeStringWidth(g.getFontMetrics(), String.valueOf(t.getArmyCount())) / 2;
-        int y = t.getCapital().getPoint().y;
+        int stringHeight = (int) armyFont.getLineMetrics(capitalText, g.getFontRenderContext()).getHeight();
+        int x = t.getCapital().getPoint().x - (stringWidth / 2);
+        int y = t.getCapital().getPoint().y + (stringHeight / 2);
 
-        g.drawString(String.valueOf(t.getArmyCount()), x, y);
+        g.drawString(capitalText, x, y);
 
-        g.setFont(prevFont);
-        g.setColor(prevColor);
     }
 
     private void DrawCapitalLines(Graphics2D g) {
@@ -149,6 +163,31 @@ public class GameDrawingBoard extends JComponent {
                 continue;
             DrawCapitalLines(g, visitedNodes, neighbor);
         }
+    }
+
+    private void DrawPlayersGroupTransport(Graphics2D g) {
+        Color prevColor = g.getColor();
+        Stroke prevStroke = g.getStroke();
+
+        DrawPlayerGroupTransport(g, data.getHumanPlayer());
+        DrawPlayerGroupTransport(g, data.getCompPlayer());
+
+        g.setColor(prevColor);
+        g.setStroke(prevStroke);
+    }
+
+    private void DrawPlayerGroupTransport(Graphics2D g, Player player) {
+        Pair<Territory, Territory> groupTransport = player.getArmyTransport();
+
+        if (groupTransport == null)
+            return;
+
+        Point capitalA = groupTransport.first.getCapital().getPoint();
+        Point capitalB = groupTransport.last.getCapital().getPoint();
+
+        g.drawLine(capitalA.x, capitalA.y, capitalB.x, capitalB.y);
+        g.drawOval(capitalB.x - 10, capitalB.y - 10, 20, 20);
+
     }
 
     private void DrawInfoBar(Graphics2D g) {

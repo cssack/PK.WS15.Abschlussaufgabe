@@ -79,7 +79,7 @@ public class GameEngine extends GameBase implements MouseMotionListener, MouseLi
                     state.setPlayerPhase(data
                             .getHumanPlayer(), PlayerPhases.FirstTerritorySelection); // just for testing
                 } else if (e.getButton() == MouseEvent.BUTTON3) {
-                    //handling group transfer;
+                    state.handleArmyTransport(data.getHumanPlayer(), mouseOverTerritory);
                 }
                 //TODO start attacking or start movement.
             } else if (data.getHumanPlayer().getPhase() == PlayerPhases.AttackedWin) {
@@ -150,6 +150,7 @@ public class GameEngine extends GameBase implements MouseMotionListener, MouseLi
 
 
     }
+
 
     private Territory GetTerritoryAtPos(Point p) {
         for (Territory territory : data.getAllTerritories()) {

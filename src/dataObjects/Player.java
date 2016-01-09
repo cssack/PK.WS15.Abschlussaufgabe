@@ -5,12 +5,12 @@
 package dataObjects;
 
 import dataObjects.enums.PlayerPhases;
+import dataObjects.tacticalMovements.ArmyTransport;
 
 import java.util.ArrayList;
 
 /**
- * Created by chris on 07.01.2016.
- * A player data object stores all relevant data for a player.
+ * Created by chris on 07.01.2016. A player data object stores all relevant data for a player.
  */
 public class Player {
 
@@ -21,6 +21,16 @@ public class Player {
     private int reinforcements;
     private PlayerPhases phase = PlayerPhases.Waiting;
     private Territory selectedTerritory;
+    private ArmyTransport armyTransport;
+
+    public ArmyTransport getArmyTransport() {
+        return armyTransport;
+    }
+
+    public void setArmyTransport(ArmyTransport transport) {
+        this.armyTransport = transport;
+    }
+
 
     /**
      * @return the players active state. Further details in PlayerActions.
@@ -32,7 +42,6 @@ public class Player {
     public void setPhase(PlayerPhases phase) {
         this.phase = phase;
     }
-
 
 
     /**

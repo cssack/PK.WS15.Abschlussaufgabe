@@ -80,4 +80,12 @@ public class Territory {
     public void setArmyCount(int armyCount) {
         this.armyCount = armyCount;
     }
+
+    public void increaseArmyCount() {
+        this.armyCount++;
+    }
+
+    public void decreaseArmyCount() {
+        this.armyCount--;
+    }
 }
