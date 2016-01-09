@@ -165,8 +165,9 @@ public class GameState extends GameBase {
                 newVal = mouseOverTerritory != null && mouseOverTerritory.getOccupant() == data
                         .getHumanPlayer() && mouseOverTerritory.getArmyCount() > 1;
             } else if (data.getHumanPlayer().getPhase() == PlayerPhases.FirstTerritorySelected) {
-                newVal = mouseOverTerritory != null && data.getHumanPlayer().getSelectedTerritory().getNeighbors()
-                        .contains(mouseOverTerritory);
+                newVal = mouseOverTerritory != null && (data.getHumanPlayer().getSelectedTerritory().getNeighbors()
+                        .contains(mouseOverTerritory) || (mouseOverTerritory.getOccupant() == data
+                        .getHumanPlayer() && mouseOverTerritory.getArmyCount() > 1));
             } else if (data.getHumanPlayer().getPhase() == PlayerPhases.AttackedWin) {
                 //TODO
             }

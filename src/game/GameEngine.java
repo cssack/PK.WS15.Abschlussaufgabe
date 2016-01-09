@@ -46,16 +46,6 @@ public class GameEngine extends GameBase implements MouseMotionListener, MouseLi
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        if (e.getButton() == MouseEvent.BUTTON3) {
-            if (data.getHumanPlayer().getPhase() == PlayerPhases.FirstTerritorySelected) {
-                state.setSelectedTerritory(data.getHumanPlayer(), null);
-            }
-
-            if (state.isRepaintRequired())
-                drawingBoard.repaint();
-            return;
-        }
-
         if (!state.isMouseTargetClickable())
             return;
 
@@ -80,10 +70,16 @@ public class GameEngine extends GameBase implements MouseMotionListener, MouseLi
             if (data.getHumanPlayer().getPhase() == PlayerPhases.FirstTerritorySelection) {
                 state.setSelectedTerritory(data.getHumanPlayer(), mouseOverTerritory);
             } else if (data.getHumanPlayer().getPhase() == PlayerPhases.FirstTerritorySelected) {
-                if (mouseOverTerritory.getOccupant() == data.getCompPlayer()) {
+                if (e.getButton() == MouseEvent.BUTTON1 && mouseOverTerritory.getOccupant() == data.getHumanPlayer()) {
+                    if (mouseOverTerritory.getArmyCount() > 1)
+                        state.setSelectedTerritory(data.getHumanPlayer(), mouseOverTerritory);
+                } else if (e.getButton() == MouseEvent.BUTTON1 && mouseOverTerritory.getOccupant() == data
+                        .getCompPlayer()) {
                     handleUserAttack(mouseOverTerritory);
                     state.setPlayerPhase(data
                             .getHumanPlayer(), PlayerPhases.FirstTerritorySelection); // just for testing
+                } else if (e.getButton() == MouseEvent.BUTTON3) {
+                    //handling group transfer;
                 }
                 //TODO start attacking or start movement.
             } else if (data.getHumanPlayer().getPhase() == PlayerPhases.AttackedWin) {
