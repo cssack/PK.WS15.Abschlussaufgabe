@@ -75,9 +75,7 @@ public class GameEngine extends GameBase implements MouseMotionListener, MouseLi
                         state.setSelectedTerritory(data.getHumanPlayer(), mouseOverTerritory);
                 } else if (e.getButton() == MouseEvent.BUTTON1 && mouseOverTerritory.getOccupant() == data
                         .getCompPlayer()) {
-                    handleUserAttack(mouseOverTerritory);
-                    state.setPlayerPhase(data
-                            .getHumanPlayer(), PlayerPhases.FirstTerritorySelection); // just for testing
+                    state.handleArmyAttack(data.getHumanPlayer(), mouseOverTerritory);
                 } else if (e.getButton() == MouseEvent.BUTTON3) {
                     state.handleArmyTransport(data.getHumanPlayer(), mouseOverTerritory);
                 }

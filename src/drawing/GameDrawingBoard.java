@@ -8,6 +8,7 @@ import bases.Pair;
 import dataObjects.Patch;
 import dataObjects.Player;
 import dataObjects.Territory;
+import dataObjects.tacticalMovements.ArmyAttack;
 import game.*;
 
 import javax.swing.*;
@@ -54,6 +55,7 @@ public class GameDrawingBoard extends JComponent {
         DrawCapitalLines(g2);
         DrawTerritories(g2);
         DrawPlayersGroupTransport(g2);
+        DrawPlayerAttacks(g2);
         DrawCapitals(g2);
         DrawInfoBar(g2);
 
@@ -187,7 +189,67 @@ public class GameDrawingBoard extends JComponent {
 
         g.drawLine(capitalA.x, capitalA.y, capitalB.x, capitalB.y);
         g.drawOval(capitalB.x - 10, capitalB.y - 10, 20, 20);
+    }
 
+    private void DrawPlayerAttacks(Graphics2D g) {
+        Color prevColor = g.getColor();
+        Stroke prevStroke = g.getStroke();
+
+        g.setColor(Color.BLACK);
+        g.setStroke(design.getCapitalLineStroke());
+
+        DrawPlayerAttack(g, data.getHumanPlayer());
+        DrawPlayerAttack(g, data.getCompPlayer());
+
+        g.setColor(prevColor);
+        g.setStroke(prevStroke);
+    }
+
+    private void DrawPlayerAttack(Graphics2D g, Player player) {
+        ArmyAttack armyAttack = player.getArmyAttack();
+
+        if (armyAttack == null)
+            return;
+
+        DrawMovement(g, armyAttack.first, armyAttack.last, armyAttack.getArmys());
+    }
+
+    private void DrawMovement(Graphics2D g, Territory from, Territory to, int armys) {
+        Point capitalA = from.getCapital().getPoint();
+        Point capitalB = to.getCapital().getPoint();
+
+        DrawLineBetweenCapitals(g, from, to);
+        g.drawOval(capitalB.x - 10, capitalB.y - 10, 20, 20);
+
+        Color prevColor = g.getColor();
+        Font prevFont = g.getFont();
+        g.setColor(Color.WHITE);
+        g.setFont(armyFont);
+
+        int x = capitalA.x + ((capitalB.x - capitalA.x) / 2);
+        int y = capitalA.y + ((capitalB.y - capitalA.y) / 2);
+        g.drawString(String.valueOf(armys), x, y);
+
+        g.setColor(prevColor);
+        g.setFont(prevFont);
+    }
+
+    private void DrawLineBetweenCapitals(Graphics2D g, Territory from, Territory to) {
+        Point capitalA = from.getCapital().getPoint();
+        Point capitalB = to.getCapital().getPoint();
+
+        String fromName = from.getCapital().getOwner().getName();
+        String toName = to.getCapital().getOwner().getName();
+
+        if (fromName.equals("Alaska") && toName.equals("Kamchatka")) {
+            g.drawLine(capitalA.x, capitalA.y, 0, capitalB.y);
+            g.drawLine(capitalB.x, capitalB.y, worldMapSize.width, capitalA.y);
+        } else if (fromName.equals("Kamchatka") && toName.equals("Alaska")) {
+            g.drawLine(capitalB.x, capitalB.y, 0, capitalA.y);
+            g.drawLine(capitalA.x, capitalA.y, worldMapSize.width, capitalB.y);
+        } else {
+            g.drawLine(capitalA.x, capitalA.y, capitalB.x, capitalB.y);
+        }
     }
 
     private void DrawInfoBar(Graphics2D g) {

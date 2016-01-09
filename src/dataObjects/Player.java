@@ -5,6 +5,7 @@
 package dataObjects;
 
 import dataObjects.enums.PlayerPhases;
+import dataObjects.tacticalMovements.ArmyAttack;
 import dataObjects.tacticalMovements.ArmyTransport;
 
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ public class Player {
     private PlayerPhases phase = PlayerPhases.Waiting;
     private Territory selectedTerritory;
     private ArmyTransport armyTransport;
+    private ArmyAttack armyAttack;
 
     public ArmyTransport getArmyTransport() {
         return armyTransport;
@@ -30,7 +32,6 @@ public class Player {
     public void setArmyTransport(ArmyTransport transport) {
         this.armyTransport = transport;
     }
-
 
     /**
      * @return the players active state. Further details in PlayerActions.
@@ -42,7 +43,6 @@ public class Player {
     public void setPhase(PlayerPhases phase) {
         this.phase = phase;
     }
-
 
     /**
      * @return The amount of reinforcements the player gains on the next round.
@@ -80,7 +80,6 @@ public class Player {
         return ownedTerritories;
     }
 
-
     public void setContinentOwnerShip(Continent continent, boolean belongsToMe) {
         if (belongsToMe && !ownedContinents.contains(continent)) {
             ownedContinents.add(continent);
@@ -103,5 +102,13 @@ public class Player {
 
     public void setSelectedTerritory(Territory selectedTerritory) {
         this.selectedTerritory = selectedTerritory;
+    }
+
+    public ArmyAttack getArmyAttack() {
+        return armyAttack;
+    }
+
+    public void setArmyAttack(ArmyAttack armyAttack) {
+        this.armyAttack = armyAttack;
     }
 }

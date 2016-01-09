@@ -10,6 +10,7 @@ import dataObjects.Player;
 import dataObjects.Territory;
 import dataObjects.enums.Phases;
 import dataObjects.enums.PlayerPhases;
+import dataObjects.tacticalMovements.ArmyAttack;
 import dataObjects.tacticalMovements.ArmyTransport;
 
 /**
@@ -271,5 +272,31 @@ public class GameState extends GameBase {
             repaintRequired = true;
         }
 
+    }
+
+    public void handleArmyAttack(Player p, Territory to) {
+        Territory from = p.getSelectedTerritory();
+        ArmyAttack armyAttack = p.getArmyAttack();
+
+        if (armyAttack != null) {
+            removeArmyAttack(p);
+        }
+
+        armyAttack = new ArmyAttack(from, to);
+        armyAttack.setArmys(from.getArmyCount() > 3 ? 3 : from.getArmyCount() - 1);
+        from.setArmyCount(from.getArmyCount() - armyAttack.getArmys());
+
+        p.setArmyAttack(armyAttack);
+        setSelectedTerritory(data.getHumanPlayer(), null);
+
+        repaintRequired = true;
+    }
+
+    public void removeArmyAttack(Player p) {
+        ArmyAttack attack = p.getArmyAttack();
+        Territory from = attack.first;
+        from.setArmyCount(from.getArmyCount() + attack.getArmys());
+
+        repaintRequired = true;
     }
 }
