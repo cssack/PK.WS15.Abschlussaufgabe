@@ -18,8 +18,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Created by chris on 06.01.2016.
- * The map file reader interprets a map file into the corresponding data objects.
+ * Created by chris on 06.01.2016. The map file reader interprets a map file into the corresponding data objects.
  */
 class MapFileReader {
     private static final Pattern patchNamePattern = Pattern.compile("[a-z-].*? (.*?) [0-9:]");
@@ -51,7 +50,7 @@ class MapFileReader {
     }
 
     private void parseTerritory(String line) throws MapFileFormatException {
-        Territory targetTerritory = getOrCreate_Territory_ByName(getTerritoryName_FromLine(line));
+        Territory targetTerritory = gameData.getOrCreateTerritory_ByName(getTerritoryName_FromLine(line));
         Polygon polygon = new Polygon();
 
         Matcher polygonMatcher = coordinatesPattern.matcher(line);
@@ -65,7 +64,7 @@ class MapFileReader {
     }
 
     private void parseCapital(String line) throws MapFileFormatException {
-        Territory targetTerritory = getOrCreate_Territory_ByName(getTerritoryName_FromLine(line));
+        Territory targetTerritory = gameData.getOrCreateTerritory_ByName(getTerritoryName_FromLine(line));
         Matcher matcher = coordinatesPattern.matcher(line);
 
         if (!matcher.find())
@@ -75,7 +74,7 @@ class MapFileReader {
     }
 
     private void parseNeighbors(String line) throws MapFileFormatException {
-        Territory targetTerritory = getOrCreate_Territory_ByName(getTerritoryName_FromLine(line));
+        Territory targetTerritory = gameData.getOrCreateTerritory_ByName(getTerritoryName_FromLine(line));
         Matcher matcher = neighborsPattern.matcher(line);
 
 
@@ -86,7 +85,7 @@ class MapFileReader {
                 .split(" - ");
 
         for (String neighbor : neighbors) {
-            Territory neighborTerritory = getOrCreate_Territory_ByName(neighbor);
+            Territory neighborTerritory = gameData.getOrCreateTerritory_ByName(neighbor);
             neighborTerritory.addNeighbor(targetTerritory);
             targetTerritory.addNeighbor(neighborTerritory);
         }
@@ -103,33 +102,16 @@ class MapFileReader {
         int reinforcementBooster = Integer.parseInt(matcher.group(2));
         String[] territories = matcher.group(3).split(" - ");
 
-        Continent continent = getOrCreate_Continent_ByName(continentName);
+        Continent continent = gameData.getOrCreateContinent_ByName(continentName);
 
         continent.setReinforcementBonus(reinforcementBooster);
 
         for (String territoryName : territories) {
-            Territory territory = getOrCreate_Territory_ByName(territoryName);
+            Territory territory = gameData.getOrCreateTerritory_ByName(territoryName);
             continent.addTerritory(territory);
         }
     }
 
-    private Territory getOrCreate_Territory_ByName(String name) {
-        Territory territory = gameData.getTerritory_ByName(name);
-        if (territory == null) {
-            territory = new Territory(name);
-            gameData.addTerritory(territory);
-        }
-        return territory;
-    }
-
-    private Continent getOrCreate_Continent_ByName(String name) {
-        Continent continent = gameData.getContinent_ByName(name);
-        if (continent == null) {
-            continent = new Continent(name);
-            gameData.addContinent(continent);
-        }
-        return continent;
-    }
 
     private String getTerritoryName_FromLine(String line) throws MapFileFormatException {
         Matcher matcher = patchNamePattern.matcher(line);
@@ -148,17 +130,5 @@ class MapFileReader {
 
     private List<String> loadFileLines(String file) throws IOException {
         return Files.readAllLines(Paths.get(file));
-        /*Scanner sc = new Scanner(file);
-
-        ArrayList<String> lines = new ArrayList<>();
-
-        while (sc.hasNextLine()) {
-            String line = sc.nextLine();
-            lines.add(line);
-        }
-
-        sc.close();
-
-        return lines;*/
     }
 }

@@ -5,13 +5,12 @@
 package game;
 
 import bases.GameBase;
+import bases.TacticalMovement;
 import dataObjects.Continent;
 import dataObjects.Player;
 import dataObjects.Territory;
 import dataObjects.enums.Phases;
 import dataObjects.enums.PlayerPhases;
-import dataObjects.tacticalMovements.ArmyAttack;
-import dataObjects.tacticalMovements.ArmyTransport;
 
 /**
  * Created by chris on 07.01.2016. The game state is the main vector to populate
@@ -166,8 +165,18 @@ public class GameState extends GameBase {
             } else if (humanPhase == PlayerPhases.Reinforcing) {
                 newVal = mouseOverTerritory != null && mouseOverTerritory.getOccupant() == human;
             } else if (humanPhase == PlayerPhases.FirstTerritorySelection) {
-                newVal = mouseOverTerritory != null && mouseOverTerritory.getOccupant() == human && mouseOverTerritory
-                        .getArmyCount() > 1;
+                if (mouseOverTerritory == null)
+                    newVal = false;
+                else {
+                    boolean isAttacker = human.getAttackMovement() != null && human
+                            .getAttackMovement().from == mouseOverTerritory;
+                    boolean isTransportTarget = human.getTransportMovement() != null && human
+                            .getTransportMovement().to == mouseOverTerritory;
+                    boolean isValidFirstSelection = mouseOverTerritory.getOccupant() == human && mouseOverTerritory
+                            .getArmyCount() > 1;
+
+                    newVal = isAttacker || isTransportTarget || isValidFirstSelection;
+                }
             } else if (humanPhase == PlayerPhases.FirstTerritorySelected) {
                 if (mouseOverTerritory == null)
                     newVal = false;
@@ -177,11 +186,12 @@ public class GameState extends GameBase {
                     boolean isNeighbor = selectedTerritory.getNeighbors().contains(mouseOverTerritory);
                     boolean isHuman = mouseOverTerritory.getOccupant() == human;
                     boolean hasMoreThenOneArmy = mouseOverTerritory.getArmyCount() > 1;
-                    boolean groupTransportAvailable = human.getArmyTransport() == null || human.getArmyTransport()
-                            .consitsOf(selectedTerritory, mouseOverTerritory);
+                    boolean isValidTransportTarget = human.getTransportMovement() == null || human
+                            .getTransportMovement()
+                            .consitsOf(data.getHumanPlayer().getSelectedTerritory(), mouseOverTerritory);
 
                     newVal = (isHuman && hasMoreThenOneArmy) || //Used for left mouse button reselection
-                            (isNeighbor && isHuman && groupTransportAvailable) || //Used for right mouse button available
+                            (isNeighbor && isHuman && isValidTransportTarget) || //Used for right mouse button available
                             (isNeighbor && !isHuman); //used for attackable territories
                 }
             } else if (humanPhase == PlayerPhases.AttackedWin) {
@@ -237,36 +247,39 @@ public class GameState extends GameBase {
     }
 
 
-    public void handleArmyTransport(Player p, Territory to) {
+    public void handleTransportMovement(Player p, Territory to) {
+        if (to == p.getSelectedTerritory()) {
+            setSelectedTerritory(p, null);
+            return;
+        }
         Territory from = p.getSelectedTerritory();
-        ArmyTransport armyTransport = p.getArmyTransport();
+        TacticalMovement transportMovement = p.getTransportMovement();
 
-        if (armyTransport == null) {
-            p.setArmyTransport(new ArmyTransport(from, to));
-
-            armyTransport = p.getArmyTransport();
+        if (transportMovement == null) {
+            transportMovement = new TacticalMovement(from, to, 1);
+            p.setTransportMovement(transportMovement);
             from.decreaseArmyCount();
-
-            to.increaseArmyCount();
-            armyTransport.increaseArmys();
-
-            repaintRequired = true;
-        } else if (armyTransport.consitsOf(from, to)) {
-            from.decreaseArmyCount();
-            to.increaseArmyCount();
-
-            if (from == armyTransport.first) {
-                armyTransport.increaseArmys();
-
-            } else {
-                armyTransport.decreaseArmys();
-
-                if (armyTransport.getArmys() == 0)
-                    p.setArmyTransport(null);
+            if (from.getArmyCount() < 2) {
+                setSelectedTerritory(data.getHumanPlayer(), null);
             }
 
-            if (from.getArmyCount() == 1) {
-                setSelectedTerritory(data.getHumanPlayer(), null);
+            repaintRequired = true;
+        } else if (transportMovement.consitsOf(from, to)) {
+            if (from == transportMovement.from) {
+                from.decreaseArmyCount();
+                transportMovement.increaseArmys();
+
+                if (from.getArmyCount() < 2) {
+                    setSelectedTerritory(data.getHumanPlayer(), null);
+                }
+            } else {
+                to.increaseArmyCount();
+                transportMovement.decreaseArmys();
+
+                if (transportMovement.getArmyCount() == 0) {
+                    p.setTransportMovement(null);
+                    setSelectedTerritory(data.getHumanPlayer(), null);
+                }
             }
 
             repaintRequired = true;
@@ -274,28 +287,36 @@ public class GameState extends GameBase {
 
     }
 
-    public void handleArmyAttack(Player p, Territory to) {
-        Territory from = p.getSelectedTerritory();
-        ArmyAttack armyAttack = p.getArmyAttack();
+    public void handleAttackMovement(Player p, Territory to) {
 
-        if (armyAttack != null) {
-            removeArmyAttack(p);
+
+        Territory from = p.getSelectedTerritory();
+        TacticalMovement attackMovement = p.getAttackMovement();
+
+        if (attackMovement != null) {
+            if (attackMovement.from == from && attackMovement.to == to) {
+                removeAttackMovement(p);
+                setSelectedTerritory(data.getHumanPlayer(), null);
+                return; // Same attack move was select again so this is interpreted as cancle attack move.
+            }
+            removeAttackMovement(p);
         }
 
-        armyAttack = new ArmyAttack(from, to);
-        armyAttack.setArmys(from.getArmyCount() > 3 ? 3 : from.getArmyCount() - 1);
-        from.setArmyCount(from.getArmyCount() - armyAttack.getArmys());
+        attackMovement = new TacticalMovement(from, to);
+        attackMovement.setArmyCount(from.getArmyCount() > 3 ? 3 : from.getArmyCount() - 1);
+        from.setArmyCount(from.getArmyCount() - attackMovement.getArmyCount());
 
-        p.setArmyAttack(armyAttack);
+        p.setAttackMovement(attackMovement);
         setSelectedTerritory(data.getHumanPlayer(), null);
 
         repaintRequired = true;
     }
 
-    public void removeArmyAttack(Player p) {
-        ArmyAttack attack = p.getArmyAttack();
-        Territory from = attack.first;
-        from.setArmyCount(from.getArmyCount() + attack.getArmys());
+    public void removeAttackMovement(Player p) {
+        TacticalMovement attackMovement = p.getAttackMovement();
+        Territory from = attackMovement.from;
+        from.setArmyCount(from.getArmyCount() + attackMovement.getArmyCount());
+        p.setAttackMovement(null);
 
         repaintRequired = true;
     }

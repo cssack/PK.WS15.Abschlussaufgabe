@@ -4,11 +4,9 @@
 
 package drawing;
 
-import bases.Pair;
+import bases.TacticalMovement;
 import dataObjects.Patch;
-import dataObjects.Player;
 import dataObjects.Territory;
-import dataObjects.tacticalMovements.ArmyAttack;
 import game.*;
 
 import javax.swing.*;
@@ -48,15 +46,16 @@ public class GameDrawingBoard extends JComponent {
     public void paint(Graphics g) {
         super.paint(g);
 
+        paintCount++;
         Graphics2D g2 = (Graphics2D) g;
-        //g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
         DrawBackground(g2);
-        DrawCapitalLines(g2);
+        DrawNeighborLines(g2);
         DrawTerritories(g2);
-        DrawPlayersGroupTransport(g2);
-        DrawPlayerAttacks(g2);
-        DrawCapitals(g2);
+        DrawTransportMovements(g2);
+        DrawAttackMovements(g2);
+        DrawTerritoryTexts(g2);
         DrawInfoBar(g2);
 
     }
@@ -85,6 +84,21 @@ public class GameDrawingBoard extends JComponent {
         g.setStroke(prevStroke);
     }
 
+    private void DrawTerritoryTexts(Graphics2D g) {
+        Font prevFont = g.getFont();
+        Color prevColor = g.getColor();
+
+        g.setColor(Color.white);
+        g.setFont(armyFont);
+
+        for (Territory territory : data.getAllTerritories()) {
+            DrawTerritoryText(g, territory);
+        }
+
+        g.setFont(prevFont);
+        g.setColor(prevColor);
+    }
+
     private void DrawTerritory(Graphics2D g, Territory territory) {
         g.setColor(design.getTerritoryBackgroundColor(territory));
         for (Patch patch : territory.getPatches()) {
@@ -99,30 +113,15 @@ public class GameDrawingBoard extends JComponent {
 
     }
 
-    private void DrawCapitals(Graphics2D g) {
-        Font prevFont = g.getFont();
-        Color prevColor = g.getColor();
-
-        g.setColor(Color.white);
-        g.setFont(armyFont);
-
-        for (Territory territory : data.getAllTerritories()) {
-            DrawCapital(g, territory);
-        }
-
-        g.setFont(prevFont);
-        g.setColor(prevColor);
-    }
-
-    private void DrawCapital(Graphics2D g, Territory t) {
+    private void DrawTerritoryText(Graphics2D g, Territory t) {
         if (t.getOccupant() == null)
             return;
 
         String capitalText = String.valueOf(t.getArmyCount());
 
         int stringWidth = SwingUtilities.computeStringWidth(g.getFontMetrics(), capitalText);
+        int stringHeight = (int) armyFont.getLineMetrics(capitalText, g.getFontRenderContext()).getAscent();
 
-        int stringHeight = (int) armyFont.getLineMetrics(capitalText, g.getFontRenderContext()).getHeight();
         int x = t.getCapital().getPoint().x - (stringWidth / 2);
         int y = t.getCapital().getPoint().y + (stringHeight / 2);
 
@@ -130,7 +129,7 @@ public class GameDrawingBoard extends JComponent {
 
     }
 
-    private void DrawCapitalLines(Graphics2D g) {
+    private void DrawNeighborLines(Graphics2D g) {
         Color prevColor = g.getColor();
         Stroke prevStroke = g.getStroke();
         g.setColor(design.getCapitalLineColor());
@@ -138,13 +137,13 @@ public class GameDrawingBoard extends JComponent {
 
         HashSet<Territory> visitedNodes = new HashSet<>();
         Territory currentNode = data.getAllTerritories().get(0);
-        DrawCapitalLines(g, visitedNodes, currentNode);
+        DrawNeighborLines(g, visitedNodes, currentNode);
 
         g.setColor(prevColor);
         g.setStroke(prevStroke);
     }
 
-    private void DrawCapitalLines(Graphics2D g, HashSet<Territory> visitedNodes, Territory currentNode) {
+    private void DrawNeighborLines(Graphics2D g, HashSet<Territory> visitedNodes, Territory currentNode) {
         visitedNodes.add(currentNode);
         for (Territory neighbor : currentNode.getNeighbors()) {
             if (visitedNodes.contains(neighbor))
@@ -163,83 +162,61 @@ public class GameDrawingBoard extends JComponent {
         for (Territory neighbor : currentNode.getNeighbors()) {
             if (visitedNodes.contains(neighbor))
                 continue;
-            DrawCapitalLines(g, visitedNodes, neighbor);
+            DrawNeighborLines(g, visitedNodes, neighbor);
         }
     }
 
-    private void DrawPlayersGroupTransport(Graphics2D g) {
+    private void DrawTransportMovements(Graphics2D g) {
         Color prevColor = g.getColor();
         Stroke prevStroke = g.getStroke();
 
-        DrawPlayerGroupTransport(g, data.getHumanPlayer());
-        DrawPlayerGroupTransport(g, data.getCompPlayer());
+        g.setColor(Color.BLUE);
+        g.setStroke(design.getCapitalLineStroke());
+        DrawMovement(g, data.getHumanPlayer().getTransportMovement());
+        DrawMovement(g, data.getCompPlayer().getTransportMovement());
 
         g.setColor(prevColor);
         g.setStroke(prevStroke);
     }
 
-    private void DrawPlayerGroupTransport(Graphics2D g, Player player) {
-        Pair<Territory, Territory> groupTransport = player.getArmyTransport();
-
-        if (groupTransport == null)
-            return;
-
-        Point capitalA = groupTransport.first.getCapital().getPoint();
-        Point capitalB = groupTransport.last.getCapital().getPoint();
-
-        g.drawLine(capitalA.x, capitalA.y, capitalB.x, capitalB.y);
-        g.drawOval(capitalB.x - 10, capitalB.y - 10, 20, 20);
-    }
-
-    private void DrawPlayerAttacks(Graphics2D g) {
+    private void DrawAttackMovements(Graphics2D g) {
         Color prevColor = g.getColor();
         Stroke prevStroke = g.getStroke();
 
         g.setColor(Color.BLACK);
         g.setStroke(design.getCapitalLineStroke());
-
-        DrawPlayerAttack(g, data.getHumanPlayer());
-        DrawPlayerAttack(g, data.getCompPlayer());
+        DrawMovement(g, data.getHumanPlayer().getAttackMovement());
+        DrawMovement(g, data.getCompPlayer().getAttackMovement());
 
         g.setColor(prevColor);
         g.setStroke(prevStroke);
     }
 
-    private void DrawPlayerAttack(Graphics2D g, Player player) {
-        ArmyAttack armyAttack = player.getArmyAttack();
 
-        if (armyAttack == null)
+    private void DrawMovement(Graphics2D g, TacticalMovement movement) {
+        if (movement == null)
             return;
 
-        DrawMovement(g, armyAttack.first, armyAttack.last, armyAttack.getArmys());
-    }
 
-    private void DrawMovement(Graphics2D g, Territory from, Territory to, int armys) {
-        Point capitalA = from.getCapital().getPoint();
-        Point capitalB = to.getCapital().getPoint();
+        Point capitalB = movement.to.getCapital().getPoint();
 
-        DrawLineBetweenCapitals(g, from, to);
+        DrawLineBetweenCapitals(g, movement.from, movement.to);
         g.drawOval(capitalB.x - 10, capitalB.y - 10, 20, 20);
 
-        Color prevColor = g.getColor();
         Font prevFont = g.getFont();
-        g.setColor(Color.WHITE);
+
         g.setFont(armyFont);
+        DrawLineBetweenCapitalsDescription(g, movement.from, movement.to, String.valueOf(movement.getArmyCount()));
 
-        int x = capitalA.x + ((capitalB.x - capitalA.x) / 2);
-        int y = capitalA.y + ((capitalB.y - capitalA.y) / 2);
-        g.drawString(String.valueOf(armys), x, y);
-
-        g.setColor(prevColor);
         g.setFont(prevFont);
     }
 
     private void DrawLineBetweenCapitals(Graphics2D g, Territory from, Territory to) {
         Point capitalA = from.getCapital().getPoint();
         Point capitalB = to.getCapital().getPoint();
-
         String fromName = from.getCapital().getOwner().getName();
         String toName = to.getCapital().getOwner().getName();
+
 
         if (fromName.equals("Alaska") && toName.equals("Kamchatka")) {
             g.drawLine(capitalA.x, capitalA.y, 0, capitalB.y);
@@ -250,6 +227,30 @@ public class GameDrawingBoard extends JComponent {
         } else {
             g.drawLine(capitalA.x, capitalA.y, capitalB.x, capitalB.y);
         }
+    }
+
+    private void DrawLineBetweenCapitalsDescription(Graphics2D g, Territory from, Territory to, String text) {
+        Point fromPoint = from.getCapital().getPoint();
+        Point toPoint = to.getCapital().getPoint();
+        String fromName = from.getCapital().getOwner().getName();
+        String toName = to.getCapital().getOwner().getName();
+
+        int x, y;
+
+        if (fromName.equals("Alaska") && toName.equals("Kamchatka")) {
+            toPoint = new Point(0, toPoint.y);
+        } else if (fromName.equals("Kamchatka") && toName.equals("Alaska")) {
+            toPoint = new Point(worldMapSize.width, toPoint.y);
+        }
+
+        Point vectorToTheMiddleOfTheLine = new Point((toPoint.x - fromPoint.x) / 2, (toPoint.y - fromPoint.y) / 2);
+        x = fromPoint.x + vectorToTheMiddleOfTheLine.x;
+        y = fromPoint.y + vectorToTheMiddleOfTheLine.y;
+        if (vectorToTheMiddleOfTheLine.x * vectorToTheMiddleOfTheLine.y < 0) {
+            //move x coordinate if slope is negative to avoid text rendering over line
+            x = x - SwingUtilities.computeStringWidth(g.getFontMetrics(), text);
+        }
+        g.drawString(text, x, y);
     }
 
     private void DrawInfoBar(Graphics2D g) {

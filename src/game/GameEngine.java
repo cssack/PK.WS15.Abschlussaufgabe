@@ -52,8 +52,9 @@ public class GameEngine extends GameBase implements MouseMotionListener, MouseLi
         state.resetRepaintRequired();
 
         Territory mouseOverTerritory = state.getMouseOverTerritory();
-
-        if (state.getGamePhase() == Phases.Landerwerb) {
+        if (mouseOverTerritory == data.getHumanPlayer().getSelectedTerritory()) {
+            state.setSelectedTerritory(data.getHumanPlayer(), null);
+        } else if (state.getGamePhase() == Phases.Landerwerb) {
             state.setTerritoryOccupant(mouseOverTerritory, data.getHumanPlayer());
             ki.ChooseSomeTerritory();
 
@@ -75,9 +76,9 @@ public class GameEngine extends GameBase implements MouseMotionListener, MouseLi
                         state.setSelectedTerritory(data.getHumanPlayer(), mouseOverTerritory);
                 } else if (e.getButton() == MouseEvent.BUTTON1 && mouseOverTerritory.getOccupant() == data
                         .getCompPlayer()) {
-                    state.handleArmyAttack(data.getHumanPlayer(), mouseOverTerritory);
+                    state.handleAttackMovement(data.getHumanPlayer(), mouseOverTerritory);
                 } else if (e.getButton() == MouseEvent.BUTTON3) {
-                    state.handleArmyTransport(data.getHumanPlayer(), mouseOverTerritory);
+                    state.handleTransportMovement(data.getHumanPlayer(), mouseOverTerritory);
                 }
                 //TODO start attacking or start movement.
             } else if (data.getHumanPlayer().getPhase() == PlayerPhases.AttackedWin) {

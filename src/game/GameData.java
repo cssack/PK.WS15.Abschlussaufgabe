@@ -89,25 +89,21 @@ public class GameData extends GameBase {
         return null;
     }
 
-    /**
-     * Adds a new continent to the list.
-     *
-     * @param continent the continent to add
-     */
-    public void addContinent(Continent continent) {
-        assert continent != null : "continent is null";
-
-        allContinents.add(continent);
+    public Territory getOrCreateTerritory_ByName(String name) {
+        Territory territory = getTerritory_ByName(name);
+        if (territory == null) {
+            territory = new Territory(name);
+            allTerritories.add(territory);
+        }
+        return territory;
     }
 
-    /**
-     * Adds a new territory to the list.
-     *
-     * @param territory the territory to add
-     */
-    public void addTerritory(Territory territory) {
-        assert territory != null : "territory is null";
-
-        allTerritories.add(territory);
+    public Continent getOrCreateContinent_ByName(String name) {
+        Continent continent = getContinent_ByName(name);
+        if (continent == null) {
+            continent = new Continent(name);
+            allContinents.add(continent);
+        }
+        return continent;
     }
 }

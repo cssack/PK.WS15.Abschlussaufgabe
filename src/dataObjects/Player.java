@@ -4,14 +4,13 @@
 
 package dataObjects;
 
+import bases.TacticalMovement;
 import dataObjects.enums.PlayerPhases;
-import dataObjects.tacticalMovements.ArmyAttack;
-import dataObjects.tacticalMovements.ArmyTransport;
 
 import java.util.ArrayList;
 
 /**
- * Created by chris on 07.01.2016. A player data object stores all relevant data for a player.
+ * A player data object stores all relevant data for a player.
  */
 public class Player {
 
@@ -22,15 +21,15 @@ public class Player {
     private int reinforcements;
     private PlayerPhases phase = PlayerPhases.Waiting;
     private Territory selectedTerritory;
-    private ArmyTransport armyTransport;
-    private ArmyAttack armyAttack;
+    private TacticalMovement transportMovement;
+    private TacticalMovement attackMovement;
 
-    public ArmyTransport getArmyTransport() {
-        return armyTransport;
+    public TacticalMovement getTransportMovement() {
+        return transportMovement;
     }
 
-    public void setArmyTransport(ArmyTransport transport) {
-        this.armyTransport = transport;
+    public void setTransportMovement(TacticalMovement transport) {
+        this.transportMovement = transport;
     }
 
     /**
@@ -104,11 +103,11 @@ public class Player {
         this.selectedTerritory = selectedTerritory;
     }
 
-    public ArmyAttack getArmyAttack() {
-        return armyAttack;
+    public TacticalMovement getAttackMovement() {
+        return attackMovement;
     }
 
-    public void setArmyAttack(ArmyAttack armyAttack) {
-        this.armyAttack = armyAttack;
+    public void setAttackMovement(TacticalMovement attackMovement) {
+        this.attackMovement = attackMovement;
     }
 }
