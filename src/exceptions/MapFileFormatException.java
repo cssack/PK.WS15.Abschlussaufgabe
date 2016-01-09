@@ -6,7 +6,6 @@ package exceptions;
 
 
 /**
- * Created by chris on 07.01.2016.
  * Thrown if the map file is not formatted properly.
  */
 public class MapFileFormatException extends AllThoseTerritoriesException {

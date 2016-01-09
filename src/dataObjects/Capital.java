@@ -7,7 +7,6 @@ package dataObjects;
 import java.awt.*;
 
 /**
- * Created by chris on 06.01.2016.
  * The capital of a territory.
  */
 public class Capital {

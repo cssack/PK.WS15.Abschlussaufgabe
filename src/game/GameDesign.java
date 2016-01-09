@@ -11,8 +11,8 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 
 /**
- * Created by chris on 07.01.2016. The game design implements the logic for the colors, images,... for the drawing
- * routines
+ * The game design implements the logic for the colors, images,... for the drawing routines. This is the place where
+ * everything should be stored which have something to do with the design of the game.
  */
 public class GameDesign extends GameBase {
     private BufferedImage backgroundImage;
@@ -27,7 +27,7 @@ public class GameDesign extends GameBase {
     }
 
     /**
-     * @return the size for the sea connections between two territory's.
+     * @return the stroke for the sea connections between two territory's.
      */
     public Stroke getCapitalLineStroke() {
         return new BasicStroke(2f);
@@ -80,7 +80,7 @@ public class GameDesign extends GameBase {
     }
 
     /**
-     * @return the endless and mystic see
+     * @return the endless and mystic see image.
      */
     public BufferedImage getBackgroundImage() {
         return backgroundImage;
@@ -91,7 +91,7 @@ public class GameDesign extends GameBase {
     }
 
     /**
-     * @return the image placed at the capital position.
+     * @return the image placed at the capital position. DEPRECATED
      */
     public BufferedImage getCapitalImage() {
         return capitalImage;

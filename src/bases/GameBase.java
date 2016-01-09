@@ -8,8 +8,8 @@ import drawing.GameDrawingBoard;
 import game.*;
 
 /**
- * Created by chris on 07.01.2016.
- * This is the base for each machine or data class where the instance is uniquely bound to a game
+ * This is the base for each machine or data class where the instance is uniquely bound to a game. It is implemented for
+ * better readability.
  */
 public class GameBase {
 

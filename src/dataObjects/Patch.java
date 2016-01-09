@@ -7,9 +7,8 @@ package dataObjects;
 import java.awt.*;
 
 /**
- * Created by chris on 07.01.2016.
- * A patch of land for a territory.
- * A territory consist of one or more patches.
+ * A patch of land for a territory. A territory consist of one or more patches. One patch belongs to exactly one
+ * territory.
  */
 public class Patch {
     private final Territory territory;
@@ -20,10 +19,17 @@ public class Patch {
         this.polygon = polygon;
     }
 
+
+    /**
+     * @return the owning territory of the patch. Each patch belongs to a territory.
+     */
     public Territory getTerritory() {
         return territory;
     }
 
+    /**
+     * @return the polygon which can be used to draw the patch which belongs to a territory.
+     */
     public Polygon getPolygon() {
         return polygon;
     }

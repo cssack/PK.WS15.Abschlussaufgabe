@@ -5,7 +5,7 @@
 package dataObjects;
 
 import bases.TacticalMovement;
-import dataObjects.enums.PlayerPhases;
+import dataObjects.enums.PlayerStates;
 
 import java.util.ArrayList;
 
@@ -13,54 +13,58 @@ import java.util.ArrayList;
  * A player data object stores all relevant data for a player.
  */
 public class Player {
-
-
     private ArrayList<Continent> ownedContinents = new ArrayList<>();
     private ArrayList<Territory> ownedTerritories = new ArrayList<>();
     private int reinforcementGain;
     private int reinforcements;
-    private PlayerPhases phase = PlayerPhases.Waiting;
+    private PlayerStates state = PlayerStates.Waiting;
     private Territory selectedTerritory;
-    private TacticalMovement transportMovement;
+    private TacticalMovement transferMovement;
     private TacticalMovement attackMovement;
 
-    public TacticalMovement getTransportMovement() {
-        return transportMovement;
-    }
-
-    public void setTransportMovement(TacticalMovement transport) {
-        this.transportMovement = transport;
-    }
 
     /**
-     * @return the players active state. Further details in PlayerActions.
+     * @return the players active state. Further details in PlayerStates.
      */
-    public PlayerPhases getPhase() {
-        return phase;
-    }
-
-    public void setPhase(PlayerPhases phase) {
-        this.phase = phase;
+    public PlayerStates getState() {
+        return state;
     }
 
     /**
+     * Sets the current state of the player.
+     */
+    public void setState(PlayerStates state) {
+        this.state = state;
+    }
+
+    /**
+     * It is calculated by following equation: ([owned Territories]/3) + [Reinforcement bonus of all continents owned by
+     * the player]
+     *
      * @return The amount of reinforcements the player gains on the next round.
      */
     public int getReinforcementGain() {
         return reinforcementGain;
     }
 
+    /**
+     * Sets the reinforcement gain for the player. It is calculated by following equation: ([owned Territories]/3) +
+     * [Reinforcement bonus of all continents owned by the player]
+     */
     public void setReinforcementGain(int reinforcementGain) {
         this.reinforcementGain = reinforcementGain;
     }
 
     /**
-     * @return The amount of reinforcements the player can distribute on his territory.
+     * @return The amount of reinforcements the player can actually distribute on his territories.
      */
     public int getReinforcements() {
         return reinforcements;
     }
 
+    /**
+     * Sets the amount of reinforcements the player can distribute in reinforcement phase.
+     */
     public void setReinforcements(int reinforcements) {
         this.reinforcements = reinforcements;
     }
@@ -79,6 +83,13 @@ public class Player {
         return ownedTerritories;
     }
 
+
+    /**
+     * Sets the ownership of the continent to the player or removes it
+     *
+     * @param continent   the targeting continent.
+     * @param belongsToMe declares whether the continent belongs to the user or not
+     */
     public void setContinentOwnerShip(Continent continent, boolean belongsToMe) {
         if (belongsToMe && !ownedContinents.contains(continent)) {
             ownedContinents.add(continent);
@@ -87,6 +98,11 @@ public class Player {
         }
     }
 
+    /**
+     * Set or unset the ownership for the territory.
+     *
+     * @param belongsToMe declares whether the territory belongs to the user or not
+     */
     public void setTerritoryOwnership(Territory territory, boolean belongsToMe) {
         if (belongsToMe && !ownedTerritories.contains(territory)) {
             ownedTerritories.add(territory);
@@ -95,19 +111,51 @@ public class Player {
         }
     }
 
+    /**
+     * @return the current selected territory.
+     */
     public Territory getSelectedTerritory() {
         return selectedTerritory;
     }
 
+    /**
+     * Set the selected territory.
+     */
     public void setSelectedTerritory(Territory selectedTerritory) {
         this.selectedTerritory = selectedTerritory;
     }
 
+    /**
+     * @return the current attack movement for the user (can be null if no attack is selected). A attack movement
+     * describes the attack of current players army from one territory to an enemy territory.
+     */
     public TacticalMovement getAttackMovement() {
         return attackMovement;
     }
 
+    /**
+     * Sets the current attack move for the player.
+     *
+     * @param attackMovement can be null if no attack is selected by the user.
+     */
     public void setAttackMovement(TacticalMovement attackMovement) {
         this.attackMovement = attackMovement;
+    }
+
+    /**
+     * @return the current transport movement for the user (can be null if no transport is selected). A transfer
+     * movement describes the transfer of army's from one territory to another.
+     */
+    public TacticalMovement getTransferMovement() {
+        return transferMovement;
+    }
+
+    /**
+     * Sets the current transfer move for the player.
+     *
+     * @param transfer can be null if no transfer is selected by the user.
+     */
+    public void setTransferMovement(TacticalMovement transfer) {
+        this.transferMovement = transfer;
     }
 }

@@ -7,9 +7,8 @@ package dataObjects;
 import java.util.ArrayList;
 
 /**
- * Created by chris on 06.01.2016.
- * A continent consists of multiple territories.
- * If a player has all territories on a continent he gains a reinforcementBonus.
+ * A continent consists of multiple territories. If a player has all territories on a continent he gains a
+ * reinforcementBonus.
  */
 public class Continent {
     private final String name;
@@ -20,30 +19,38 @@ public class Continent {
         this.name = name;
     }
 
+
+    /**
+     * @return the name of the continent
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * @return all territories which belongs to the continent.
+     */
     public ArrayList<Territory> getTerritories() {
         return territories;
     }
 
-    public Territory getTerritory_ByName(String Name) {
-        for (Territory territory : territories) {
-            if (territory.getName().equals(Name))
-                return territory;
-        }
-        return null;
-    }
-
+    /**
+     * Adds a territory to the continent, this method should only be used in the init phase of the game.
+     */
     public void addTerritory(Territory territory) {
         this.territories.add(territory);
     }
 
+    /**
+     * @return the reinforcement bonus for the owner of the continent.
+     */
     public int getReinforcementBonus() {
         return reinforcementBonus;
     }
 
+    /**
+     * Sets the reinforcement bonus of the continent, this method should only be used in the init phase of the game.
+     */
     public void setReinforcementBonus(int reinforcementBonus) {
         this.reinforcementBonus = reinforcementBonus;
     }

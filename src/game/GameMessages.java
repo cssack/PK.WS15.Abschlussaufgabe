@@ -7,16 +7,16 @@ package game;
 import bases.GameBase;
 import dataObjects.Player;
 import dataObjects.enums.Phases;
-import dataObjects.enums.PlayerPhases;
+import dataObjects.enums.PlayerStates;
 
 /**
- * Created by chris on 07.01.2016. Used to give the user a descriptive feedback over the current state.
+ * Used to provide messages to the user.
  */
 @SuppressWarnings("ALL")
 public class GameMessages extends GameBase {
 
-    private PlayerPhases compPlayerAction() {
-        return data.getCompPlayer().getPhase();
+    private PlayerStates compPlayerAction() {
+        return data.getCompPlayer().getState();
     }
 
 
@@ -29,19 +29,15 @@ public class GameMessages extends GameBase {
 
 
         Player human = data.getHumanPlayer();
-        PlayerPhases humanPhase = human.getPhase();
+        PlayerStates humanPhase = human.getState();
 
-        if (humanPhase == PlayerPhases.Reinforcing)
+        if (humanPhase == PlayerStates.Reinforcing)
             return "Verteilen Sie noch " + human.getReinforcements() + " Armeen.";
-        if (humanPhase == PlayerPhases.FirstTerritorySelection)
+        if (humanPhase == PlayerStates.FirstTerritorySelection)
             return "Wählen Sie ein Territorium aus von dem weg Sie einen Angriff oder Transport starten wollen.";
-        if (humanPhase == PlayerPhases.FirstTerritorySelected)
+        if (humanPhase == PlayerStates.FirstTerritorySelected)
             return "Wählen Sie ein benachbartes Ziel aus (Truppentransport(rechte Maustaste) oder Angriff).";
-        if (humanPhase == PlayerPhases.Attacking)
-            return "Sie greifen derzeit an. Bitte warten!";
-        if (humanPhase == PlayerPhases.AttackedWin)
-            return "";
-        if (humanPhase == PlayerPhases.Waiting)
+        if (humanPhase == PlayerStates.Waiting)
             return "Bitte warten! Der Computer denkt gerade";
         return "";
     }

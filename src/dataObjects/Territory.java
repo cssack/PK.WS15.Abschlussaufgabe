@@ -8,9 +8,8 @@ import java.awt.*;
 import java.util.ArrayList;
 
 /**
- * Created by chris on 06.01.2016.
- * A territory is occupied by an occupant which can be a player or a computer.
- * The territory consists of one or more patches.
+ * A territory is occupied by an occupant which can be a player or a computer. The territory consists of one or more
+ * patches. A territory have neighbors.
  */
 public class Territory {
     private final String name;
@@ -24,41 +23,86 @@ public class Territory {
         this.name = name;
     }
 
+
+    /**
+     * @return the name of the territory as described in the map file.
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * @return the neighbors of the territory as described in the map file
+     */
     public ArrayList<Territory> getNeighbors() {
         return neighbors;
     }
 
+    /**
+     * @return the capital which stores the position which can or should be used for the army count in the map drawing.
+     */
     public Capital getCapital() {
         return capital;
     }
 
+    /**
+     * Set the capital, should only be used in game init phase.
+     */
     public void setCapital(Point point) {
         this.capital = new Capital(this, point);
     }
 
+    /**
+     * @return the player who owns this territory. Consider that the occupant can be null in 'Landerwerb' phase.
+     */
     public Player getOccupant() {
         return occupant;
     }
 
+    /**
+     * Set the Occupant of this territory.
+     */
     public void setOccupant(Player occupant) {
         this.occupant = occupant;
     }
 
-    public boolean contains(Point p) {
-        for (Patch patch : patches) {
-            if (patch.getPolygon().contains(p))
-                return true;
-        }
-        return false;
-    }
-
+    /**
+     * get the patches which belongs to this territory.
+     */
     public ArrayList<Patch> getPatches() {
         return patches;
     }
+
+
+    /**
+     * get the army's stationed at this territory.
+     */
+    public int getArmyCount() {
+        return armyCount;
+    }
+
+    /**
+     * set the army's stationed at this territory.
+     */
+    public void setArmyCount(int armyCount) {
+        this.armyCount = armyCount;
+    }
+
+    /**
+     * increases the army's stationed at this territory by one.
+     */
+    public void increaseArmyCount() {
+        this.armyCount++;
+    }
+
+
+    /**
+     * decreases the army's stationed at this territory by one.
+     */
+    public void decreaseArmyCount() {
+        this.armyCount--;
+    }
+
 
     public void addPatch(Polygon p) {
         patches.add(new Patch(this, p));
@@ -73,19 +117,14 @@ public class Territory {
         return getName().hashCode();
     }
 
-    public int getArmyCount() {
-        return armyCount;
-    }
-
-    public void setArmyCount(int armyCount) {
-        this.armyCount = armyCount;
-    }
-
-    public void increaseArmyCount() {
-        this.armyCount++;
-    }
-
-    public void decreaseArmyCount() {
-        this.armyCount--;
+    /**
+     * @return true if any of the patches which are associated with this territory contains this point.
+     */
+    public boolean contains(Point p) {
+        for (Patch patch : patches) {
+            if (patch.getPolygon().contains(p))
+                return true;
+        }
+        return false;
     }
 }

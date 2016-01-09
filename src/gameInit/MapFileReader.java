@@ -18,12 +18,18 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Created by chris on 06.01.2016. The map file reader interprets a map file into the corresponding data objects.
+ * The map file reader interprets a map file into the corresponding data objects.
  */
 class MapFileReader {
-    private static final Pattern patchNamePattern = Pattern.compile("[a-z-].*? (.*?) [0-9:]");
+    // sample line 'patch-of North West Territory 225 39 232 40 235 ...'
+    // sample line 'capital-of North America 74 72'
+    // sample line 'neighbors-of North America : ...'
+    private static final Pattern lineIdentifierPattern = Pattern.compile("[a-z-].*? (.*?) [0-9:]");
+    // sample line '225 39 232 40 235 ...'
     private static final Pattern coordinatesPattern = Pattern.compile("([0-9]+) ([0-9]+) ?");
+    // sample line 'neighbors-of North America : ...'
     private static final Pattern neighborsPattern = Pattern.compile(": (.*)");
+    // sample line 'continent North America 5 : Alaska - '
     private static final Pattern continentPattern = Pattern.compile("continent (.*?) ([0-9]+) : (.*)");
 
     private final String dataSource;
@@ -39,7 +45,7 @@ class MapFileReader {
 
         for (String line : lines) {
             if (line.startsWith("patch-of"))
-                parseTerritory(line);
+                parsePatch(line);
             else if (line.startsWith("capital-of"))
                 parseCapital(line);
             else if (line.startsWith("neighbors-of"))
@@ -49,7 +55,11 @@ class MapFileReader {
         }
     }
 
-    private void parseTerritory(String line) throws MapFileFormatException {
+
+    /**
+     * Parses an patch to an territory.
+     */
+    private void parsePatch(String line) throws MapFileFormatException {
         Territory targetTerritory = gameData.getOrCreateTerritory_ByName(getTerritoryName_FromLine(line));
         Polygon polygon = new Polygon();
 
@@ -63,6 +73,10 @@ class MapFileReader {
         targetTerritory.addPatch(polygon);
     }
 
+
+    /**
+     * Parses an capital which belongs to a patch.
+     */
     private void parseCapital(String line) throws MapFileFormatException {
         Territory targetTerritory = gameData.getOrCreateTerritory_ByName(getTerritoryName_FromLine(line));
         Matcher matcher = coordinatesPattern.matcher(line);
@@ -73,6 +87,9 @@ class MapFileReader {
         targetTerritory.setCapital(getCurrentPoint(matcher));
     }
 
+    /**
+     * Parses neighbors of a territory.
+     */
     private void parseNeighbors(String line) throws MapFileFormatException {
         Territory targetTerritory = gameData.getOrCreateTerritory_ByName(getTerritoryName_FromLine(line));
         Matcher matcher = neighborsPattern.matcher(line);
@@ -92,6 +109,10 @@ class MapFileReader {
 
     }
 
+
+    /**
+     * Parses territories which belongs to a continent.
+     */
     private void parseContinent(String line) throws MapFileFormatException {
         Matcher matcher = continentPattern.matcher(line);
 
@@ -113,8 +134,11 @@ class MapFileReader {
     }
 
 
+    /**
+     * gets the name of the territory from line.
+     */
     private String getTerritoryName_FromLine(String line) throws MapFileFormatException {
-        Matcher matcher = patchNamePattern.matcher(line);
+        Matcher matcher = lineIdentifierPattern.matcher(line);
 
         if (!matcher.find())
             throw new MapFileFormatException(dataSource, line);

@@ -12,9 +12,8 @@ import dataObjects.Territory;
 import java.util.ArrayList;
 
 /**
- * Created by chris on 07.01.2016.
- * The game data is the place where all data items are stored.
- * This includes the continents the territories, the players and their stats and so on.
+ * The game data is the place where all data items are stored. This includes the continents the territories, the
+ * players, their stats and so on. No game logic should be included inside the data classes.
  */
 public class GameData extends GameBase {
     //TODO there could be some performance improvements for the init if those two list would be converted into Maps,
@@ -25,6 +24,9 @@ public class GameData extends GameBase {
     private Player compPlayer;
 
 
+    /**
+     * Initializes the base class.
+     */
     @Override
     public void init(Game game) {
         super.init(game);
@@ -89,6 +91,12 @@ public class GameData extends GameBase {
         return null;
     }
 
+    /**
+     * Used for the game init phase only.
+     *
+     * @param name the name of the territory.
+     * @return the territory by name.
+     */
     public Territory getOrCreateTerritory_ByName(String name) {
         Territory territory = getTerritory_ByName(name);
         if (territory == null) {
@@ -98,6 +106,12 @@ public class GameData extends GameBase {
         return territory;
     }
 
+    /**
+     * Used for the game init phase only.
+     *
+     * @param name the name of the continent.
+     * @return the continent by name.
+     */
     public Continent getOrCreateContinent_ByName(String name) {
         Continent continent = getContinent_ByName(name);
         if (continent == null) {

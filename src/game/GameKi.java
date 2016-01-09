@@ -6,15 +6,13 @@ package game;
 
 import bases.GameBase;
 import dataObjects.Territory;
-import dataObjects.enums.PlayerPhases;
+import dataObjects.enums.PlayerStates;
 
 import java.util.ArrayList;
 import java.util.Random;
 
 /**
- * Created by chris on 07.01.2016.
- * The engine used for the pc player.
- * This is the place where the KI can be configured.
+ * The engine used for the pc player. This is the place where the KI can be configured.
  */
 public class GameKi extends GameBase {
     private final Random rand = new Random();
@@ -24,7 +22,7 @@ public class GameKi extends GameBase {
 
     public void ChooseSomeTerritory() {
 
-        state.setPlayerPhase(data.getCompPlayer(), PlayerPhases.Reinforcing);
+        state.setPlayerState(data.getCompPlayer(), PlayerStates.Reinforcing);
 
         Territory chosen = getRandomTerritory(game.getData().getAllTerritories());
         while (chosen.getOccupant() != null) {
@@ -32,16 +30,16 @@ public class GameKi extends GameBase {
         }
         state.setTerritoryOccupant(chosen, data.getCompPlayer());
 
-        state.setPlayerPhase(data.getCompPlayer(), PlayerPhases.Waiting);
+        state.setPlayerState(data.getCompPlayer(), PlayerStates.Waiting);
     }
 
     public void ReinforceTerritorys() {
-        state.setPlayerPhase(data.getCompPlayer(), PlayerPhases.Reinforcing);
+        state.setPlayerState(data.getCompPlayer(), PlayerStates.Reinforcing);
 
         while (data.getCompPlayer().getReinforcements() > 0) {
             state.reinforceTerritory(getRandomTerritory(data.getCompPlayer().getOwnedTerritories()));
         }
-        state.setPlayerPhase(data.getCompPlayer(), PlayerPhases.Waiting);
+        state.setPlayerState(data.getCompPlayer(), PlayerStates.Waiting);
     }
 
     private Territory getRandomTerritory(ArrayList<Territory> from) {

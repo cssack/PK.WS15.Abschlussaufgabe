@@ -7,15 +7,17 @@ package drawing;
 import bases.TacticalMovement;
 import dataObjects.Patch;
 import dataObjects.Territory;
-import game.*;
+import game.Game;
+import game.GameData;
+import game.GameDesign;
+import game.GameMessages;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.HashSet;
 
 /**
- * Created by chris on 07.01.2016. The drawing board draws the content of a game by using the game data the state and
- * the design.
+ * The drawing board draws the content of a game by using the game data and the design.
  */
 public class GameDrawingBoard extends JComponent {
     private final int toolBarHeight = 50;
@@ -25,23 +27,27 @@ public class GameDrawingBoard extends JComponent {
     private int paintCount;
     private GameData data;
     private GameDesign design;
-    private GameState state;
     private GameMessages messages;
 
     public void init(Game game) {
         this.data = game.getData();
         this.design = game.getDesign();
-        this.state = game.getState();
         this.messages = game.getMessages();
 
     }
 
+    /**
+     * Overridden to allow the windows to resize automatically.
+     */
     @Override
     public Dimension getPreferredSize() {
         return new Dimension(worldMapSize.width, worldMapSize.height + toolBarHeight);
     }
 
 
+    /**
+     * Occurs whenever the repaint method is invoked. The repaint method should only be invoked by the game engine.
+     */
     @Override
     public void paint(Graphics g) {
         super.paint(g);
@@ -53,17 +59,24 @@ public class GameDrawingBoard extends JComponent {
         DrawBackground(g2);
         DrawNeighborLines(g2);
         DrawTerritories(g2);
-        DrawTransportMovements(g2);
+        DrawTransferMovements(g2);
         DrawAttackMovements(g2);
         DrawTerritoryTexts(g2);
         DrawInfoBar(g2);
 
     }
 
+    /**
+     * Draws the background of the game.
+     */
     private void DrawBackground(Graphics2D g) {
         g.drawImage(design.getBackgroundImage(), 0, 0, null);
     }
 
+
+    /**
+     * Draws the patches of each territory.
+     */
     private void DrawTerritories(Graphics2D g) {
         Color prevColor = g.getColor();
         Stroke prevStroke = g.getStroke();
@@ -84,6 +97,26 @@ public class GameDrawingBoard extends JComponent {
         g.setStroke(prevStroke);
     }
 
+    /**
+     * Draws the patches of a single territory.
+     */
+    private void DrawTerritory(Graphics2D g, Territory territory) {
+        g.setColor(design.getTerritoryBackgroundColor(territory));
+        for (Patch patch : territory.getPatches()) {
+            g.fillPolygon(patch.getPolygon());
+        }
+
+        g.setColor(design.getTerritoryBoundaryColor(territory));
+        g.setStroke(design.getTerritoryBoundaryStroke(territory));
+        for (Patch patch : territory.getPatches()) {
+            g.drawPolygon(patch.getPolygon());
+        }
+
+    }
+
+    /**
+     * Draws the text of each territory to its capital position.
+     */
     private void DrawTerritoryTexts(Graphics2D g) {
         Font prevFont = g.getFont();
         Color prevColor = g.getColor();
@@ -99,20 +132,9 @@ public class GameDrawingBoard extends JComponent {
         g.setColor(prevColor);
     }
 
-    private void DrawTerritory(Graphics2D g, Territory territory) {
-        g.setColor(design.getTerritoryBackgroundColor(territory));
-        for (Patch patch : territory.getPatches()) {
-            g.fillPolygon(patch.getPolygon());
-        }
-
-        g.setColor(design.getTerritoryBoundaryColor(territory));
-        g.setStroke(design.getTerritoryBoundaryStroke(territory));
-        for (Patch patch : territory.getPatches()) {
-            g.drawPolygon(patch.getPolygon());
-        }
-
-    }
-
+    /**
+     * Draws the text of a single territory to its capital position.
+     */
     private void DrawTerritoryText(Graphics2D g, Territory t) {
         if (t.getOccupant() == null)
             return;
@@ -129,6 +151,9 @@ public class GameDrawingBoard extends JComponent {
 
     }
 
+    /**
+     * Draws white lines between all territories.
+     */
     private void DrawNeighborLines(Graphics2D g) {
         Color prevColor = g.getColor();
         Stroke prevStroke = g.getStroke();
@@ -143,6 +168,10 @@ public class GameDrawingBoard extends JComponent {
         g.setStroke(prevStroke);
     }
 
+    /**
+     * Draws white lines between all territories recursively. Using a HashSet to determine which nodes already have been
+     * drawn.
+     */
     private void DrawNeighborLines(Graphics2D g, HashSet<Territory> visitedNodes, Territory currentNode) {
         visitedNodes.add(currentNode);
         for (Territory neighbor : currentNode.getNeighbors()) {
@@ -166,19 +195,25 @@ public class GameDrawingBoard extends JComponent {
         }
     }
 
-    private void DrawTransportMovements(Graphics2D g) {
+    /**
+     * Draws the transfer movements for each player.
+     */
+    private void DrawTransferMovements(Graphics2D g) {
         Color prevColor = g.getColor();
         Stroke prevStroke = g.getStroke();
 
         g.setColor(Color.BLUE);
         g.setStroke(design.getCapitalLineStroke());
-        DrawMovement(g, data.getHumanPlayer().getTransportMovement());
-        DrawMovement(g, data.getCompPlayer().getTransportMovement());
+        DrawMovement(g, data.getHumanPlayer().getTransferMovement());
+        DrawMovement(g, data.getCompPlayer().getTransferMovement());
 
         g.setColor(prevColor);
         g.setStroke(prevStroke);
     }
 
+    /**
+     * Draws the attach movements for each player.
+     */
     private void DrawAttackMovements(Graphics2D g) {
         Color prevColor = g.getColor();
         Stroke prevStroke = g.getStroke();
@@ -192,7 +227,9 @@ public class GameDrawingBoard extends JComponent {
         g.setStroke(prevStroke);
     }
 
-
+    /**
+     * Draws a single movement this can either be an attack movement or a transfer movement.
+     */
     private void DrawMovement(Graphics2D g, TacticalMovement movement) {
         if (movement == null)
             return;
@@ -211,6 +248,9 @@ public class GameDrawingBoard extends JComponent {
         g.setFont(prevFont);
     }
 
+    /**
+     * Draws a line between two capitals. This method takes care of special line between alaska and kamchatka.
+     */
     private void DrawLineBetweenCapitals(Graphics2D g, Territory from, Territory to) {
         Point capitalA = from.getCapital().getPoint();
         Point capitalB = to.getCapital().getPoint();
@@ -229,6 +269,10 @@ public class GameDrawingBoard extends JComponent {
         }
     }
 
+    /**
+     * Draws a descriptive text for a line between two capitals. This method takes care of special descriptive text
+     * between alaska and kamchatka.
+     */
     private void DrawLineBetweenCapitalsDescription(Graphics2D g, Territory from, Territory to, String text) {
         Point fromPoint = from.getCapital().getPoint();
         Point toPoint = to.getCapital().getPoint();
@@ -253,10 +297,10 @@ public class GameDrawingBoard extends JComponent {
         g.drawString(text, x, y);
     }
 
+    /**
+     * Draws the info bar for the game at the very bottom.
+     */
     private void DrawInfoBar(Graphics2D g) {
-        // Currently in work by chris
-        // A Toolbar on the bottom of the game which gives an overview of the current game and state
-
         Font prevFont = g.getFont();
         Color prevColor = g.getColor();
 

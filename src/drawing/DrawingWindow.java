@@ -11,9 +11,7 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- * Created by chris on 07.01.2016.
- * The drawing window is a window which displays a drawing board.
- * Use this window to start a game.
+ * The drawing window is a window which displays the drawing board. Use this window to start a game.
  */
 public class DrawingWindow extends JFrame {
     public DrawingWindow(Game game) throws HeadlessException {

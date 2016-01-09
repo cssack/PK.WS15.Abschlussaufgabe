@@ -7,19 +7,17 @@ package game;
 import bases.GameBase;
 import dataObjects.Territory;
 import dataObjects.enums.Phases;
-import dataObjects.enums.PlayerPhases;
+import dataObjects.enums.PlayerStates;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.util.Random;
 
 /**
- * Created by chris on 07.01.2016. The game engine handles events and changes the game state accordingly.
+ * The game engine handles events and calls state methods accordingly on the GameState class.
  */
 public class GameEngine extends GameBase implements MouseMotionListener, MouseListener {
-    Random rand = new Random();
 
     @Override
     public void init(Game game) {
@@ -68,20 +66,20 @@ public class GameEngine extends GameBase implements MouseMotionListener, MouseLi
                 state.setGamePhase(Phases.AttackOrMove);
             }
         } else if (state.getGamePhase() == Phases.AttackOrMove) {
-            if (data.getHumanPlayer().getPhase() == PlayerPhases.FirstTerritorySelection) {
+            if (data.getHumanPlayer().getState() == PlayerStates.FirstTerritorySelection) {
                 state.setSelectedTerritory(data.getHumanPlayer(), mouseOverTerritory);
-            } else if (data.getHumanPlayer().getPhase() == PlayerPhases.FirstTerritorySelected) {
+            } else if (data.getHumanPlayer().getState() == PlayerStates.FirstTerritorySelected) {
                 if (e.getButton() == MouseEvent.BUTTON1 && mouseOverTerritory.getOccupant() == data.getHumanPlayer()) {
                     if (mouseOverTerritory.getArmyCount() > 1)
                         state.setSelectedTerritory(data.getHumanPlayer(), mouseOverTerritory);
                 } else if (e.getButton() == MouseEvent.BUTTON1 && mouseOverTerritory.getOccupant() == data
                         .getCompPlayer()) {
-                    state.handleAttackMovement(data.getHumanPlayer(), mouseOverTerritory);
+                    state.assignAttackMovement(data.getHumanPlayer(), mouseOverTerritory);
                 } else if (e.getButton() == MouseEvent.BUTTON3) {
-                    state.handleTransportMovement(data.getHumanPlayer(), mouseOverTerritory);
+                    state.assignTransferMovement(data.getHumanPlayer(), mouseOverTerritory);
                 }
                 //TODO start attacking or start movement.
-            } else if (data.getHumanPlayer().getPhase() == PlayerPhases.AttackedWin) {
+            } else if (data.getHumanPlayer().getState() == PlayerStates.RoundFinished) {
                 //TODO Check if player wants to move from source territory to attacked territory
             }
         }
@@ -107,46 +105,6 @@ public class GameEngine extends GameBase implements MouseMotionListener, MouseLi
 
     @Override
     public void mouseExited(MouseEvent e) {
-
-    }
-
-    private void handleUserAttack(Territory defensingTerritory) {
-        Territory attackerTerritory = data.getHumanPlayer().getSelectedTerritory();
-
-        state.setPlayerPhase(data.getHumanPlayer(), PlayerPhases.Attacking);
-        int defenseArmy = defensingTerritory.getArmyCount();
-        int attackingArmy = attackerTerritory.getArmyCount();
-
-        if (attackingArmy > 3)
-            attackingArmy = 3;
-        else
-            attackingArmy = attackingArmy - 1;
-
-        attackerTerritory.setArmyCount(attackerTerritory.getArmyCount() - attackingArmy);
-
-        while (attackingArmy != 0) {
-            int defenseRand = rand.nextInt();
-            int attackingRand = rand.nextInt();
-
-            if (attackingRand > defenseRand)
-                defenseArmy--;
-            else
-                attackingArmy--;
-
-            if (defenseArmy == 0)
-                break;
-        }
-
-
-        if (attackingArmy == 0) {
-            defensingTerritory.setArmyCount(defenseArmy);
-            state.setPlayerPhase(data.getHumanPlayer(), PlayerPhases.AttackedLost);
-        } else {
-            state.setTerritoryOccupant(defensingTerritory, data.getHumanPlayer());
-            defensingTerritory.setArmyCount(attackingArmy);
-            state.setPlayerPhase(data.getHumanPlayer(), PlayerPhases.AttackedWin);
-        }
-
 
     }
 

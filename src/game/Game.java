@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 
 /**
- * Created by chris on 07.01.2016.
  * The game collapses all machines and data objects required by one game.
  */
 public class Game {
@@ -83,7 +82,6 @@ public class Game {
     public GameDrawingBoard getDrawingBoard() {
         return drawingBoard;
     }
-
 
     /**
      * @return Gets the messaging scope. This is used for the output messages presented to the user in the toolbar.
