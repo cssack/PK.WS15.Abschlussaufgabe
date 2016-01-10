@@ -4,6 +4,7 @@
 
 package bases;
 
+import dataObjects.Player;
 import dataObjects.Territory;
 
 /**
@@ -12,16 +13,20 @@ import dataObjects.Territory;
 public class TacticalMovement {
     public final Territory from;
     public final Territory to;
+    public final Player owner;
     private int armyCount;
 
-    public TacticalMovement(Territory from, Territory to) {
+    public TacticalMovement(Player p, Territory from, Territory to) {
+        assert p != null;
         assert from != to;
+
         this.from = from;
         this.to = to;
+        this.owner = p;
     }
 
-    public TacticalMovement(Territory from, Territory to, int armyCount) {
-        this(from, to);
+    public TacticalMovement(Player p, Territory from, Territory to, int armyCount) {
+        this(p, from, to);
         this.armyCount = armyCount;
     }
 

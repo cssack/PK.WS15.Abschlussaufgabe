@@ -37,7 +37,8 @@ public class GameDesign extends GameBase {
      * @return the current valid background color for a territory.
      */
     public Color getTerritoryBackgroundColor(Territory t) {
-        boolean highlighted = state.isMouseTargetClickable() && state.getMouseOverTerritory() == t;
+        boolean highlighted = (engine.getIsMouseLeftButtonValid() || engine.getIsMouseRightButtonValid()) && engine
+                .getHoverTerritory() == t;
         if (t == data.getHumanPlayer().getSelectedTerritory())
             if (t.getOccupant() == data.getHumanPlayer())
                 return Color.decode("#107C0F"); //TODO change selection color

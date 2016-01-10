@@ -5,6 +5,8 @@
 package game;
 
 import bases.GameBase;
+import bases.TacticalMovement;
+import dataObjects.Player;
 import dataObjects.Territory;
 import dataObjects.enums.Phases;
 import dataObjects.enums.PlayerStates;
@@ -18,6 +20,120 @@ import java.awt.event.MouseMotionListener;
  * The game engine handles events and calls state methods accordingly on the GameState class.
  */
 public class GameEngine extends GameBase implements MouseMotionListener, MouseListener {
+    private Territory hoverTerritory;
+    private boolean isMouseLeftButtonValid;
+    private boolean isMouseRightButtonValid;
+    private boolean repaintRequested;
+
+    public void checkMouseHover(MouseEvent e) {
+        Territory newHoverTerritory = GetTerritoryAtPos(e.getPoint());
+        if (newHoverTerritory == hoverTerritory)
+            return;
+
+        hoverTerritory = newHoverTerritory;
+
+        validateMouseButtons();
+
+        repaintRequested = true;
+    }
+
+    public void validateMouseButtons() {
+        boolean isMouseLeftButtonValidTmp = isMouseLeftButtonValid;
+        boolean isMouseRightButtonValidTmp = isMouseRightButtonValid;
+
+        if (hoverTerritory == null) {
+            isMouseLeftButtonValid = false;
+            isMouseRightButtonValid = false;
+        } else {
+            validateLeftMouseButton();
+            validateRightMouseButton();
+        }
+
+
+        if (isMouseLeftButtonValidTmp != isMouseLeftButtonValid || isMouseRightButtonValidTmp != isMouseRightButtonValid)
+            requestRepaint();
+    }
+
+    private void validateLeftMouseButton() {
+        Phases gamePhase = state.getGamePhase();
+        Player human = data.getHumanPlayer();
+        PlayerStates humanState = human.getState();
+        Territory humanSelectedTerritory = human.getSelectedTerritory();
+        Player comp = data.getCompPlayer();
+        Player hoverOccupant = hoverTerritory.getOccupant();
+
+        if (humanState == PlayerStates.Waiting) {
+            isMouseLeftButtonValid = false;
+            return;
+        }
+        if (gamePhase == Phases.Landerwerb) {
+            isMouseLeftButtonValid = hoverOccupant == null;
+            return;
+        }
+        if (humanState == PlayerStates.Reinforcing) {
+            isMouseLeftButtonValid = hoverOccupant == human;
+            return;
+        }
+
+        if (human.getTransferMovement() != null && human.getTransferMovement().to == hoverTerritory) {
+            isMouseLeftButtonValid = true;
+            return;
+        }
+        if (human.getAttackMovement() != null && human.getAttackMovement().from == hoverTerritory) {
+            isMouseLeftButtonValid = true;
+            return;
+        }
+
+        if (humanState == PlayerStates.FirstTerritorySelection) {
+            isMouseLeftButtonValid = hoverOccupant == human && hoverTerritory.getArmyCount() > 1;
+            return;
+        }
+        if (humanState == PlayerStates.FirstTerritorySelected) {
+            boolean isNeighbor = humanSelectedTerritory.getNeighbors().contains(hoverTerritory);
+            isMouseLeftButtonValid = (isNeighbor && hoverOccupant == comp && humanSelectedTerritory
+                    .getArmyCount() > 1) || //enemy attack
+                    (human.getAttackMovement() != null && human.getAttackMovement()
+                            .consitsOf(humanSelectedTerritory, hoverTerritory)) || //used to be able to remove an attack
+                    (hoverOccupant == human && hoverTerritory.getArmyCount() > 1); // new selection
+            return;
+        }
+        isMouseLeftButtonValid = false;
+    }
+
+    private void validateRightMouseButton() {
+        Phases gamePhase = state.getGamePhase();
+        Player human = data.getHumanPlayer();
+        PlayerStates humanState = human.getState();
+        Territory humanSelectedTerritory = human.getSelectedTerritory();
+        Player comp = data.getCompPlayer();
+        Player hoverOccupant = hoverTerritory.getOccupant();
+
+        if (humanState == PlayerStates.Waiting || gamePhase == Phases.Landerwerb || humanState == PlayerStates.Reinforcing || humanState == PlayerStates.FirstTerritorySelection) {
+            isMouseRightButtonValid = false;
+            return;
+        }
+
+        if (humanState == PlayerStates.FirstTerritorySelected) {
+            boolean hoverIsNeighbor = humanSelectedTerritory.getNeighbors().contains(hoverTerritory);
+            TacticalMovement transfer = human.getTransferMovement();
+            isMouseRightButtonValid = (humanSelectedTerritory
+                    .getArmyCount() > 1 && hoverIsNeighbor && hoverOccupant == human) ||
+                    (transfer != null && transfer.to == humanSelectedTerritory && transfer.from == hoverTerritory);
+            return;
+        }
+        isMouseRightButtonValid = false;
+    }
+
+    private void tryRepaint() {
+        if (!repaintRequested)
+            return;
+        drawingBoard.repaint();
+        repaintRequested = false;
+    }
+
+    public void requestRepaint() {
+        repaintRequested = true;
+    }
 
     @Override
     public void init(Game game) {
@@ -25,7 +141,6 @@ public class GameEngine extends GameBase implements MouseMotionListener, MouseLi
 
         drawingBoard.addMouseMotionListener(this);
         drawingBoard.addMouseListener(this);
-        state.setGamePhase(Phases.Landerwerb);
     }
 
     @Override
@@ -35,57 +150,46 @@ public class GameEngine extends GameBase implements MouseMotionListener, MouseLi
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        state.resetRepaintRequired();
+        checkMouseHover(e);
 
-        state.setMouseOverTerritory(GetTerritoryAtPos(e.getPoint()));
-
-        if (state.isRepaintRequired()) drawingBoard.repaint();
+        tryRepaint();
     }
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        if (!state.isMouseTargetClickable())
+        if (e.getButton() == MouseEvent.BUTTON1 && !isMouseLeftButtonValid)
+            return;
+        if (e.getButton() == MouseEvent.BUTTON3 && !isMouseRightButtonValid)
             return;
 
-        state.resetRepaintRequired();
+        Player human = data.getHumanPlayer();
+        PlayerStates humanState = human.getState();
+        Phases gamePhase = state.getGamePhase();
 
-        Territory mouseOverTerritory = state.getMouseOverTerritory();
-        if (mouseOverTerritory == data.getHumanPlayer().getSelectedTerritory()) {
-            state.setSelectedTerritory(data.getHumanPlayer(), null);
-        } else if (state.getGamePhase() == Phases.Landerwerb) {
-            state.setTerritoryOccupant(mouseOverTerritory, data.getHumanPlayer());
-            ki.ChooseSomeTerritory();
-
-            if (state.getOccupiedTerritories() == data.getAllTerritories().size())
-                state.setGamePhase(Phases.Reinforcement);
-
-        } else if (state.getGamePhase() == Phases.Reinforcement) {
-            state.reinforceTerritory(mouseOverTerritory);
-            if (data.getHumanPlayer().getReinforcements() == 0) {
-                ki.ReinforceTerritorys();
-                state.setGamePhase(Phases.AttackOrMove);
-            }
-        } else if (state.getGamePhase() == Phases.AttackOrMove) {
-            if (data.getHumanPlayer().getState() == PlayerStates.FirstTerritorySelection) {
-                state.setSelectedTerritory(data.getHumanPlayer(), mouseOverTerritory);
-            } else if (data.getHumanPlayer().getState() == PlayerStates.FirstTerritorySelected) {
-                if (e.getButton() == MouseEvent.BUTTON1 && mouseOverTerritory.getOccupant() == data.getHumanPlayer()) {
-                    if (mouseOverTerritory.getArmyCount() > 1)
-                        state.setSelectedTerritory(data.getHumanPlayer(), mouseOverTerritory);
-                } else if (e.getButton() == MouseEvent.BUTTON1 && mouseOverTerritory.getOccupant() == data
-                        .getCompPlayer()) {
-                    state.assignAttackMovement(data.getHumanPlayer(), mouseOverTerritory);
-                } else if (e.getButton() == MouseEvent.BUTTON3) {
-                    state.assignTransferMovement(data.getHumanPlayer(), mouseOverTerritory);
+        if (e.getButton() == MouseEvent.BUTTON1) {
+            if (gamePhase == Phases.Landerwerb) {
+                state.setTerritoryOccupant(hoverTerritory, human);
+                ki.ChooseSomeTerritory();
+            } else if (humanState == PlayerStates.Reinforcing) {
+                state.reinforceTerritory(hoverTerritory);
+                if (data.getCompPlayer().getState() == PlayerStates.Reinforcing)
+                    ki.ReinforceTerritorys();
+            } else if (humanState == PlayerStates.FirstTerritorySelection) {
+                state.setSelectedTerritory(human, hoverTerritory);
+            } else if (humanState == PlayerStates.FirstTerritorySelected) {
+                if (hoverTerritory.getOccupant() == human)
+                    state.setSelectedTerritory(human, hoverTerritory);
+                else {
+                    state.assignAttackMovement(human, hoverTerritory);
+                    state.setSelectedTerritory(human, null);
                 }
-                //TODO start attacking or start movement.
-            } else if (data.getHumanPlayer().getState() == PlayerStates.RoundFinished) {
-                //TODO Check if player wants to move from source territory to attacked territory
             }
+        } else if (e.getButton() == MouseEvent.BUTTON3) {
+            state.assignTransferMovement(human, hoverTerritory);
         }
 
-        if (state.isRepaintRequired())
-            drawingBoard.repaint();
+
+        tryRepaint();
     }
 
     @Override
@@ -115,5 +219,17 @@ public class GameEngine extends GameBase implements MouseMotionListener, MouseLi
                 return territory;
         }
         return null;
+    }
+
+    public boolean getIsMouseLeftButtonValid() {
+        return isMouseLeftButtonValid;
+    }
+
+    public boolean getIsMouseRightButtonValid() {
+        return isMouseRightButtonValid;
+    }
+
+    public Territory getHoverTerritory() {
+        return hoverTerritory;
     }
 }
