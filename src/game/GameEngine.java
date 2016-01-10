@@ -90,8 +90,9 @@ public class GameEngine extends GameBase implements MouseMotionListener, MouseLi
         }
         if (humanState == PlayerStates.FirstTerritorySelected) {
             boolean isNeighbor = humanSelectedTerritory.getNeighbors().contains(hoverTerritory);
-            isMouseLeftButtonValid = (isNeighbor && hoverOccupant == comp && humanSelectedTerritory
-                    .getArmyCount() > 1) || //enemy attack
+            isMouseLeftButtonValid = (isNeighbor && hoverOccupant == comp && (humanSelectedTerritory
+                    .getArmyCount() > 1 || (human.getAttackMovement() != null && human
+                    .getAttackMovement().from == humanSelectedTerritory))) || //enemy attack
                     (human.getAttackMovement() != null && human.getAttackMovement()
                             .consitsOf(humanSelectedTerritory, hoverTerritory)) || //used to be able to remove an attack
                     (hoverOccupant == human && hoverTerritory.getArmyCount() > 1); // new selection
