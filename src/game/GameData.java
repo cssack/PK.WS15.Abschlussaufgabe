@@ -10,7 +10,9 @@ import dataObjects.Player;
 import dataObjects.Territory;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 /**
  * The game data is the place where all data items are stored. This includes the continents the territories, the
@@ -125,7 +127,7 @@ public class GameData extends GameBase {
     /**
      * Gets a random territory from a list of territories
      */
-    public Territory getRandomTerritory(ArrayList<Territory> from) {
+    public Territory getRandomTerritory(List<Territory> from) {
         return from.get(rand.nextInt(from.size()));
     }
 
@@ -136,10 +138,7 @@ public class GameData extends GameBase {
         if (state.getOccupiedTerritories() == allTerritories.size())
             return null;
 
-        Territory territory = allTerritories.get(rand.nextInt(allTerritories.size()));
-        while (territory.getOccupant() != null) {
-            territory = allTerritories.get(rand.nextInt(allTerritories.size()));
-        }
-        return territory;
+        return getRandomTerritory(allTerritories.stream().filter(Territory::isUnoccupied)
+                .collect(Collectors.toList()));
     }
 }
