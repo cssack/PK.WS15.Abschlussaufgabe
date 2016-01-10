@@ -229,10 +229,20 @@ public class GameEngine extends GameBase implements MouseMotionListener, MouseLi
 
     @Override
     public void keyReleased(KeyEvent e) {
-        if (e.getKeyChar() == ' ' && state.getGamePhase() == Phases.Landerwerb) {
-            while (state.getGamePhase() == Phases.Landerwerb) {
-                state.setTerritoryOccupant(data.getRandomUnassignedTerritory(), data.getHumanPlayer());
-                ki.ChooseSomeTerritory();
+        if (e.getKeyChar() == ' ') {
+            if (state.getGamePhase() == Phases.Landerwerb) {
+                while (state.getGamePhase() == Phases.Landerwerb) {
+                    state.setTerritoryOccupant(data.getRandomUnassignedTerritory(), data.getHumanPlayer());
+                    ki.ChooseSomeTerritory();
+                    Repaint();
+                }
+            } else if (state.getGamePhase() == Phases.Reinforcement) {
+                while (data.getHumanPlayer().getState() == PlayerStates.Reinforcing) {
+                    state.reinforceTerritory(data.getRandomTerritory(data.getHumanPlayer().getOwnedTerritories()));
+                    Repaint();
+                }
+                if (data.getCompPlayer().getState() == PlayerStates.Reinforcing)
+                    ki.ReinforceTerritorys();
                 Repaint();
             }
         }

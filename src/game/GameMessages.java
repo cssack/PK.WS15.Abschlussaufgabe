@@ -25,7 +25,7 @@ public class GameMessages extends GameBase {
 
         if (state.getGamePhase() == Phases.Landerwerb)
             return "Wählen Sie ein Land aus. (" + ((data.getAllTerritories().size() - state
-                    .getOccupiedTerritories()) / 2) + " verfügbar). Order Leertaste für zufällige Verteilung";
+                    .getOccupiedTerritories()) / 2) + " verfügbar). Oder Leertaste für zufällige Verteilung.";
         if (state.getGamePhase() == Phases.QuickOverViewBefore)
             return "Taktische movements aller Spieler.";
         if (state.getGamePhase() == Phases.QuickOverViewAfter)
@@ -36,7 +36,8 @@ public class GameMessages extends GameBase {
         PlayerStates humanPhase = human.getState();
 
         if (humanPhase == PlayerStates.Reinforcing)
-            return "Verteilen Sie noch " + human.getReinforcements() + " Armeen.";
+            return "Verteilen Sie noch " + human
+                    .getReinforcements() + " Armeen. Oder Leertaste für zufällige Verteilung.";
         if (humanPhase == PlayerStates.FirstTerritorySelection)
             return "Wählen Sie ein Territorium aus von dem weg Sie einen Angriff oder Transport starten wollen.";
         if (humanPhase == PlayerStates.FirstTerritorySelected)
