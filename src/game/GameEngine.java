@@ -22,6 +22,7 @@ public class GameEngine extends GameBase implements MouseMotionListener, MouseLi
     private boolean isMouseLeftButtonValid;
     private boolean isMouseRightButtonValid;
     private boolean repaintRequested;
+    private boolean isMouseOverEndRoundButton;
 
     @Override
     public void init(Game game) {
@@ -34,6 +35,8 @@ public class GameEngine extends GameBase implements MouseMotionListener, MouseLi
     }
 
     public void checkMouseHover(MouseEvent e) {
+        validateEndRoundButton(e);
+
         Territory newHoverTerritory = GetTerritoryAtPos(e.getPoint());
         if (newHoverTerritory == hoverTerritory)
             return;
@@ -42,8 +45,9 @@ public class GameEngine extends GameBase implements MouseMotionListener, MouseLi
 
         validateMouseButtons();
 
-        repaintRequested = true;
+        requestRepaint();
     }
+
 
     public void validateMouseButtons() {
         boolean isMouseLeftButtonValidTmp = isMouseLeftButtonValid;
@@ -59,6 +63,13 @@ public class GameEngine extends GameBase implements MouseMotionListener, MouseLi
 
 
         if (isMouseLeftButtonValidTmp != isMouseLeftButtonValid || isMouseRightButtonValidTmp != isMouseRightButtonValid)
+            requestRepaint();
+    }
+
+    private void validateEndRoundButton(MouseEvent e) {
+        boolean old = isMouseOverEndRoundButton;
+        isMouseOverEndRoundButton = design.endButton.contains(e.getPoint());
+        if (old != isMouseOverEndRoundButton)
             requestRepaint();
     }
 
@@ -195,6 +206,18 @@ public class GameEngine extends GameBase implements MouseMotionListener, MouseLi
     }
 
     @Override
+    public void keyReleased(KeyEvent e) {
+        if (e.getKeyChar() == ' ' && state.getGamePhase() == Phases.Landerwerb) {
+            while (state.getGamePhase() == Phases.Landerwerb) {
+                state.setTerritoryOccupant(data.getRandomUnassignedTerritory(), data.getHumanPlayer());
+                ki.ChooseSomeTerritory();
+                requestRepaint();
+                tryRepaint();
+            }
+        }
+    }
+
+    @Override
     public void mousePressed(MouseEvent e) {
 
     }
@@ -211,6 +234,16 @@ public class GameEngine extends GameBase implements MouseMotionListener, MouseLi
 
     @Override
     public void mouseExited(MouseEvent e) {
+
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
 
     }
 
@@ -231,29 +264,12 @@ public class GameEngine extends GameBase implements MouseMotionListener, MouseLi
         return isMouseRightButtonValid;
     }
 
+    public boolean getIsMouseOverEndRoundButton() {
+        return isMouseOverEndRoundButton;
+    }
+
     public Territory getHoverTerritory() {
         return hoverTerritory;
     }
 
-    @Override
-    public void keyTyped(KeyEvent e) {
-
-    }
-
-    @Override
-    public void keyPressed(KeyEvent e) {
-
-    }
-
-    @Override
-    public void keyReleased(KeyEvent e) {
-        if (e.getKeyChar() == ' ' && state.getGamePhase() == Phases.Landerwerb) {
-            while (state.getGamePhase() == Phases.Landerwerb) {
-                state.setTerritoryOccupant(data.getRandomUnassignedTerritory(), data.getHumanPlayer());
-                ki.ChooseSomeTerritory();
-                requestRepaint();
-                tryRepaint();
-            }
-        }
-    }
 }

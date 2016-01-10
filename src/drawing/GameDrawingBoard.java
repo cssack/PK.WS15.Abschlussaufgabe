@@ -22,6 +22,7 @@ public class GameDrawingBoard extends JComponent {
     private GameData data;
     private GameDesign design;
     private GameState state;
+    private GameEngine engine;
     private GameMessages messages;
 
     public GameDrawingBoard() {
@@ -34,6 +35,7 @@ public class GameDrawingBoard extends JComponent {
         this.design = game.getDesign();
         this.state = game.getState();
         this.messages = game.getMessages();
+        this.engine = game.getEngine();
     }
 
     /**
@@ -330,10 +332,10 @@ public class GameDrawingBoard extends JComponent {
         Color prevColor = g.getColor();
 
 
-        g.setColor(Color.GRAY);
+        g.setColor(engine.getIsMouseOverEndRoundButton() ? Color.BLACK : Color.decode("#717171"));
 
         g.drawRect(design.endButton.x, design.endButton.y, design.endButton.width, design.endButton.height);
-        g.setColor(Color.WHITE);
+        g.setColor(engine.getIsMouseOverEndRoundButton() ? Color.decode("#C4C4C4") : Color.decode("#E8E8E8"));
         g.fillRect(design.endButton.x, design.endButton.y, design.endButton.width, design.endButton.height);
 
         g.setFont(design.endbuttonFont);
