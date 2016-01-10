@@ -10,3 +10,4 @@ TODO:
 - Movement drawing is not perfectly alignend.
 - Movement drawing line could be shorter
 - Some nice little you have won the game message for the end could be implemented.
+- god mode for player activated through keyboard (testing different situations).
