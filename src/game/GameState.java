@@ -37,32 +37,39 @@ public class GameState extends GameBase {
      */
     public void setGamePhase(Phases phase) {
         gamePhase = phase;
-        if (phase == Phases.Landerwerb) {
-            setPlayerState(data.getHumanPlayer(), PlayerStates.Reinforcing);
-        } else if (phase == Phases.Reinforcement) {
-            data.getHumanPlayer().setAttackMovement(null);
-            data.getCompPlayer().setAttackMovement(null);
-            data.getHumanPlayer().setTransferMovement(null);
-            data.getCompPlayer().setTransferMovement(null);
+        switch (gamePhase) {
+            case Landerwerb:
+                setPlayerState(data.getHumanPlayer(), PlayerStates.Reinforcing);
+                break;
+            case Reinforcement:
+                data.getHumanPlayer().setAttackMovement(null);
+                data.getCompPlayer().setAttackMovement(null);
+                data.getHumanPlayer().setTransferMovement(null);
+                data.getCompPlayer().setTransferMovement(null);
 
-            reassign_Reinforcements(data.getHumanPlayer());
-            reassign_Reinforcements(data.getCompPlayer());
+                reassign_Reinforcements(data.getHumanPlayer());
+                reassign_Reinforcements(data.getCompPlayer());
 
-            setPlayerState(data.getHumanPlayer(), PlayerStates.Reinforcing);
-            setPlayerState(data.getCompPlayer(), PlayerStates.Waiting);
-        } else if (phase == Phases.AttackOrMove) {
-            setPlayerState(data.getHumanPlayer(), PlayerStates.FirstTerritorySelection);
-            setPlayerState(data.getCompPlayer(), PlayerStates.Waiting);
-        } else if (phase == Phases.QuickOverViewBefore) {
-            setSelectedTerritory(data.getHumanPlayer(), null);
-            setSelectedTerritory(data.getCompPlayer(), null);
-            setPlayerState(data.getHumanPlayer(), PlayerStates.Waiting);
-            setPlayerState(data.getCompPlayer(), PlayerStates.Waiting);
-        } else if (phase == Phases.QuickOverViewAfter) {
-            setPlayerState(data.getHumanPlayer(), PlayerStates.Waiting);
-            setPlayerState(data.getCompPlayer(), PlayerStates.Waiting);
+                setPlayerState(data.getHumanPlayer(), PlayerStates.Reinforcing);
+                setPlayerState(data.getCompPlayer(), PlayerStates.Waiting);
+                break;
+            case AttackOrMove:
+                setPlayerState(data.getHumanPlayer(), PlayerStates.FirstTerritorySelection);
+                setPlayerState(data.getCompPlayer(), PlayerStates.Waiting);
+                break;
+            case QuickOverViewBefore:
+                setSelectedTerritory(data.getHumanPlayer(), null);
+                setSelectedTerritory(data.getCompPlayer(), null);
+                setPlayerState(data.getHumanPlayer(), PlayerStates.Waiting);
+                setPlayerState(data.getCompPlayer(), PlayerStates.Waiting);
+                break;
+            case QuickOverViewAfter:
+                setPlayerState(data.getHumanPlayer(), PlayerStates.Waiting);
+                setPlayerState(data.getCompPlayer(), PlayerStates.Waiting);
+                break;
+            default:
+                break;
         }
-
         engine.validateMouseButtons();
         engine.requestRepaint();
     }
