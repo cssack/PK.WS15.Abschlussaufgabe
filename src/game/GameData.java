@@ -73,11 +73,7 @@ public class GameData extends GameBase {
     public Continent getContinent_ByName(String name) {
         assert name != null && !name.equals("") : "name is null or empty";
 
-        for (Continent continent : allContinents) {
-            if (continent.getName().equals(name))
-                return continent;
-        }
-        return null;
+        return allContinents.stream().filter(c -> c.getName().equals(name)).findFirst().orElse(null);
     }
 
     /**
@@ -87,11 +83,7 @@ public class GameData extends GameBase {
     public Territory getTerritory_ByName(String name) {
         assert name != null && !name.equals("") : "name is null or empty";
 
-        for (Territory territory : allTerritories) {
-            if (territory.getName().equals(name))
-                return territory;
-        }
-        return null;
+        return allTerritories.stream().filter(t -> t.getName().equals(name)).findFirst().orElse(null);
     }
 
     /**
