@@ -334,4 +334,19 @@ public class GameState extends GameBase {
                 (compTransfer != null && compTransfer.contains(t)) ||
                 (humanTransfer != null && humanTransfer.contains(t));
     }
+
+    /**
+     * Returns true if any of the tactical moves contains the territory.
+     */
+    public boolean isTactialMoveTarget(Territory t) {
+        TacticalMovement compAttack = data.getCompPlayer().getAttackMovement();
+        TacticalMovement humanAttack = data.getHumanPlayer().getAttackMovement();
+        TacticalMovement compTransfer = data.getCompPlayer().getTransferMovement();
+        TacticalMovement humanTransfer = data.getHumanPlayer().getTransferMovement();
+
+        return (compAttack != null && compAttack.to == t) ||
+                (humanAttack != null && humanAttack.to == t) ||
+                (compTransfer != null && compTransfer.to == t) ||
+                (humanTransfer != null && humanTransfer.to == t);
+    }
 }

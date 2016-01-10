@@ -57,8 +57,15 @@ public class GameDesign extends GameBase {
      * @return the current valid background color for a territory.
      */
     public Color getTerritoryBackgroundColor(Territory t) {
-        if (state.getGamePhase() == Phases.QuickOverViewBefore || state.getGamePhase() == Phases.QuickOverViewAfter) {
+        if (state.getGamePhase() == Phases.QuickOverViewBefore) {
             boolean isInvolved = state.belongsToTactialMove(t);
+            if (isInvolved)
+                return t.getOccupant() == data.getHumanPlayer() ? humanColor : compColor;
+            else
+                return t.getOccupant() == data.getHumanPlayer() ? humanColorGrayed : compColorGrayed;
+        }
+        if (state.getGamePhase() == Phases.QuickOverViewAfter) {
+            boolean isInvolved = state.isTactialMoveTarget(t);
             if (isInvolved)
                 return t.getOccupant() == data.getHumanPlayer() ? humanColor : compColor;
             else
