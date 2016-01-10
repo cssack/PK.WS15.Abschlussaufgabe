@@ -16,11 +16,11 @@ import java.awt.image.BufferedImage;
  * everything should be stored which have something to do with the design of the game.
  */
 public class GameDesign extends GameBase {
-    public final int toolBarHeight = 50;
+    public final int toolBarHeight = 35;
     public final BasicStroke boundaryStroke = new BasicStroke(3.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
     public final Dimension worldMapSize = new Dimension(1250, 650);
     public final Rectangle toolbar = new Rectangle(0, worldMapSize.height, worldMapSize.width, toolBarHeight);
-    public final Font toolBarFont = new Font("Verdana", Font.PLAIN, 20);
+    public final Font toolBarFont = new Font("Verdana", Font.PLAIN, 16);
     public final Font endbuttonFont = new Font("Verdana", Font.PLAIN, 10);
     public final Font armyFont = new Font("Verdana", Font.BOLD, 16);
     private final int endButtonWidth = 100;
