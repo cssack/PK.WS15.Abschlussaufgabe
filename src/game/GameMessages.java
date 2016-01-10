@@ -25,7 +25,7 @@ public class GameMessages extends GameBase {
 
         if (state.getGamePhase() == Phases.Landerwerb)
             return "Wählen Sie ein Land aus. (" + ((data.getAllTerritories().size() - state
-                    .getOccupiedTerritories()) / 2) + " verfügbar)";
+                    .getOccupiedTerritories()) / 2) + " verfügbar). Order Leertaste für zufällige Verteilung";
 
 
         Player human = data.getHumanPlayer();

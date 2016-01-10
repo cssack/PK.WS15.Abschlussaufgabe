@@ -10,6 +10,7 @@ import dataObjects.Player;
 import dataObjects.Territory;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * The game data is the place where all data items are stored. This includes the continents the territories, the
@@ -20,9 +21,9 @@ public class GameData extends GameBase {
     //TODO but this results in other problems with the drawing routines where the territories needs to be iterated in a reverse order
     private final ArrayList<Territory> allTerritories = new ArrayList<>();
     private final ArrayList<Continent> allContinents = new ArrayList<>();
+    private final Random rand = new Random();
     private Player humanPlayer;
     private Player compPlayer;
-
 
     /**
      * Initializes the base class.
@@ -119,5 +120,26 @@ public class GameData extends GameBase {
             allContinents.add(continent);
         }
         return continent;
+    }
+
+    /**
+     * Gets a random territory from a list of territories
+     */
+    public Territory getRandomTerritory(ArrayList<Territory> from) {
+        return from.get(rand.nextInt(from.size()));
+    }
+
+    /**
+     * @return a randomly chosen not occupied territory or null if all territories have been assigned.
+     */
+    public Territory getRandomUnassignedTerritory() {
+        if (state.getOccupiedTerritories() == allTerritories.size())
+            return null;
+
+        Territory territory = allTerritories.get(rand.nextInt(allTerritories.size()));
+        while (territory.getOccupant() != null) {
+            territory = allTerritories.get(rand.nextInt(allTerritories.size()));
+        }
+        return territory;
     }
 }

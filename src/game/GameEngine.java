@@ -12,18 +12,26 @@ import dataObjects.enums.Phases;
 import dataObjects.enums.PlayerStates;
 
 import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
+import java.awt.event.*;
 
 /**
  * The game engine handles events and calls state methods accordingly on the GameState class.
  */
-public class GameEngine extends GameBase implements MouseMotionListener, MouseListener {
+public class GameEngine extends GameBase implements MouseMotionListener, MouseListener, KeyListener {
     private Territory hoverTerritory;
     private boolean isMouseLeftButtonValid;
     private boolean isMouseRightButtonValid;
     private boolean repaintRequested;
+
+    @Override
+    public void init(Game game) {
+        super.init(game);
+
+        drawingBoard.addMouseMotionListener(this);
+        drawingBoard.addMouseListener(this);
+        drawingBoard.addKeyListener(this);
+        drawingBoard.setFocusable(true);// used to allow keyboard recognition
+    }
 
     public void checkMouseHover(MouseEvent e) {
         Territory newHoverTerritory = GetTerritoryAtPos(e.getPoint());
@@ -136,13 +144,6 @@ public class GameEngine extends GameBase implements MouseMotionListener, MouseLi
         repaintRequested = true;
     }
 
-    @Override
-    public void init(Game game) {
-        super.init(game);
-
-        drawingBoard.addMouseMotionListener(this);
-        drawingBoard.addMouseListener(this);
-    }
 
     @Override
     public void mouseDragged(MouseEvent e) {
@@ -232,5 +233,27 @@ public class GameEngine extends GameBase implements MouseMotionListener, MouseLi
 
     public Territory getHoverTerritory() {
         return hoverTerritory;
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+        if (e.getKeyChar() == ' ' && state.getGamePhase() == Phases.Landerwerb) {
+            while (state.getGamePhase() == Phases.Landerwerb) {
+                state.setTerritoryOccupant(data.getRandomUnassignedTerritory(), data.getHumanPlayer());
+                ki.ChooseSomeTerritory();
+                requestRepaint();
+                tryRepaint();
+            }
+        }
     }
 }

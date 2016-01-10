@@ -20,16 +20,12 @@ public class GameKi extends GameBase {
     }
 
     public void ChooseSomeTerritory() {
-        Territory chosen = getRandomTerritory(game.getData().getAllTerritories());
-        while (chosen.getOccupant() != null) {
-            chosen = getRandomTerritory(game.getData().getAllTerritories());
-        }
-        state.setTerritoryOccupant(chosen, data.getCompPlayer());
+        state.setTerritoryOccupant(data.getRandomUnassignedTerritory(), data.getCompPlayer());
     }
 
     public void ReinforceTerritorys() {
         while (data.getCompPlayer().getReinforcements() > 0) {
-            state.reinforceTerritory(getRandomTerritory(data.getCompPlayer().getOwnedTerritories()));
+            state.reinforceTerritory(data.getRandomTerritory(data.getCompPlayer().getOwnedTerritories()));
         }
     }
 
