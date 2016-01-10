@@ -72,8 +72,6 @@ public class GameDesign extends GameBase {
     public Color getTerritoryBoundaryColor(Territory t) {
         if (t == data.getHumanPlayer().getSelectedTerritory())
             return Color.BLACK;
-        if (isTerritoryAttacked(t))
-            return Color.decode("#A20025");
         return Color.decode("#1C1C1C");
     }
 
