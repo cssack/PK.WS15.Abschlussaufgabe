@@ -60,6 +60,13 @@ public class Territory {
     }
 
     /**
+     * @return true if the territory is not occupied
+     */
+    public boolean isUnoccupied() {
+        return occupant == null;
+    }
+
+    /**
      * Set the Occupant of this territory.
      */
     public void setOccupant(Player occupant) {
