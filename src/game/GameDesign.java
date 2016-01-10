@@ -5,6 +5,7 @@
 package game;
 
 import bases.GameBase;
+import bases.TacticalMovement;
 import dataObjects.Territory;
 
 import java.awt.*;
@@ -17,6 +18,7 @@ import java.awt.image.BufferedImage;
 public class GameDesign extends GameBase {
     private BufferedImage backgroundImage;
     private BufferedImage capitalImage;
+    private BasicStroke boundaryStroke = new BasicStroke(3.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
 
 
     /**
@@ -41,9 +43,9 @@ public class GameDesign extends GameBase {
                 .getHoverTerritory() == t;
         if (t == data.getHumanPlayer().getSelectedTerritory())
             if (t.getOccupant() == data.getHumanPlayer())
-                return Color.decode("#107C0F"); //TODO change selection color
+                return Color.decode("#107C0F");
             else
-                return Color.decode("#E81123"); //TODO change selection color
+                return Color.decode("#E81123");
         if (t.getOccupant() == null)
             if (highlighted)
                 return Color.YELLOW;
@@ -51,14 +53,14 @@ public class GameDesign extends GameBase {
                 return Color.WHITE;
         else if (t.getOccupant() == data.getHumanPlayer())
             if (highlighted)
-                return Color.decode("#107C0F");
+                return Color.decode("#008A00");
             else
-                return Color.decode("#108840");
+                return Color.decode("#60A917");
         else if (t.getOccupant() == data.getCompPlayer())
             if (highlighted)
-                return Color.decode("#E81123");
+                return Color.decode("#BF1400");
             else
-                return Color.decode("#F7630C");
+                return Color.decode("#E51400");
 
 
         return Color.BLACK;
@@ -70,14 +72,22 @@ public class GameDesign extends GameBase {
     public Color getTerritoryBoundaryColor(Territory t) {
         if (t == data.getHumanPlayer().getSelectedTerritory())
             return Color.BLACK;
-        return Color.decode("#4C4A48");
+        if (isTerritoryAttacked(t))
+            return Color.decode("#A20025");
+        return Color.decode("#1C1C1C");
+    }
+
+    private boolean isTerritoryAttacked(Territory t) {
+        TacticalMovement compMove = data.getCompPlayer().getAttackMovement();
+        TacticalMovement humanMove = data.getHumanPlayer().getAttackMovement();
+        return (compMove != null && compMove.to == t) || (humanMove != null && humanMove.to == t);
     }
 
     /**
      * @return the current valid stroke for a territory.
      */
     public Stroke getTerritoryBoundaryStroke(Territory t) {
-        return new BasicStroke(3.0f);
+        return boundaryStroke;
     }
 
     /**

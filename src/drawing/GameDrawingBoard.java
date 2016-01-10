@@ -56,6 +56,7 @@ public class GameDrawingBoard extends JComponent {
         Graphics2D g2 = (Graphics2D) g;
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
+
         DrawBackground(g2);
         DrawNeighborLines(g2);
         DrawTerritories(g2);
