@@ -15,7 +15,7 @@ import java.awt.*;
  */
 public class DrawingWindow extends JFrame {
     public DrawingWindow(Game game) throws HeadlessException {
-        this.setTitle("RISK");
+        this.setTitle("AllThoseTerritories");
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         //this.setResizable(false);
         this.getContentPane().add(game.getDrawingBoard());
