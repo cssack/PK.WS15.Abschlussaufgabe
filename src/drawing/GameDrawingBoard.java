@@ -7,10 +7,8 @@ package drawing;
 import bases.TacticalMovement;
 import dataObjects.Patch;
 import dataObjects.Territory;
-import game.Game;
-import game.GameData;
-import game.GameDesign;
-import game.GameMessages;
+import dataObjects.enums.Phases;
+import game.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,20 +18,22 @@ import java.util.HashSet;
  * The drawing board draws the content of a game by using the game data and the design.
  */
 public class GameDrawingBoard extends JComponent {
-    private final int toolBarHeight = 50;
-    private final Dimension worldMapSize = new Dimension(1250, 650);
-    private final Font toolBarFont = new Font("Verdana", Font.PLAIN, 20);
-    private final Font armyFont = new Font("Verdana", Font.BOLD, 16);
     private int paintCount;
     private GameData data;
     private GameDesign design;
+    private GameState state;
     private GameMessages messages;
+
+    public GameDrawingBoard() {
+        this.setLayout(null);
+
+    }
 
     public void init(Game game) {
         this.data = game.getData();
         this.design = game.getDesign();
+        this.state = game.getState();
         this.messages = game.getMessages();
-
     }
 
     /**
@@ -41,7 +41,7 @@ public class GameDrawingBoard extends JComponent {
      */
     @Override
     public Dimension getPreferredSize() {
-        return new Dimension(worldMapSize.width, worldMapSize.height + toolBarHeight);
+        return new Dimension(design.worldMapSize.width, design.worldMapSize.height + design.toolBarHeight);
     }
 
 
@@ -64,6 +64,7 @@ public class GameDrawingBoard extends JComponent {
         DrawAttackMovements(g2);
         DrawTerritoryTexts(g2);
         DrawInfoBar(g2);
+        DrawRoundFinishButton(g2);
 
     }
 
@@ -108,7 +109,7 @@ public class GameDrawingBoard extends JComponent {
         }
 
         g.setColor(design.getTerritoryBoundaryColor(territory));
-        g.setStroke(design.getTerritoryBoundaryStroke(territory));
+        g.setStroke(design.boundaryStroke);
         for (Patch patch : territory.getPatches()) {
             g.drawPolygon(patch.getPolygon());
         }
@@ -123,7 +124,7 @@ public class GameDrawingBoard extends JComponent {
         Color prevColor = g.getColor();
 
         g.setColor(Color.white);
-        g.setFont(armyFont);
+        g.setFont(design.armyFont);
 
         for (Territory territory : data.getAllTerritories()) {
             DrawTerritoryText(g, territory);
@@ -143,7 +144,7 @@ public class GameDrawingBoard extends JComponent {
         String capitalText = String.valueOf(t.getArmyCount());
 
         int stringWidth = SwingUtilities.computeStringWidth(g.getFontMetrics(), capitalText);
-        int stringHeight = (int) armyFont.getLineMetrics(capitalText, g.getFontRenderContext()).getAscent();
+        int stringHeight = (int) design.armyFont.getLineMetrics(capitalText, g.getFontRenderContext()).getAscent();
 
         int x = t.getCapital().getPoint().x - (stringWidth / 2);
         int y = t.getCapital().getPoint().y + (stringHeight / 2);
@@ -184,7 +185,7 @@ public class GameDrawingBoard extends JComponent {
             if (currentNode.getCapital().getOwner().getName().equals("Alaska") && neighbor.getCapital().getOwner()
                     .getName().equals("Kamchatka")) {
                 g.drawLine(capitalA.x, capitalA.y, 0, capitalB.y);
-                g.drawLine(capitalB.x, capitalB.y, worldMapSize.width, capitalA.y);
+                g.drawLine(capitalB.x, capitalB.y, design.worldMapSize.width, capitalA.y);
             } else {
                 g.drawLine(capitalA.x, capitalA.y, capitalB.x, capitalB.y);
             }
@@ -243,7 +244,7 @@ public class GameDrawingBoard extends JComponent {
 
         Font prevFont = g.getFont();
 
-        g.setFont(armyFont);
+        g.setFont(design.armyFont);
         DrawLineBetweenCapitalsDescription(g, movement.from, movement.to, String.valueOf(movement.getArmyCount()));
 
         g.setFont(prevFont);
@@ -261,10 +262,10 @@ public class GameDrawingBoard extends JComponent {
 
         if (fromName.equals("Alaska") && toName.equals("Kamchatka")) {
             g.drawLine(capitalA.x, capitalA.y, 0, capitalB.y);
-            g.drawLine(capitalB.x, capitalB.y, worldMapSize.width, capitalA.y);
+            g.drawLine(capitalB.x, capitalB.y, design.worldMapSize.width, capitalA.y);
         } else if (fromName.equals("Kamchatka") && toName.equals("Alaska")) {
             g.drawLine(capitalB.x, capitalB.y, 0, capitalA.y);
-            g.drawLine(capitalA.x, capitalA.y, worldMapSize.width, capitalB.y);
+            g.drawLine(capitalA.x, capitalA.y, design.worldMapSize.width, capitalB.y);
         } else {
             g.drawLine(capitalA.x, capitalA.y, capitalB.x, capitalB.y);
         }
@@ -285,7 +286,7 @@ public class GameDrawingBoard extends JComponent {
         if (fromName.equals("Alaska") && toName.equals("Kamchatka")) {
             toPoint = new Point(0, toPoint.y);
         } else if (fromName.equals("Kamchatka") && toName.equals("Alaska")) {
-            toPoint = new Point(worldMapSize.width, toPoint.y);
+            toPoint = new Point(design.worldMapSize.width, toPoint.y);
         }
 
         Point vectorToTheMiddleOfTheLine = new Point((toPoint.x - fromPoint.x) / 2, (toPoint.y - fromPoint.y) / 2);
@@ -305,12 +306,11 @@ public class GameDrawingBoard extends JComponent {
         Font prevFont = g.getFont();
         Color prevColor = g.getColor();
 
-        g.fillRect(0, worldMapSize.height, worldMapSize.width, toolBarHeight);
+        g.fillRect(design.toolbar.x, design.toolbar.y, design.toolbar.width, design.toolbar.height);
 
-
-        g.setFont(toolBarFont);
+        g.setFont(design.toolBarFont);
         g.setColor(Color.WHITE);
-        int vertMiddlePos = g.getFontMetrics().getAscent() / 2 + toolBarHeight / 2 + worldMapSize.height;
+        int vertMiddlePos = g.getFontMetrics().getAscent() / 2 + design.toolBarHeight / 2 + design.worldMapSize.height;
 
         //noinspection SuspiciousNameCombination
         g.drawString(messages.getCurrentPhase(), 20, vertMiddlePos);
@@ -320,5 +320,36 @@ public class GameDrawingBoard extends JComponent {
         g.setColor(prevColor);
     }
 
+    /**
+     * Draws the round finished button.
+     */
+    private void DrawRoundFinishButton(Graphics2D g) {
+        if (state.getGamePhase() != Phases.AttackOrMove)
+            return;
+        Font prevFont = g.getFont();
+        Color prevColor = g.getColor();
+
+
+        g.setColor(Color.GRAY);
+
+        g.drawRect(design.endButton.x, design.endButton.y, design.endButton.width, design.endButton.height);
+        g.setColor(Color.WHITE);
+        g.fillRect(design.endButton.x, design.endButton.y, design.endButton.width, design.endButton.height);
+
+        g.setFont(design.endbuttonFont);
+        g.setColor(Color.BLACK);
+
+        String buttonText = "Runde beenden";
+        int stringWidth = SwingUtilities.computeStringWidth(g.getFontMetrics(), buttonText);
+        int stringHeight = (int) design.endbuttonFont.getLineMetrics(buttonText, g.getFontRenderContext()).getAscent();
+
+
+        g.drawString(buttonText, design.endButton.x + (design.endButton.width - stringWidth) / 2, design.endButton.y + stringHeight + (design.endButton.height - stringHeight) / 2);
+
+
+        g.setFont(prevFont);
+        g.setColor(prevColor);
+
+    }
 
 }

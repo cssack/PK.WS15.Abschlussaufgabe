@@ -16,10 +16,18 @@ import java.awt.image.BufferedImage;
  * everything should be stored which have something to do with the design of the game.
  */
 public class GameDesign extends GameBase {
+    public final int toolBarHeight = 50;
+    public final BasicStroke boundaryStroke = new BasicStroke(3.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
+    public final Dimension worldMapSize = new Dimension(1250, 650);
+    public final Rectangle toolbar = new Rectangle(0, worldMapSize.height, worldMapSize.width, toolBarHeight);
+    public final Font toolBarFont = new Font("Verdana", Font.PLAIN, 20);
+    public final Font endbuttonFont = new Font("Verdana", Font.PLAIN, 10);
+    public final Font armyFont = new Font("Verdana", Font.BOLD, 16);
+    private final int endButtonWidth = 100;
+    private final int endButtonHeight = 25;
+    public final Rectangle endButton = new Rectangle(toolbar.width - endButtonWidth - (toolBarHeight - endButtonHeight) / 2, toolbar.y + (toolBarHeight - endButtonHeight) / 2, endButtonWidth, endButtonHeight);
     private BufferedImage backgroundImage;
     private BufferedImage capitalImage;
-    private BasicStroke boundaryStroke = new BasicStroke(3.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
-
 
     /**
      * @return the color for the sea connections between two territory's.
@@ -79,13 +87,6 @@ public class GameDesign extends GameBase {
         TacticalMovement compMove = data.getCompPlayer().getAttackMovement();
         TacticalMovement humanMove = data.getHumanPlayer().getAttackMovement();
         return (compMove != null && compMove.to == t) || (humanMove != null && humanMove.to == t);
-    }
-
-    /**
-     * @return the current valid stroke for a territory.
-     */
-    public Stroke getTerritoryBoundaryStroke(Territory t) {
-        return boundaryStroke;
     }
 
     /**
