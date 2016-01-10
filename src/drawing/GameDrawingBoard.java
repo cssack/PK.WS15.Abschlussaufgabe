@@ -203,6 +203,8 @@ public class GameDrawingBoard extends JComponent {
      * Draws the transfer movements for each player.
      */
     private void DrawTransferMovements(Graphics2D g) {
+        if (state.getGamePhase() != Phases.AttackOrMove && state.getGamePhase() != Phases.QuickOverViewBefore)
+            return;
         Color prevColor = g.getColor();
         Stroke prevStroke = g.getStroke();
 
@@ -219,6 +221,8 @@ public class GameDrawingBoard extends JComponent {
      * Draws the attach movements for each player.
      */
     private void DrawAttackMovements(Graphics2D g) {
+        if (state.getGamePhase() != Phases.AttackOrMove && state.getGamePhase() != Phases.QuickOverViewBefore)
+            return;
         Color prevColor = g.getColor();
         Stroke prevStroke = g.getStroke();
 
@@ -315,7 +319,7 @@ public class GameDrawingBoard extends JComponent {
         int vertMiddlePos = g.getFontMetrics().getAscent() / 2 + design.toolBarHeight / 2 + design.worldMapSize.height;
 
         //noinspection SuspiciousNameCombination
-        g.drawString(messages.getCurrentPhase(), 20, vertMiddlePos);
+        g.drawString(messages.getCurrentToolbarText(), 20, vertMiddlePos);
 
 
         g.setFont(prevFont);
@@ -326,7 +330,8 @@ public class GameDrawingBoard extends JComponent {
      * Draws the round finished button.
      */
     private void DrawRoundFinishButton(Graphics2D g) {
-        if (state.getGamePhase() != Phases.AttackOrMove && state.getGamePhase() != Phases.QuickOverViewBefore)
+        if (state.getGamePhase() != Phases.AttackOrMove && state.getGamePhase() != Phases.QuickOverViewBefore && state
+                .getGamePhase() != Phases.QuickOverViewAfter)
             return;
         Font prevFont = g.getFont();
         Color prevColor = g.getColor();
@@ -341,7 +346,7 @@ public class GameDrawingBoard extends JComponent {
         g.setFont(design.endbuttonFont);
         g.setColor(Color.BLACK);
 
-        String buttonText = state.getGamePhase() == Phases.AttackOrMove ? "Runde beenden" : "OK LETS GO!";
+        String buttonText = messages.getCurrentButtonText();
         int stringWidth = SwingUtilities.computeStringWidth(g.getFontMetrics(), buttonText);
         int stringHeight = (int) design.endbuttonFont.getLineMetrics(buttonText, g.getFontRenderContext()).getAscent();
 

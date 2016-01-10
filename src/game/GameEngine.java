@@ -70,7 +70,8 @@ public class GameEngine extends GameBase implements MouseMotionListener, MouseLi
 
         boolean old = isMouseOverEndRoundButton;
         isMouseOverEndRoundButton = (state.getGamePhase() == Phases.AttackOrMove || state
-                .getGamePhase() == Phases.QuickOverViewBefore) && design.endButton
+                .getGamePhase() == Phases.QuickOverViewBefore || state
+                .getGamePhase() == Phases.QuickOverViewAfter) && design.endButton
                 .contains(e.getPoint());
         if (old != isMouseOverEndRoundButton)
             requestRepaint();
@@ -185,9 +186,15 @@ public class GameEngine extends GameBase implements MouseMotionListener, MouseLi
                 state.setPlayerState(data.getCompPlayer(), PlayerStates.FirstTerritorySelection);
                 ki.AttackAndMove();
                 state.setGamePhase(Phases.QuickOverViewBefore);
-            } else if (state.getGamePhase() == Phases.AttackOrMove) {
+            } else if (state.getGamePhase() == Phases.QuickOverViewBefore) {
                 state.executePlayerMovements();
                 state.setGamePhase(Phases.QuickOverViewAfter);
+            } else if (state.getGamePhase() == Phases.QuickOverViewAfter) {
+                if (data.getCompPlayer().getOwnedTerritories().size() == 0 || data.getHumanPlayer()
+                        .getOwnedTerritories().size() == 0)
+                    state.setGamePhase(Phases.End);
+                else
+                    state.setGamePhase(Phases.Reinforcement);
             }
             Repaint();
             return;

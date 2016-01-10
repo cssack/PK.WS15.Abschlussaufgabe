@@ -20,9 +20,7 @@ public class GameMessages extends GameBase {
     }
 
 
-    public String getCurrentPhase() {
-
-
+    public String getCurrentToolbarText() {
         if (state.getGamePhase() == Phases.Landerwerb)
             return "Wählen Sie ein Land aus. (" + ((data.getAllTerritories().size() - state
                     .getOccupiedTerritories()) / 2) + " verfügbar). Oder Leertaste für zufällige Verteilung.";
@@ -30,6 +28,8 @@ public class GameMessages extends GameBase {
             return "Taktische movements aller Spieler.";
         if (state.getGamePhase() == Phases.QuickOverViewAfter)
             return "Ergebnisse der Angriffs- und Transferphase.";
+        if (state.getGamePhase() == Phases.End)
+            return data.getCompPlayer().getOwnedTerritories().size() == 0 ? "GEWONNEN!" : "VERLOREN!";
 
 
         Player human = data.getHumanPlayer();
@@ -44,6 +44,17 @@ public class GameMessages extends GameBase {
             return "Wählen Sie ein benachbartes Ziel aus (Truppentransport(rechte Maustaste) oder Angriff).";
         if (humanPhase == PlayerStates.Waiting)
             return "Bitte warten! Der Computer denkt gerade";
+        return "";
+    }
+
+    public String getCurrentButtonText() {
+
+        if (state.getGamePhase() == Phases.AttackOrMove)
+            return "Runde beenden";
+        if (state.getGamePhase() == Phases.QuickOverViewBefore)
+            return "OK LETS FIGHT!";
+        if (state.getGamePhase() == Phases.QuickOverViewAfter)
+            return "Lets reinforce!";
         return "";
     }
 }

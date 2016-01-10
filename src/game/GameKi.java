@@ -29,7 +29,8 @@ public class GameKi extends GameBase {
     }
 
     public void AttackAndMove() {
-        while (data.getCompPlayer().getAttackMovement() == null || data.getCompPlayer().getTransferMovement() == null) {
+        while (data.getCompPlayer().getAttackMovement() == null || (data.getCompPlayer()
+                .getTransferMovement() == null && data.getCompPlayer().getOwnedTerritories().size() > 1)) {
             Territory first = data.getRandomTerritory(data.getCompPlayer().getOwnedTerritories());
             if (first.getArmyCount() < 2)
                 continue;

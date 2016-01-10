@@ -12,16 +12,18 @@ import dataObjects.Territory;
 import dataObjects.enums.Phases;
 import dataObjects.enums.PlayerStates;
 
+import java.util.Random;
+
 /**
  * The game state is accountable for all changes made to the data objects. Each change to the data objects should be
  * done over the GameState class. This helps to keep track of actual changes and populating repaint requests to the
  * engine.
  */
 public class GameState extends GameBase {
+    Random rand = new Random();
     private boolean mouseTargetClickable;
     private int occupiedTerritories;
     private Phases gamePhase = Phases.NotStarted;
-
 
     /**
      * @return the current active game phase. Take a look at Phases to gather more information's.
@@ -38,6 +40,11 @@ public class GameState extends GameBase {
         if (phase == Phases.Landerwerb) {
             setPlayerState(data.getHumanPlayer(), PlayerStates.Reinforcing);
         } else if (phase == Phases.Reinforcement) {
+            data.getHumanPlayer().setAttackMovement(null);
+            data.getCompPlayer().setAttackMovement(null);
+            data.getHumanPlayer().setTransferMovement(null);
+            data.getCompPlayer().setTransferMovement(null);
+
             reassign_Reinforcements(data.getHumanPlayer());
             reassign_Reinforcements(data.getCompPlayer());
 
@@ -47,6 +54,8 @@ public class GameState extends GameBase {
             setPlayerState(data.getHumanPlayer(), PlayerStates.FirstTerritorySelection);
             setPlayerState(data.getCompPlayer(), PlayerStates.Waiting);
         } else if (phase == Phases.QuickOverViewBefore) {
+            setSelectedTerritory(data.getHumanPlayer(), null);
+            setSelectedTerritory(data.getCompPlayer(), null);
             setPlayerState(data.getHumanPlayer(), PlayerStates.Waiting);
             setPlayerState(data.getCompPlayer(), PlayerStates.Waiting);
         } else if (phase == Phases.QuickOverViewAfter) {
@@ -80,7 +89,6 @@ public class GameState extends GameBase {
             player.setSelectedTerritory(null);
         engine.validateMouseButtons();
     }
-
 
     /**
      * Sets the territory's occupant state
@@ -127,7 +135,6 @@ public class GameState extends GameBase {
         engine.requestRepaint();
     }
 
-
     /**
      * Rechecks which continent belongs to which user.
      */
@@ -157,7 +164,6 @@ public class GameState extends GameBase {
         }
     }
 
-
     /**
      * Recalculates the reinforcement the user should get in the next reinforcement phase.
      */
@@ -176,7 +182,6 @@ public class GameState extends GameBase {
         player.setReinforcements(player.getReinforcementGain());
     }
 
-
     /**
      * set the current selected territory and changes the player state accordingly.
      */
@@ -189,7 +194,6 @@ public class GameState extends GameBase {
         }
         engine.requestRepaint();
     }
-
 
     /**
      * Assigns a transfer movement to the player.
@@ -259,7 +263,6 @@ public class GameState extends GameBase {
         engine.requestRepaint();
     }
 
-
     /**
      * reverts the movement by reassigning the moving army back to the source territory.
      */
@@ -273,14 +276,49 @@ public class GameState extends GameBase {
         engine.requestRepaint();
     }
 
-
     /**
      * Executes the tactical moves.
      */
     public void executePlayerMovements() {
-
+        executeTransferMove(data.getCompPlayer().getTransferMovement());
+        executeTransferMove(data.getHumanPlayer().getTransferMovement());
+        executeAttackMove(data.getCompPlayer().getAttackMovement());
+        executeAttackMove(data.getHumanPlayer().getAttackMovement());
     }
 
+    private void executeAttackMove(TacticalMovement tm) {
+        if (tm == null)
+            return;
+
+        int attackingArmy = tm.getArmyCount();
+        int originalDefensingArmy = tm.to.getArmyCount() > 2 ? 2 : tm.to.getArmyCount();
+        int defensingArmy = originalDefensingArmy;
+
+        while (attackingArmy != 0 && defensingArmy != 0) {
+            int defenseCube = rand.nextInt(7);
+            int attackCube = rand.nextInt(7);
+            if (defenseCube < attackCube)
+                defensingArmy--;
+            else if (attackCube < defenseCube)
+                attackingArmy--;
+        }
+
+        if (attackingArmy > 0) {
+            setTerritoryOccupant(tm.to, tm.from.getOccupant());
+            tm.to.setArmyCount(attackingArmy);
+        } else {
+            tm.to.setArmyCount(tm.to.getArmyCount() - (originalDefensingArmy - defensingArmy));
+        }
+        engine.requestRepaint();
+    }
+
+    private void executeTransferMove(TacticalMovement tm) {
+        if (tm == null)
+            return;
+
+        tm.to.setArmyCount(tm.to.getArmyCount() + tm.getArmyCount());
+        engine.requestRepaint();
+    }
 
     /**
      * Returns true if any of the tactical moves contains the territory.
