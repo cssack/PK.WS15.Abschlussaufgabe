@@ -7,7 +7,6 @@ package game;
 import bases.GameBase;
 import dataObjects.Territory;
 
-import java.util.ArrayList;
 import java.util.Random;
 
 /**
@@ -29,7 +28,19 @@ public class GameKi extends GameBase {
         }
     }
 
-    private Territory getRandomTerritory(ArrayList<Territory> from) {
-        return from.get(rand.nextInt(from.size()));
+    public void AttackAndMove() {
+        while (data.getCompPlayer().getAttackMovement() == null || data.getCompPlayer().getTransferMovement() == null) {
+            Territory first = data.getRandomTerritory(data.getCompPlayer().getOwnedTerritories());
+            if (first.getArmyCount() < 2)
+                continue;
+            state.setSelectedTerritory(data.getCompPlayer(), first);
+            Territory second = data.getRandomTerritory(first.getNeighbors());
+
+            if (data.getCompPlayer().getTransferMovement() == null && first.getOccupant() == second.getOccupant())
+                state.assignTransferMovement(data.getCompPlayer(), second);
+            else if (data.getCompPlayer().getAttackMovement() == null && first.getOccupant() != second.getOccupant())
+                state.assignAttackMovement(data.getCompPlayer(), second);
+
+        }
     }
 }

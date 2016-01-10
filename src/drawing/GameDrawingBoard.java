@@ -326,7 +326,7 @@ public class GameDrawingBoard extends JComponent {
      * Draws the round finished button.
      */
     private void DrawRoundFinishButton(Graphics2D g) {
-        if (state.getGamePhase() != Phases.AttackOrMove)
+        if (state.getGamePhase() != Phases.AttackOrMove && state.getGamePhase() != Phases.QuickOverViewBefore)
             return;
         Font prevFont = g.getFont();
         Color prevColor = g.getColor();
@@ -341,7 +341,7 @@ public class GameDrawingBoard extends JComponent {
         g.setFont(design.endbuttonFont);
         g.setColor(Color.BLACK);
 
-        String buttonText = "Runde beenden";
+        String buttonText = state.getGamePhase() == Phases.AttackOrMove ? "Runde beenden" : "OK LETS GO!";
         int stringWidth = SwingUtilities.computeStringWidth(g.getFontMetrics(), buttonText);
         int stringHeight = (int) design.endbuttonFont.getLineMetrics(buttonText, g.getFontRenderContext()).getAscent();
 

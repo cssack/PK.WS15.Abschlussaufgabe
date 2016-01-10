@@ -7,6 +7,7 @@ package game;
 import bases.GameBase;
 import bases.TacticalMovement;
 import dataObjects.Territory;
+import dataObjects.enums.Phases;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -16,6 +17,7 @@ import java.awt.image.BufferedImage;
  * everything should be stored which have something to do with the design of the game.
  */
 public class GameDesign extends GameBase {
+
     public final int toolBarHeight = 35;
     public final BasicStroke boundaryStroke = new BasicStroke(3.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
     public final Dimension worldMapSize = new Dimension(1250, 650);
@@ -26,6 +28,14 @@ public class GameDesign extends GameBase {
     private final int endButtonWidth = 100;
     private final int endButtonHeight = 25;
     public final Rectangle endButton = new Rectangle(toolbar.width - endButtonWidth - (toolBarHeight - endButtonHeight) / 2, toolbar.y + (toolBarHeight - endButtonHeight) / 2, endButtonWidth, endButtonHeight);
+    private final Color compColor = Color.decode("#E51400");
+    private final Color compColorHover = Color.decode("#BF1400");
+    private final Color compColorSelected = Color.decode("#E81123");
+    private final Color compColorGrayed = Color.decode("#E0CBC9");
+    private final Color humanColor = Color.decode("#60A917");
+    private final Color humanColorHover = Color.decode("#008A00");
+    private final Color humanColorSelected = Color.decode("#107C0F");
+    private final Color humanColorGrayed = Color.decode("#9DA595");
     private BufferedImage backgroundImage;
     private BufferedImage capitalImage;
 
@@ -47,13 +57,21 @@ public class GameDesign extends GameBase {
      * @return the current valid background color for a territory.
      */
     public Color getTerritoryBackgroundColor(Territory t) {
+        if (state.getGamePhase() == Phases.QuickOverViewBefore) {
+            boolean isInvolved = state.belongsToTactialMove(t);
+            if (isInvolved)
+                return t.getOccupant() == data.getHumanPlayer() ? humanColor : compColor;
+            else
+                return t.getOccupant() == data.getHumanPlayer() ? humanColorGrayed : compColorGrayed;
+        }
+
         boolean highlighted = (engine.getIsMouseLeftButtonValid() || engine.getIsMouseRightButtonValid()) && engine
                 .getHoverTerritory() == t;
         if (t == data.getHumanPlayer().getSelectedTerritory())
             if (t.getOccupant() == data.getHumanPlayer())
-                return Color.decode("#107C0F");
+                return humanColorSelected;
             else
-                return Color.decode("#E81123");
+                return compColorSelected;
         if (t.getOccupant() == null)
             if (highlighted)
                 return Color.YELLOW;
@@ -61,14 +79,14 @@ public class GameDesign extends GameBase {
                 return Color.WHITE;
         else if (t.getOccupant() == data.getHumanPlayer())
             if (highlighted)
-                return Color.decode("#008A00");
+                return humanColorHover;
             else
-                return Color.decode("#60A917");
+                return humanColor;
         else if (t.getOccupant() == data.getCompPlayer())
             if (highlighted)
-                return Color.decode("#BF1400");
+                return compColorHover;
             else
-                return Color.decode("#E51400");
+                return compColor;
 
 
         return Color.BLACK;

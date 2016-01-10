@@ -33,7 +33,7 @@ public class GameState extends GameBase {
     /**
      * set the current active game phase. Take a look at Phases to gather more information's.
      */
-    private void setGamePhase(Phases phase) {
+    public void setGamePhase(Phases phase) {
         gamePhase = phase;
         if (phase == Phases.Landerwerb) {
             setPlayerState(data.getHumanPlayer(), PlayerStates.Reinforcing);
@@ -45,6 +45,12 @@ public class GameState extends GameBase {
             setPlayerState(data.getCompPlayer(), PlayerStates.Waiting);
         } else if (phase == Phases.AttackOrMove) {
             setPlayerState(data.getHumanPlayer(), PlayerStates.FirstTerritorySelection);
+            setPlayerState(data.getCompPlayer(), PlayerStates.Waiting);
+        } else if (phase == Phases.QuickOverViewBefore) {
+            setPlayerState(data.getHumanPlayer(), PlayerStates.Waiting);
+            setPlayerState(data.getCompPlayer(), PlayerStates.Waiting);
+        } else if (phase == Phases.QuickOverViewAfter) {
+            setPlayerState(data.getHumanPlayer(), PlayerStates.Waiting);
             setPlayerState(data.getCompPlayer(), PlayerStates.Waiting);
         }
 
@@ -265,5 +271,29 @@ public class GameState extends GameBase {
         else
             move.owner.setTransferMovement(null);
         engine.requestRepaint();
+    }
+
+
+    /**
+     * Executes the tactical moves.
+     */
+    public void executePlayerMovements() {
+
+    }
+
+
+    /**
+     * Returns true if any of the tactical moves contains the territory.
+     */
+    public boolean belongsToTactialMove(Territory t) {
+        TacticalMovement compAttack = data.getCompPlayer().getAttackMovement();
+        TacticalMovement humanAttack = data.getHumanPlayer().getAttackMovement();
+        TacticalMovement compTransfer = data.getCompPlayer().getTransferMovement();
+        TacticalMovement humanTransfer = data.getHumanPlayer().getTransferMovement();
+
+        return (compAttack != null && compAttack.contains(t)) ||
+                (humanAttack != null && humanAttack.contains(t)) ||
+                (compTransfer != null && compTransfer.contains(t)) ||
+                (humanTransfer != null && humanTransfer.contains(t));
     }
 }
