@@ -5,12 +5,14 @@
 package gameInit;
 
 import bases.GameBase;
+import exceptions.InvalidResourceException;
 import exceptions.MapFileFormatException;
 
 import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.Paths;
 
 /**
@@ -29,15 +31,15 @@ public class GameLoader extends GameBase {
     /**
      * init the game with the desired content.
      */
-    public void load() throws IOException, MapFileFormatException, URISyntaxException {
-        readImages();
+    public void load() throws IOException, MapFileFormatException, URISyntaxException, InvalidResourceException {
         readMapFiles();
+        readImages();
     }
 
     /**
      * loads the map files into the game.
      */
-    private void readMapFiles() throws IOException, MapFileFormatException, URISyntaxException {
+    private void readMapFiles() throws IOException, MapFileFormatException, URISyntaxException, InvalidResourceException {
         for (String mapFile : mapFiles) {
             MapFileReader mapFileReader = new MapFileReader(data, getFilePath_FromResource(mapFile));
             mapFileReader.start_Interpret();
@@ -47,9 +49,9 @@ public class GameLoader extends GameBase {
     /**
      * loads the images into the game.
      */
-    private void readImages() throws IOException, URISyntaxException {
-        game.getDesign().setBackgroundImage(ImageIO.read(new File(getFilePath_FromResource("waterTexture.jpg"))));
-        game.getDesign().setCapitalImage(ImageIO.read(new File(getFilePath_FromResource("CapitalIcon.png"))));
+    private void readImages() throws IOException, URISyntaxException, InvalidResourceException {
+        design.setBackgroundImage(ImageIO.read(new File(getFilePath_FromResource(data.getBackgroundImageString()))));
+        design.setCapitalImage(ImageIO.read(new File(getFilePath_FromResource("CapitalIcon.png"))));
     }
 
     /**
@@ -57,7 +59,13 @@ public class GameLoader extends GameBase {
      *
      * @return relative file paths to the application folder.
      */
-    private String getFilePath_FromResource(String path) throws URISyntaxException {
-        return Paths.get(ClassLoader.getSystemResource("resources/" + path).toURI()).toString();
+    private String getFilePath_FromResource(String path) throws URISyntaxException, InvalidResourceException {
+        URL resource = ClassLoader.getSystemResource("resources/" + path);
+
+        if (resource == null) {
+            throw new InvalidResourceException();
+        }
+
+        return Paths.get(resource.toURI()).toString();
     }
 }

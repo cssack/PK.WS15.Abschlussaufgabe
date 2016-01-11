@@ -3,6 +3,7 @@
  */
 
 import drawing.DrawingWindow;
+import exceptions.InvalidResourceException;
 import exceptions.MapFileFormatException;
 import game.Game;
 
@@ -11,7 +12,7 @@ import java.net.URISyntaxException;
 
 public class Main {
 
-    public static void main(String[] args) throws IOException, MapFileFormatException, URISyntaxException {
+    public static void main(String[] args) throws IOException, MapFileFormatException, URISyntaxException, InvalidResourceException {
         Game game = new Game();
         game.load();
         new DrawingWindow(game);

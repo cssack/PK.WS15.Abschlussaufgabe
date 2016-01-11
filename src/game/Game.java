@@ -5,6 +5,7 @@
 package game;
 
 import drawing.GameDrawingBoard;
+import exceptions.InvalidResourceException;
 import exceptions.MapFileFormatException;
 import gameInit.GameLoader;
 
@@ -70,7 +71,8 @@ public class Game {
     }
 
     /**
-     * @return Gets the pc player engine. This is where the pc players logic is described. This is the perfect place for an KI
+     * @return Gets the pc player engine. This is where the pc players logic is described. This is the perfect place for
+     * an KI
      */
     public GameKi getPcPlayer() {
         return pcPlayer;
@@ -91,13 +93,12 @@ public class Game {
     }
 
 
-
     /**
      * Loads all required data from resource files (Images, map files, ....).
      *
      * @throws IOException
      */
-    public void load() throws IOException, MapFileFormatException, URISyntaxException {
+    public void load() throws IOException, MapFileFormatException, URISyntaxException, InvalidResourceException {
         GameLoader loader = new GameLoader();
         loader.init(this);
         loader.load();

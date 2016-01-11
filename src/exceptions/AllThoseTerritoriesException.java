@@ -8,6 +8,6 @@ package exceptions;
  * The root class of all special exceptions thrown by this game.
  */
 class AllThoseTerritoriesException extends Exception {
-
+    
 }
 

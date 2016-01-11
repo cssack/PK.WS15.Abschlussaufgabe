@@ -26,6 +26,7 @@ public class GameData extends GameBase {
     private final Random rand = new Random();
     private Player humanPlayer;
     private Player compPlayer;
+    private String backgroundImageString;
 
     /**
      * Initializes the base class.
@@ -35,6 +36,7 @@ public class GameData extends GameBase {
         super.init(game);
         humanPlayer = new Player();
         compPlayer = new Player();
+        backgroundImageString = "waterTexture.jpg";
     }
 
     /**
@@ -117,7 +119,7 @@ public class GameData extends GameBase {
     }
 
     /**
-     * Gets a random territory from a list of territories
+     * @return a random territory from a list of territories
      */
     public Territory getRandomTerritory(List<Territory> from) {
         return from.get(rand.nextInt(from.size()));
@@ -132,5 +134,20 @@ public class GameData extends GameBase {
 
         return getRandomTerritory(allTerritories.stream().filter(Territory::isUnoccupied)
                 .collect(Collectors.toList()));
+    }
+
+
+    /**
+     * @return the background image string set in the map file, or the default one
+     */
+    public String getBackgroundImageString() {
+        return backgroundImageString;
+    }
+
+    /**
+     * sets the background image string
+     */
+    public void setBackgroundImageString(String backgroundImageString) {
+        this.backgroundImageString = backgroundImageString;
     }
 }
