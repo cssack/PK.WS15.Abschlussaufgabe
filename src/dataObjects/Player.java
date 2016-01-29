@@ -159,4 +159,17 @@ public class Player {
     public void setTransferMovement(TacticalMovement transfer) {
         this.transferMovement = transfer;
     }
+
+    /**
+     * checks if the given continent belongs to the player and add/removes the continent
+     * from the list of owned continents if neccessary.
+     */
+    public void evaluateContinentOwnership(Continent continent) {
+        if (this.getOwnedTerritories().containsAll(continent.getTerritories())) {
+            this.setContinentOwnerShip(continent, true);
+        } else {
+            this.setContinentOwnerShip(continent, false);
+        }
+        this.updateReinforcementGain();
+    }
 }
