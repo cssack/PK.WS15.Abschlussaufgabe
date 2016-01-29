@@ -109,13 +109,11 @@ public class GameState extends GameBase {
             territory.setArmyCount(1);
         } else {
             previousOccupant.setTerritoryOwnership(territory, false);
+            previousOccupant.evaluateContinentOwnership(territory.getContinent());
         }
 
         newOccupant.setTerritoryOwnership(territory, true);
-        territory.setOccupant(newOccupant);
-
-        reload_ContinentOwners();
-        recalculate_ReinforcementGains(newOccupant);
+        newOccupant.evaluateContinentOwnership(territory.getContinent());
 
         if (gamePhase == Phases.Landerwerb && occupiedTerritories == data.getAllTerritories().size())
             setGamePhase(Phases.Reinforcement);
@@ -142,45 +140,6 @@ public class GameState extends GameBase {
         engine.requestRepaint();
     }
 
-    /**
-     * Rechecks which continent belongs to which user.
-     */
-    private void reload_ContinentOwners() {
-        for (Continent continent : data.getAllContinents()) {
-            Player owner = continent.getTerritories().get(0).getOccupant();
-            if (owner == null) { // this continent belongs to nobody
-                data.getCompPlayer().setContinentOwnerShip(continent, false);
-                data.getHumanPlayer().setContinentOwnerShip(continent, false);
-                continue;
-            }
-            boolean consistentOwnerShip = true;
-            for (int i = 1; i < continent.getTerritories().size(); i++) {
-                Territory territory = continent.getTerritories().get(i);
-                if (owner != territory
-                        .getOccupant()) { // if there are two different occupants the continent belongs to nobody
-                    data.getHumanPlayer().setContinentOwnerShip(continent, false);
-                    data.getCompPlayer().setContinentOwnerShip(continent, false);
-                    consistentOwnerShip = false;
-                    break;
-                }
-            }
-            if (!consistentOwnerShip)
-                continue;
-
-            owner.setContinentOwnerShip(continent, true);
-        }
-    }
-
-    /**
-     * Recalculates the reinforcement the user should get in the next reinforcement phase.
-     */
-    private void recalculate_ReinforcementGains(Player player) {
-        int gain = player.getOwnedTerritories().size() / 3;
-        for (Continent continent : player.getOwnedContinents()) {
-            gain += continent.getReinforcementBonus();
-        }
-        player.setReinforcementGain(gain);
-    }
 
     /**
      * Gives the player the the reinforcement he actually should gain.
