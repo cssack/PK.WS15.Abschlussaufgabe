@@ -8,6 +8,7 @@ import bases.TacticalMovement;
 import dataObjects.enums.PlayerStates;
 
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 /**
  * A player data object stores all relevant data for a player.
@@ -38,9 +39,6 @@ public class Player {
     }
 
     /**
-     * It is calculated by following equation: ([owned Territories]/3) + [Reinforcement bonus of all continents owned by
-     * the player]
-     *
      * @return The amount of reinforcements the player gains on the next round.
      */
     public int getReinforcementGain() {
@@ -48,11 +46,13 @@ public class Player {
     }
 
     /**
-     * Sets the reinforcement gain for the player. It is calculated by following equation: ([owned Territories]/3) +
+     * Updates the reinforcement gain for the player. It is calculated by following equation: ([owned Territories]/3) +
      * [Reinforcement bonus of all continents owned by the player]
      */
-    public void setReinforcementGain(int reinforcementGain) {
-        this.reinforcementGain = reinforcementGain;
+    public void updateReinforcementGain() {
+        this.reinforcementGain = (this.getOwnedTerritories().size()/3)
+                + this.getOwnedContinents().stream().collect(Collectors
+                .summingInt(x -> x.getReinforcementBonus()));
     }
 
     /**
