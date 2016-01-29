@@ -50,8 +50,13 @@ public class GameState extends GameBase {
                 reassign_Reinforcements(data.getHumanPlayer());
                 reassign_Reinforcements(data.getCompPlayer());
 
-                setPlayerState(data.getHumanPlayer(), PlayerStates.Reinforcing);
-                setPlayerState(data.getCompPlayer(), PlayerStates.Waiting);
+                if (data.getHumanPlayer().getReinforcements() != 0) {
+                    setPlayerState(data.getHumanPlayer(), PlayerStates.Reinforcing);
+                    setPlayerState(data.getCompPlayer(), PlayerStates.Waiting);
+                } else {
+                    setPlayerState(data.getHumanPlayer(), PlayerStates.Waiting);
+                    setPlayerState(data.getCompPlayer(), PlayerStates.Reinforcing);
+                }
                 break;
             case AttackOrMove:
                 setPlayerState(data.getHumanPlayer(), PlayerStates.FirstTerritorySelection);
