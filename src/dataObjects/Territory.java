@@ -16,6 +16,7 @@ public class Territory {
     private final ArrayList<Patch> patches = new ArrayList<>();
     private final ArrayList<Territory> neighbors = new ArrayList<>();
     private Capital capital;
+    private Continent continent;
     private Player occupant = null;
     private int armyCount = 0;
 
@@ -29,6 +30,20 @@ public class Territory {
      */
     public String getName() {
         return name;
+    }
+
+    /**
+     * @return the continent the territory belongs to.
+     */
+    public Continent getContinent() {
+        return this.continent;
+    }
+
+    /**
+     * sets which contintent the territory belongs to.
+     */
+    public void setContinent(Continent continent) {
+        this.continent = continent;
     }
 
     /**

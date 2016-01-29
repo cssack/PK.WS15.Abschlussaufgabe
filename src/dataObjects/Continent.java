@@ -39,6 +39,7 @@ public class Continent {
      */
     public void addTerritory(Territory territory) {
         this.territories.add(territory);
+        territory.setContinent(this);
     }
 
     /**
