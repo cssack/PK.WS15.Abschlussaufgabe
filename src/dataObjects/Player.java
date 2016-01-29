@@ -106,6 +106,7 @@ public class Player {
     public void setTerritoryOwnership(Territory territory, boolean belongsToMe) {
         if (belongsToMe && !ownedTerritories.contains(territory)) {
             ownedTerritories.add(territory);
+            territory.setOccupant(this);
         } else if (!belongsToMe && ownedTerritories.contains(territory)) {
             ownedTerritories.remove(territory);
         }
