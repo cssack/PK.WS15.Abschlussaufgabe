@@ -25,4 +25,9 @@ public class Capital {
     public Point getPoint() {
         return point;
     }
+
+    @Override
+    public String toString() {
+        return String.format("Capital: [Owner: {%s}, Point: {%s}]", this.owner.getName(), this.point);
+    }
 }

@@ -54,4 +54,9 @@ public class Continent {
     public void setReinforcementBonus(int reinforcementBonus) {
         this.reinforcementBonus = reinforcementBonus;
     }
+
+    @Override
+    public String toString() {
+        return String.format("Continent: [name: {%s}, reinforcementBonus: {%d}]", this.name, this.reinforcementBonus);
+    }
 }

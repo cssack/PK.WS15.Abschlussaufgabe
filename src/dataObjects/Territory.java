@@ -134,4 +134,9 @@ public class Territory {
         }
         return false;
     }
+
+    @Override
+    public String toString() {
+        return String.format("Territory: [name: {%s}, capital: {%s}, continent: {%s}]", this.name, this.capital, this.continent);
+    }
 }

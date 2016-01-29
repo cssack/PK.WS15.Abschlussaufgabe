@@ -33,4 +33,9 @@ public class Patch {
     public Polygon getPolygon() {
         return polygon;
     }
+
+    @Override
+    public String toString() {
+        return String.format("Patch: [territory: {%s}, polygon: {%s}]", territory.getName(), polygon);
+    }
 }
