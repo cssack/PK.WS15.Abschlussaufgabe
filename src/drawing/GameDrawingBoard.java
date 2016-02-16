@@ -366,7 +366,7 @@ public class GameDrawingBoard extends JComponent {
 
     private void DrawTacticalMovementDescriptions(Graphics2D g) {
         if (state.getGamePhase() != Phases.AttackOrMove && state.getGamePhase() != Phases.QuickOverViewBefore && state
-                .getGamePhase() != Phases.QuickOverViewAfter)
+                .getGamePhase() != Phases.Fortifying)
             return;
         Font prevFont = g.getFont();
         Color prevColor = g.getColor();
