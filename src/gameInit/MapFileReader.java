@@ -31,8 +31,8 @@ class MapFileReader {
     private static final Pattern neighborsPattern = Pattern.compile(": (.*)");
     // sample line 'continent North America 5 : Alaska - '
     private static final Pattern continentPattern = Pattern.compile("continent (.*?) ([0-9]+) : (.*)");
-    // sample line 'backgroundImage waterTexture.jpg'
-    private static final Pattern backgroundImagePattern = Pattern.compile("backgroundImage (.+)");
+    // sample line 'backgroundImage DefaultWaterTexture.jpg'
+    private static final Pattern backgroundImagePattern = Pattern.compile("backgroundimage (.*)");
 
     private final String dataSource;
     private final GameData gameData;
@@ -54,7 +54,7 @@ class MapFileReader {
                 parseNeighbors(line);
             else if (line.startsWith("continent"))
                 parseContinent(line);
-            else if (line.startsWith("backgroundImage"))
+            else if (line.startsWith("backgroundimage"))
                 parseBackgroundImage(line);
         }
     }

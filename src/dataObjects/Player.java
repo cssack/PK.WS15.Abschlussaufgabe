@@ -183,6 +183,9 @@ public class Player {
      * from the list of owned continents if necessary.
      */
     public void evaluateContinentOwnership(Continent continent) {
+        if (continent == null)
+            return;
+
         if (this.getOwnedTerritories().containsAll(continent.getTerritories())) {
             this.setContinentOwnerShip(continent, true);
         } else {

@@ -7,7 +7,6 @@ import exceptions.InvalidResourceException;
 import exceptions.MapFileFormatException;
 import game.Game;
 
-import java.awt.*;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
@@ -15,9 +14,12 @@ public class Main {
 
     public static void main(String[] args) throws IOException, MapFileFormatException, URISyntaxException, InvalidResourceException {
         Game game = new Game();
-        game.load();
-        EventQueue.invokeLater(() -> {
-            new DrawingWindow(game);
-        });
+
+        if (args != null && args.length != 0)
+            game.load(args[0]);
+        else
+            game.load();
+
+        new DrawingWindow(game);
     }
 }

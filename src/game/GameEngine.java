@@ -202,7 +202,8 @@ public class GameEngine extends GameBase implements MouseMotionListener, MouseLi
         if (button == MouseEvent.BUTTON1) {
             if (gamePhase == Phases.Landerwerb) {
                 state.setTerritoryOccupant(hoverTerritory, human);
-                ki.ChooseSomeTerritory();
+                if (state.getGamePhase() == Phases.Landerwerb)
+                    ki.ChooseSomeTerritory();
             } else if (humanState == PlayerStates.Reinforcing) {
                 state.reinforceTerritory(hoverTerritory);
                 if (data.getCompPlayer().getState() == PlayerStates.Reinforcing)
