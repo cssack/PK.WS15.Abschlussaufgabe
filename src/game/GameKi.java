@@ -44,7 +44,8 @@ public class GameKi extends GameBase {
             Territory dst = data.getRandomTerritory(src.getNeighbors().stream()
                     .filter(x -> x.getOccupant() == data.getHumanPlayer()).collect(Collectors.toList()));
 
-            if (data.getCompPlayer().getAttackMovements().stream().anyMatch(x -> x.to == dst)) // already attacked
+            if (data.getCompPlayer().getAttackMovements().stream()
+                    .anyMatch(x -> x.to == dst || x.from == src)) // already attacked or same source
                 continue;
 
             state.setSelectedTerritory(data.getCompPlayer(), src);
