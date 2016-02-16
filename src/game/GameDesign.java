@@ -5,7 +5,6 @@
 package game;
 
 import bases.GameBase;
-import bases.TacticalMovement;
 import dataObjects.Territory;
 import dataObjects.enums.Phases;
 
@@ -109,9 +108,8 @@ public class GameDesign extends GameBase {
     }
 
     private boolean isTerritoryAttacked(Territory t) {
-        TacticalMovement compMove = data.getCompPlayer().getAttackMovement();
-        TacticalMovement humanMove = data.getHumanPlayer().getAttackMovement();
-        return (compMove != null && compMove.to == t) || (humanMove != null && humanMove.to == t);
+        return data.getCompPlayer().getAttackMovements().contains(t) || data.getHumanPlayer().getAttackMovements()
+                .contains(t);
     }
 
     /**

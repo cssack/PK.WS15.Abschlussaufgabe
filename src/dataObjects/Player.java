@@ -21,7 +21,7 @@ public class Player {
     private PlayerStates state = PlayerStates.Waiting;
     private Territory selectedTerritory;
     private TacticalMovement transferMovement;
-    private TacticalMovement attackMovement;
+    private ArrayList<TacticalMovement> attackMovements = new ArrayList<>();
 
 
     /**
@@ -127,20 +127,38 @@ public class Player {
     }
 
     /**
-     * @return the current attack movement for the user (can be null if no attack is selected). A attack movement
+     * @return the current attack movements for the user (assumed not be null). An attack movement
      * describes the attack of current players army from one territory to an enemy territory.
      */
-    public TacticalMovement getAttackMovement() {
-        return attackMovement;
+    public ArrayList<TacticalMovement> getAttackMovements() {
+        return attackMovements;
     }
 
     /**
-     * Sets the current attack move for the player.
+     * Adds another attack movement to the player.
+     *
+     * @param attackMovement assumed not to be null.
+     */
+    public void addAttackMovement(TacticalMovement attackMovement) {
+        assert attackMovement != null;
+        this.attackMovements.add(attackMovement);
+    }
+
+    /**
+     * Removes an attack move from the player.
      *
      * @param attackMovement can be null if no attack is selected by the user.
      */
-    public void setAttackMovement(TacticalMovement attackMovement) {
-        this.attackMovement = attackMovement;
+    public void removeAttackMovement(TacticalMovement attackMovement) {
+        assert attackMovement != null;
+        this.attackMovements.remove(attackMovement);
+    }
+
+    /**
+     * Clear attack moves from the player.
+     */
+    public void clearAttackMovements() {
+        this.attackMovements.clear();
     }
 
     /**
@@ -162,7 +180,7 @@ public class Player {
 
     /**
      * checks if the given continent belongs to the player and add/removes the continent
-     * from the list of owned continents if neccessary.
+     * from the list of owned continents if necessary.
      */
     public void evaluateContinentOwnership(Continent continent) {
         if (this.getOwnedTerritories().containsAll(continent.getTerritories())) {
