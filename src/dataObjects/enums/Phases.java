@@ -38,9 +38,10 @@ public enum Phases {
     QuickOverViewBefore,
 
     /**
-     * Quick overview over the current state of the world before 'Reinforcement' or 'End' phase will be reached.
+     * After a successful attack the players can fortify their newly won territories by moving troops from the attacking
+     * to the new territory. ("Nachziehen")
      */
-    QuickOverViewAfter,
+    Fortifying,
 
     /**
      * The game has ended. The winner is the player which owns all territories.

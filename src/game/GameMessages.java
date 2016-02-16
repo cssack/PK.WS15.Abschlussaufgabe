@@ -25,8 +25,8 @@ public class GameMessages extends GameBase {
                         .getOccupiedTerritories()) / 2) + " verfügbar). Oder Leertaste für zufällige Verteilung.";
             case QuickOverViewBefore:
                 return "Taktische movements aller Spieler.";
-            case QuickOverViewAfter:
-                return "Ergebnisse der Angriffs- und Transferphase.";
+            case Fortifying:
+                return "Ergebnisse der Angriffs- und Transferphase. Nachziehen von Truppen.";
             case End:
                 return data.getCompPlayer().getOwnedTerritories().size() == 0 ? "GEWONNEN!" : "VERLOREN!";
             default:
@@ -56,7 +56,7 @@ public class GameMessages extends GameBase {
                 return "Runde beenden";
             case QuickOverViewBefore:
                 return "OK LETS FIGHT!";
-            case QuickOverViewAfter:
+            case Fortifying:
                 return "Lets reinforce!";
             default:
                 return "";

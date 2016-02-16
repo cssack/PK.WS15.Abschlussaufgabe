@@ -5,15 +5,18 @@
 package game;
 
 import bases.GameBase;
+import bases.TacticalMovement;
 import dataObjects.Territory;
 
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 /**
  * The engine used for the pc player. This is the place where the KI can be configured.
  */
 public class GameKi extends GameBase {
+    private final Random rand = new Random();
 
     public GameKi() {
     }
@@ -62,6 +65,16 @@ public class GameKi extends GameBase {
                     .filter(x -> x.getOccupant() == data.getCompPlayer()).collect(Collectors.toList()));
             state.setSelectedTerritory(data.getCompPlayer(), src);
             state.assignTransferMovement(data.getCompPlayer(), dst);
+        }
+    }
+
+    public void FortifyTerritories() {
+        for (TacticalMovement move: data.getCompPlayer().getAttackMovements()) {
+            if (move != null && move.to.getOccupant() == data.getCompPlayer() && move.from.getOccupant() == data.getCompPlayer()) {
+                int nFortification = rand.nextInt(move.from.getArmyCount());
+                move.to.increaseArmyCountByN(nFortification);
+                move.from.decreaseArmyCountByN(nFortification);
+            }
         }
     }
 }

@@ -47,21 +47,21 @@ public class TacticalMovement {
 
 
     /**
-     * @return the involved army's in this movement.
+     * @return the involved armies in this movement.
      */
     public int getArmyCount() {
         return armyCount;
     }
 
     /**
-     * increases the involved army's by one.
+     * increases the involved armies by one.
      */
     public void increaseArmys() {
         this.armyCount++;
     }
 
     /**
-     * decreases the involved army's by one.
+     * decreases the involved armies by one.
      */
     public void decreaseArmys() {
         this.armyCount--;
@@ -70,7 +70,7 @@ public class TacticalMovement {
     /**
      * check if this movement consists of two territories.
      */
-    public boolean consitsOf(Territory t1, Territory t2) {
+    public boolean consistsOf(Territory t1, Territory t2) {
         return contains(t1) && contains(t2);
     }
 

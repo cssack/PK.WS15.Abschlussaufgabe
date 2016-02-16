@@ -34,4 +34,9 @@ public enum PlayerStates {
      */
     RoundFinished,
 
+    /**
+     * Player is currently fortifying the won territories.
+     */
+    Fortifying,
+
 }

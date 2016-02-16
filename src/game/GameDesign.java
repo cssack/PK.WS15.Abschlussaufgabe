@@ -63,16 +63,22 @@ public class GameDesign extends GameBase {
             else
                 return t.getOccupant() == data.getHumanPlayer() ? humanColorGrayed : compColorGrayed;
         }
-        if (state.getGamePhase() == Phases.QuickOverViewAfter) {
+
+        boolean highlighted = (engine.getIsMouseLeftButtonValid() || engine.getIsMouseRightButtonValid()) && engine
+                .getHoverTerritory() == t;
+
+        if (state.getGamePhase() == Phases.Fortifying) {
             boolean isInvolved = state.isTactialMoveTarget(t);
             if (isInvolved)
-                return t.getOccupant() == data.getHumanPlayer() ? humanColor : compColor;
+                if (highlighted && state.isHumanVictoryTarget(t))
+                    return humanColorHover;
+                else
+                    return t.getOccupant() == data.getHumanPlayer() ? humanColor : compColor;
             else
                 return t.getOccupant() == data.getHumanPlayer() ? humanColorGrayed : compColorGrayed;
         }
 
-        boolean highlighted = (engine.getIsMouseLeftButtonValid() || engine.getIsMouseRightButtonValid()) && engine
-                .getHoverTerritory() == t;
+
         if (t == data.getHumanPlayer().getSelectedTerritory())
             if (t.getOccupant() == data.getHumanPlayer())
                 return humanColorSelected;

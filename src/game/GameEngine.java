@@ -13,6 +13,8 @@ import dataObjects.enums.PlayerStates;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.font.OpenType;
+import java.util.Optional;
 
 /**
  * The game engine handles events and calls state methods accordingly on the GameState class.
@@ -71,7 +73,7 @@ public class GameEngine extends GameBase implements MouseMotionListener, MouseLi
         boolean old = isMouseOverEndRoundButton;
         isMouseOverEndRoundButton = (state.getGamePhase() == Phases.AttackOrMove || state
                 .getGamePhase() == Phases.QuickOverViewBefore || state
-                .getGamePhase() == Phases.QuickOverViewAfter) && design.endButton
+                .getGamePhase() == Phases.Fortifying) && design.endButton
                 .contains(e.getPoint());
         if (old != isMouseOverEndRoundButton)
             requestRepaint();
@@ -89,10 +91,17 @@ public class GameEngine extends GameBase implements MouseMotionListener, MouseLi
             isMouseLeftButtonValid = false;
             return;
         }
+
         if (gamePhase == Phases.Landerwerb) {
             isMouseLeftButtonValid = hoverOccupant == null;
             return;
         }
+
+        if (humanState == PlayerStates.Fortifying && state.isHumanVictoryTarget(hoverTerritory)) {
+            isMouseLeftButtonValid = true;
+            return;
+        }
+
         if (humanState == PlayerStates.Reinforcing) {
             isMouseLeftButtonValid = hoverOccupant == human;
             return;
@@ -122,7 +131,7 @@ public class GameEngine extends GameBase implements MouseMotionListener, MouseLi
                     )
                             || // attack cancellation
                             human.getAttackMovements().stream()
-                                    .anyMatch(x -> x.consitsOf(humanSelectedTerritory, hoverTerritory))
+                                    .anyMatch(x -> x.consistsOf(humanSelectedTerritory, hoverTerritory))
                             || //used to be able to remove an attack
                             (hoverOccupant == human && hoverTerritory.getArmyCount() > 1); // new selection
             return;
@@ -137,6 +146,11 @@ public class GameEngine extends GameBase implements MouseMotionListener, MouseLi
         Territory humanSelectedTerritory = human.getSelectedTerritory();
         Player comp = data.getCompPlayer();
         Player hoverOccupant = hoverTerritory.getOccupant();
+
+        if (humanState == PlayerStates.Fortifying && state.isHumanVictoryTarget(hoverTerritory)) {
+            isMouseRightButtonValid = true;
+            return;
+        }
 
         if (humanState == PlayerStates.Waiting || gamePhase == Phases.Landerwerb || humanState == PlayerStates.Reinforcing || humanState == PlayerStates.FirstTerritorySelection) {
             isMouseRightButtonValid = false;
@@ -216,9 +230,31 @@ public class GameEngine extends GameBase implements MouseMotionListener, MouseLi
                     state.assignAttackMovement(human, hoverTerritory);
                     state.setSelectedTerritory(human, null);
                 }
+            } else if (humanState == PlayerStates.Fortifying) {
+                Optional<TacticalMovement> opattack = human.getAttackMovements().stream().filter(x -> x.to == hoverTerritory).findFirst();
+                if (opattack.isPresent())  {
+                    TacticalMovement attack = opattack.get();
+                    if (attack.from.getArmyCount() > 1) {
+                        attack.to.increaseArmyCount();
+                        attack.from.decreaseArmyCount();
+                        requestRepaint();
+                    }
+                }
             }
         } else if (button == MouseEvent.BUTTON3) {
-            state.assignTransferMovement(human, hoverTerritory);
+            if (humanState == PlayerStates.Fortifying) {
+                Optional<TacticalMovement> opattack = human.getAttackMovements().stream().filter(x -> x.to == hoverTerritory).findFirst();
+                if (opattack.isPresent())  {
+                    TacticalMovement attack = opattack.get();
+                    if (attack.to.getArmyCount() > 1) {
+                        attack.to.decreaseArmyCount();
+                        attack.from.increaseArmyCount();
+                        requestRepaint();
+                    }
+                }
+            } else if (gamePhase == Phases.AttackOrMove){
+                state.assignTransferMovement(human, hoverTerritory);
+            }
         }
 
 
@@ -261,8 +297,9 @@ public class GameEngine extends GameBase implements MouseMotionListener, MouseLi
             state.setGamePhase(Phases.QuickOverViewBefore);
         } else if (state.getGamePhase() == Phases.QuickOverViewBefore) {
             state.executePlayerMovements();
-            state.setGamePhase(Phases.QuickOverViewAfter);
-        } else if (state.getGamePhase() == Phases.QuickOverViewAfter) {
+            state.setGamePhase(Phases.Fortifying);
+            ki.FortifyTerritories();
+        } else if (state.getGamePhase() == Phases.Fortifying) {
             if (data.getCompPlayer().getOwnedTerritories().size() == 0 || data.getHumanPlayer()
                     .getOwnedTerritories().size() == 0)
                 state.setGamePhase(Phases.End);

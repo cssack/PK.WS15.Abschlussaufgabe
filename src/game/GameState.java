@@ -69,8 +69,8 @@ public class GameState extends GameBase {
                 setPlayerState(data.getHumanPlayer(), PlayerStates.Waiting);
                 setPlayerState(data.getCompPlayer(), PlayerStates.Waiting);
                 break;
-            case QuickOverViewAfter:
-                setPlayerState(data.getHumanPlayer(), PlayerStates.Waiting);
+            case Fortifying:
+                setPlayerState(data.getHumanPlayer(), PlayerStates.Fortifying);
                 setPlayerState(data.getCompPlayer(), PlayerStates.Waiting);
                 break;
             default:
@@ -173,7 +173,7 @@ public class GameState extends GameBase {
     public void assignTransferMovement(Player player, Territory to) {
         Territory from = player.getSelectedTerritory();
         TacticalMovement move = player.getTransferMovement();
-        boolean editCurrentMove = move != null && move.consitsOf(from, to);
+        boolean editCurrentMove = move != null && move.consistsOf(from, to);
 
         if (!editCurrentMove) { // new move will be created
             if (move != null)
@@ -326,5 +326,12 @@ public class GameState extends GameBase {
                 humanAttackTarget ||
                 (compTransfer != null && compTransfer.to == t) ||
                 (humanTransfer != null && humanTransfer.to == t);
+    }
+
+    /**
+     * Returns true if any of the attack movements of the human player contains the territory as a target, and the attack was a victory (to == from);
+     */
+    public boolean isHumanVictoryTarget(Territory t) {
+        return data.getHumanPlayer().getAttackMovements().stream().anyMatch(x -> x.to == t && x.to.getOccupant() == x.from.getOccupant() && x.to.getOccupant() == data.getHumanPlayer());
     }
 }

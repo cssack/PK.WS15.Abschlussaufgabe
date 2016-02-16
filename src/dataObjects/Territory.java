@@ -125,6 +125,19 @@ public class Territory {
         this.armyCount--;
     }
 
+    /**
+     * increases the armies stationed at this territory by n.
+     */
+    public void increaseArmyCountByN(int n) {
+        this.armyCount += n;
+    }
+
+    /**
+     * decreases the armies stationed at this territory by n.
+     */
+    public void decreaseArmyCountByN(int n) {
+        this.armyCount -= n;
+    }
 
     public void addPatch(Polygon p) {
         patches.add(new Patch(this, p));
@@ -154,4 +167,5 @@ public class Territory {
     public String toString() {
         return String.format("Territory: [name: {%s}, capital: {%s}, continent: {%s}]", this.name, this.capital, this.continent);
     }
+
 }
