@@ -35,17 +35,33 @@ public class GameKi extends GameBase {
         if (possibleSourceTerritories.size() == 0)
             return; // there is no territory from which an action could be started.
 
-        for (int i = 0; i < possibleSourceTerritories.size(); i++) {
-            Territory first = data.getRandomTerritory(data.getCompPlayer().getOwnedTerritories());
-            if (first.getArmyCount() < 2)
-                continue;
-            state.setSelectedTerritory(data.getCompPlayer(), first);
-            Territory second = data.getRandomTerritory(first.getNeighbors());
+        List<Territory> possibleAttackSources = possibleSourceTerritories.stream()
+                .filter(sr -> sr.getNeighbors().stream().anyMatch(x -> x.getOccupant() == data.getHumanPlayer()))
+                .collect(Collectors.toList());
 
-            if (data.getCompPlayer().getTransferMovement() == null && first.getOccupant() == second.getOccupant())
-                state.assignTransferMovement(data.getCompPlayer(), second);
-            else if (first.getOccupant() != second.getOccupant())
-                state.assignAttackMovement(data.getCompPlayer(), second);
+        for (int i = 0; i < possibleAttackSources.size(); i++) {
+            Territory src = data.getRandomTerritory(possibleAttackSources);
+            Territory dst = data.getRandomTerritory(src.getNeighbors().stream()
+                    .filter(x -> x.getOccupant() == data.getHumanPlayer()).collect(Collectors.toList()));
+
+            if (data.getCompPlayer().getAttackMovements().stream().anyMatch(x -> x.to == dst)) // already attacked
+                continue;
+
+            state.setSelectedTerritory(data.getCompPlayer(), src);
+            state.assignAttackMovement(data.getCompPlayer(), dst);
+        }
+
+
+        List<Territory> possibleTransferSources = data.getCompPlayer().getOwnedTerritories().stream()
+                .filter(sr -> sr.getArmyCount() > 1 && sr.getNeighbors().stream()
+                        .anyMatch(x -> x.getOccupant() == data.getCompPlayer())).collect(Collectors.toList());
+
+        if (possibleTransferSources.size() != 0) {
+            Territory src = data.getRandomTerritory(possibleTransferSources);
+            Territory dst = data.getRandomTerritory(src.getNeighbors().stream()
+                    .filter(x -> x.getOccupant() == data.getCompPlayer()).collect(Collectors.toList()));
+            state.setSelectedTerritory(data.getCompPlayer(), src);
+            state.assignTransferMovement(data.getCompPlayer(), dst);
         }
     }
 }
