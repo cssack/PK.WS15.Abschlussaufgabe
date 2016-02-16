@@ -188,6 +188,8 @@ public class GameState extends GameBase {
             if (from.getArmyCount() < 2) {
                 setSelectedTerritory(data.getHumanPlayer(), null);
             }
+            messages.newTacticalMovementMessage(move);
+
             engine.requestRepaint();
             return;
         }
@@ -235,7 +237,12 @@ public class GameState extends GameBase {
         p.addAttackMovement(tacticalMovement);
 
         setSelectedTerritory(data.getHumanPlayer(), null);
+
+        messages.newTacticalMovementMessage(tacticalMovement);
+
         engine.requestRepaint();
+
+
     }
 
     /**

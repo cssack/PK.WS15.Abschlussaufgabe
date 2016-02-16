@@ -67,6 +67,7 @@ public class GameDrawingBoard extends JComponent {
         DrawTerritoryTexts(g2);
         DrawInfoBar(g2);
         DrawRoundFinishButton(g2);
+        DrawTacticalMovementDescriptions(g2);
 
     }
 
@@ -361,7 +362,29 @@ public class GameDrawingBoard extends JComponent {
 
         g.setFont(prevFont);
         g.setColor(prevColor);
+    }
 
+    private void DrawTacticalMovementDescriptions(Graphics2D g) {
+        if (state.getGamePhase() != Phases.AttackOrMove && state.getGamePhase() != Phases.QuickOverViewBefore && state
+                .getGamePhase() != Phases.QuickOverViewAfter)
+            return;
+        Font prevFont = g.getFont();
+        Color prevColor = g.getColor();
+
+        g.setFont(design.tacticalMovementsFont);
+        g.setColor(design.tacticalMovementsColor);
+
+        int offset = 10;
+        for (int i = 0; i < messages.getTacticalMovementMessages().size(); i++) {
+            String s = messages.getTacticalMovementMessages().get(i);
+            int stringHeight = (int) design.endbuttonFont.getLineMetrics(s, g.getFontRenderContext()).getAscent();
+            g.drawString(s, 330, (float) (design.worldMapSize.getHeight() - (offset)));
+            offset = offset + stringHeight + 10;
+        }
+
+
+        g.setFont(prevFont);
+        g.setColor(prevColor);
     }
 
 }
