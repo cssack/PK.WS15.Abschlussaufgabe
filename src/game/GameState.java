@@ -54,9 +54,12 @@ public class GameState extends GameBase {
                 if (data.getHumanPlayer().getReinforcements() != 0) {
                     setPlayerState(data.getHumanPlayer(), PlayerStates.Reinforcing);
                     setPlayerState(data.getCompPlayer(), PlayerStates.Waiting);
-                } else {
+                } else if (data.getCompPlayer().getReinforcements() != 0) {
                     setPlayerState(data.getHumanPlayer(), PlayerStates.Waiting);
                     setPlayerState(data.getCompPlayer(), PlayerStates.Reinforcing);
+                } else {
+                    //this could be an error no reinforcements @ each player
+                    setGamePhase(Phases.AttackOrMove);
                 }
                 break;
             case AttackOrMove:
@@ -185,6 +188,8 @@ public class GameState extends GameBase {
             if (from.getArmyCount() < 2) {
                 setSelectedTerritory(data.getHumanPlayer(), null);
             }
+            messages.newTacticalMovementMessage(move);
+
             engine.requestRepaint();
             return;
         }
@@ -232,7 +237,12 @@ public class GameState extends GameBase {
         p.addAttackMovement(tacticalMovement);
 
         setSelectedTerritory(data.getHumanPlayer(), null);
+
+        messages.newTacticalMovementMessage(tacticalMovement);
+
         engine.requestRepaint();
+
+
     }
 
     /**

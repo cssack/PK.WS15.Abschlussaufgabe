@@ -24,6 +24,8 @@ public class GameDesign extends GameBase {
     public final Font toolBarFont = new Font("Verdana", Font.PLAIN, 16);
     public final Font endbuttonFont = new Font("Verdana", Font.PLAIN, 10);
     public final Font armyFont = new Font("Verdana", Font.BOLD, 16);
+    public final Font tacticalMovementsFont = new Font("Verdana", Font.BOLD, 14);
+    public final Color tacticalMovementsColor = Color.WHITE;
     private final int endButtonWidth = 100;
     private final int endButtonHeight = 25;
     public final Rectangle endButton = new Rectangle(toolbar.width - endButtonWidth - (toolBarHeight - endButtonHeight) / 2, toolbar.y + (toolBarHeight - endButtonHeight) / 2, endButtonWidth, endButtonHeight);

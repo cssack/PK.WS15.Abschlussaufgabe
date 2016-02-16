@@ -5,14 +5,20 @@
 package game;
 
 import bases.GameBase;
+import bases.TacticalMovement;
 import dataObjects.Player;
 import dataObjects.enums.PlayerStates;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Used to provide messages to the user.
  */
 @SuppressWarnings("ALL")
 public class GameMessages extends GameBase {
+
+    private List<String> LastMovements = new ArrayList<>();
 
     private PlayerStates compPlayerAction() {
         return data.getCompPlayer().getState();
@@ -61,5 +67,16 @@ public class GameMessages extends GameBase {
             default:
                 return "";
         }
+    }
+
+    public void newTacticalMovementMessage(TacticalMovement mov) {
+        while (LastMovements.size() > 3) {
+            LastMovements.remove(0);
+        }
+        LastMovements.add(mov.toString());
+    }
+
+    public List<String> getTacticalMovementMessages() {
+        return LastMovements;
     }
 }

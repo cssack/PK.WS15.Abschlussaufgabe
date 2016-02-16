@@ -101,7 +101,18 @@ public class Game {
     public void load() throws IOException, MapFileFormatException, URISyntaxException, InvalidResourceException {
         GameLoader loader = new GameLoader();
         loader.init(this);
-        loader.load();
+        loader.loadDefaults();
+    }
+
+    /**
+     * Loads all required data from resource files (Images, map files, ....).
+     *
+     * @throws IOException
+     */
+    public void load(String mapFile) throws IOException, MapFileFormatException, URISyntaxException, InvalidResourceException {
+        GameLoader loader = new GameLoader();
+        loader.init(this);
+        loader.load(mapFile);
     }
 
 }

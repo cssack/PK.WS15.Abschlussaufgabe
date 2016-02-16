@@ -36,7 +36,7 @@ public class GameData extends GameBase {
         super.init(game);
         humanPlayer = new Player();
         compPlayer = new Player();
-        backgroundImageString = "waterTexture.jpg";
+        backgroundImageString = "defaultBackgroundTexture.jpg";
     }
 
     /**

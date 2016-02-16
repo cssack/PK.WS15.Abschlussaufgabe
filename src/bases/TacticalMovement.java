@@ -80,4 +80,12 @@ public class TacticalMovement {
     public boolean contains(Territory t) {
         return from == t || to == t;
     }
+
+    @Override
+    public String toString() {
+        if (from.getOccupant() != to.getOccupant())
+            return "Attack from " + from.getName() + " @ " + to.getName() + ".";
+        else
+            return "Transfer from " + from.getName() + " @ " + to.getName() + ".";
+    }
 }

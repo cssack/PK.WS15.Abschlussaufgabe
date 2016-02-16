@@ -23,7 +23,7 @@ public class GameLoader extends GameBase {
     /**
      * later should be loaded from start parameters.
      */
-    private final static String[] mapFiles = new String[]{"world.map"};
+    private final static String[] defaultMapFiles = new String[]{"world.map"};
 
     public GameLoader() {
     }
@@ -31,19 +31,35 @@ public class GameLoader extends GameBase {
     /**
      * init the game with the desired content.
      */
-    public void load() throws IOException, MapFileFormatException, URISyntaxException, InvalidResourceException {
-        readMapFiles();
+    public void loadDefaults() throws IOException, MapFileFormatException, URISyntaxException, InvalidResourceException {
+        readDefaultMapFiles();
         readImages();
+    }
+
+    /**
+     * init the game with the desired content.
+     */
+    public void load(String mapFile) throws IOException, MapFileFormatException, URISyntaxException, InvalidResourceException {
+        readMapFile(mapFile);
+        readImages();
+    }
+
+
+    /**
+     * loads the map files into the game.
+     */
+    private void readDefaultMapFiles() throws IOException, MapFileFormatException, URISyntaxException, InvalidResourceException {
+        for (String mapFile : defaultMapFiles) {
+            readMapFile(getFilePath_FromResource(mapFile));
+        }
     }
 
     /**
      * loads the map files into the game.
      */
-    private void readMapFiles() throws IOException, MapFileFormatException, URISyntaxException, InvalidResourceException {
-        for (String mapFile : mapFiles) {
-            MapFileReader mapFileReader = new MapFileReader(data, getFilePath_FromResource(mapFile));
-            mapFileReader.start_Interpret();
-        }
+    private void readMapFile(String file) throws IOException, MapFileFormatException, URISyntaxException, InvalidResourceException {
+        MapFileReader mapFileReader = new MapFileReader(data, file);
+        mapFileReader.start_Interpret();
     }
 
     /**
