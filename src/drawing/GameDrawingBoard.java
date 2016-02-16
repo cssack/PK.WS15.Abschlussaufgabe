@@ -228,8 +228,13 @@ public class GameDrawingBoard extends JComponent {
 
         g.setColor(Color.BLACK);
         g.setStroke(design.getCapitalLineStroke());
-        DrawMovement(g, data.getHumanPlayer().getAttackMovement());
-        DrawMovement(g, data.getCompPlayer().getAttackMovement());
+
+        for (TacticalMovement tacticalMovement : data.getHumanPlayer().getAttackMovements()) {
+            DrawMovement(g, tacticalMovement);
+        }
+        for (TacticalMovement tacticalMovement : data.getCompPlayer().getAttackMovements()) {
+            DrawMovement(g, tacticalMovement);
+        }
 
         g.setColor(prevColor);
         g.setStroke(prevStroke);

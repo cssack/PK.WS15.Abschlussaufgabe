@@ -7,13 +7,13 @@ package game;
 import bases.GameBase;
 import dataObjects.Territory;
 
-import java.util.Random;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * The engine used for the pc player. This is the place where the KI can be configured.
  */
 public class GameKi extends GameBase {
-    private final Random rand = new Random();
 
     public GameKi() {
     }
@@ -22,15 +22,20 @@ public class GameKi extends GameBase {
         state.setTerritoryOccupant(data.getRandomUnassignedTerritory(), data.getCompPlayer());
     }
 
-    public void ReinforceTerritorys() {
+    public void ReinforceTerritories() {
         while (data.getCompPlayer().getReinforcements() > 0) {
             state.reinforceTerritory(data.getRandomTerritory(data.getCompPlayer().getOwnedTerritories()));
         }
     }
 
     public void AttackAndMove() {
-        while (data.getCompPlayer().getAttackMovement() == null || (data.getCompPlayer()
-                .getTransferMovement() == null && data.getCompPlayer().getOwnedTerritories().size() > 1)) {
+        List<Territory> possibleSourceTerritories = data.getCompPlayer().getOwnedTerritories().stream()
+                .filter(x -> x.getArmyCount() > 1).collect(Collectors.toList());
+
+        if (possibleSourceTerritories.size() == 0)
+            return; // there is no territory from which an action could be started.
+
+        for (int i = 0; i < possibleSourceTerritories.size(); i++) {
             Territory first = data.getRandomTerritory(data.getCompPlayer().getOwnedTerritories());
             if (first.getArmyCount() < 2)
                 continue;
@@ -39,9 +44,8 @@ public class GameKi extends GameBase {
 
             if (data.getCompPlayer().getTransferMovement() == null && first.getOccupant() == second.getOccupant())
                 state.assignTransferMovement(data.getCompPlayer(), second);
-            else if (data.getCompPlayer().getAttackMovement() == null && first.getOccupant() != second.getOccupant())
+            else if (first.getOccupant() != second.getOccupant())
                 state.assignAttackMovement(data.getCompPlayer(), second);
-
         }
     }
 }

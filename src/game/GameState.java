@@ -6,12 +6,13 @@ package game;
 
 import bases.GameBase;
 import bases.TacticalMovement;
-import dataObjects.Continent;
 import dataObjects.Player;
 import dataObjects.Territory;
 import dataObjects.enums.Phases;
 import dataObjects.enums.PlayerStates;
 
+import java.util.ArrayList;
+import java.util.Optional;
 import java.util.Random;
 
 /**
@@ -42,8 +43,8 @@ public class GameState extends GameBase {
                 setPlayerState(data.getHumanPlayer(), PlayerStates.Reinforcing);
                 break;
             case Reinforcement:
-                data.getHumanPlayer().setAttackMovement(null);
-                data.getCompPlayer().setAttackMovement(null);
+                data.getHumanPlayer().clearAttackMovements();
+                data.getCompPlayer().clearAttackMovements();
                 data.getHumanPlayer().setTransferMovement(null);
                 data.getCompPlayer().setTransferMovement(null);
 
@@ -135,7 +136,7 @@ public class GameState extends GameBase {
         occupant.setReinforcements(occupant.getReinforcements() - 1);
 
         if (occupant.getReinforcements() == 0) {
-            if (occupant == data.getHumanPlayer()) {
+            if (occupant == data.getHumanPlayer() && data.getCompPlayer().getReinforcements() != 0) {
                 setPlayerState(data.getHumanPlayer(), PlayerStates.Waiting);
                 setPlayerState(data.getCompPlayer(), PlayerStates.Reinforcing);
             } else
@@ -214,21 +215,21 @@ public class GameState extends GameBase {
      */
     public void assignAttackMovement(Player p, Territory to) {
         Territory from = p.getSelectedTerritory();
-        TacticalMovement move = p.getAttackMovement();
+        ArrayList<TacticalMovement> moves = p.getAttackMovements();
+
+        Optional<TacticalMovement> first = moves.stream().filter(x -> x.from == from && x.to == to).findFirst();
 
 
-        if (move != null) {
-            if (move.from == from && move.to == to) { // Same attack move was select again so this is interpreted as cancel attack move.
-                unassignMovement(move);
-                setSelectedTerritory(data.getHumanPlayer(), null);
-                return;
-            }
-            unassignMovement(move);
+        if (first.isPresent()) {
+            unassignMovement(first.get());
+            setSelectedTerritory(data.getHumanPlayer(), null);
+            return;
         }
 
-        move = new TacticalMovement(p, from, to, from.getArmyCount() > 3 ? 3 : from.getArmyCount() - 1);
-        from.setArmyCount(from.getArmyCount() - move.getArmyCount());
-        p.setAttackMovement(move);
+        TacticalMovement tacticalMovement = new TacticalMovement(p, from, to, from.getArmyCount() > 3 ? 3 : from
+                .getArmyCount() - 1);
+        from.setArmyCount(from.getArmyCount() - tacticalMovement.getArmyCount());
+        p.addAttackMovement(tacticalMovement);
 
         setSelectedTerritory(data.getHumanPlayer(), null);
         engine.requestRepaint();
@@ -240,10 +241,10 @@ public class GameState extends GameBase {
     private void unassignMovement(TacticalMovement move) {
         Territory from = move.from;
         from.setArmyCount(from.getArmyCount() + move.getArmyCount());
-        if (move.owner.getAttackMovement() == move)
-            move.owner.setAttackMovement(null);
-        else
+        if (move.owner.getTransferMovement() == move)
             move.owner.setTransferMovement(null);
+        else
+            move.owner.removeAttackMovement(move);
         engine.requestRepaint();
     }
 
@@ -253,8 +254,14 @@ public class GameState extends GameBase {
     public void executePlayerMovements() {
         executeTransferMove(data.getCompPlayer().getTransferMovement());
         executeTransferMove(data.getHumanPlayer().getTransferMovement());
-        executeAttackMove(data.getCompPlayer().getAttackMovement());
-        executeAttackMove(data.getHumanPlayer().getAttackMovement());
+
+        for (TacticalMovement movement : data.getCompPlayer().getAttackMovements()) {
+            executeAttackMove(movement);
+        }
+        for (TacticalMovement movement : data.getHumanPlayer().getAttackMovements()) {
+            executeAttackMove(movement);
+        }
+
     }
 
     private void executeAttackMove(TacticalMovement tm) {
@@ -295,13 +302,13 @@ public class GameState extends GameBase {
      * Returns true if any of the tactical moves contains the territory.
      */
     public boolean belongsToTactialMove(Territory t) {
-        TacticalMovement compAttack = data.getCompPlayer().getAttackMovement();
-        TacticalMovement humanAttack = data.getHumanPlayer().getAttackMovement();
+        boolean compAttackContained = data.getCompPlayer().getAttackMovements().stream().anyMatch(x -> x.contains(t));
+        boolean humanAttackContained = data.getHumanPlayer().getAttackMovements().stream().anyMatch(x -> x.contains(t));
         TacticalMovement compTransfer = data.getCompPlayer().getTransferMovement();
         TacticalMovement humanTransfer = data.getHumanPlayer().getTransferMovement();
 
-        return (compAttack != null && compAttack.contains(t)) ||
-                (humanAttack != null && humanAttack.contains(t)) ||
+        return compAttackContained ||
+                humanAttackContained ||
                 (compTransfer != null && compTransfer.contains(t)) ||
                 (humanTransfer != null && humanTransfer.contains(t));
     }
@@ -310,13 +317,13 @@ public class GameState extends GameBase {
      * Returns true if any of the tactical moves contains the territory.
      */
     public boolean isTactialMoveTarget(Territory t) {
-        TacticalMovement compAttack = data.getCompPlayer().getAttackMovement();
-        TacticalMovement humanAttack = data.getHumanPlayer().getAttackMovement();
+        boolean compAttackTarget = data.getCompPlayer().getAttackMovements().stream().anyMatch(x -> x.to == t);
+        boolean humanAttackTarget = data.getHumanPlayer().getAttackMovements().stream().anyMatch(x -> x.to == t);
         TacticalMovement compTransfer = data.getCompPlayer().getTransferMovement();
         TacticalMovement humanTransfer = data.getHumanPlayer().getTransferMovement();
 
-        return (compAttack != null && compAttack.to == t) ||
-                (humanAttack != null && humanAttack.to == t) ||
+        return compAttackTarget ||
+                humanAttackTarget ||
                 (compTransfer != null && compTransfer.to == t) ||
                 (humanTransfer != null && humanTransfer.to == t);
     }

@@ -102,7 +102,7 @@ public class GameEngine extends GameBase implements MouseMotionListener, MouseLi
             isMouseLeftButtonValid = true;
             return;
         }
-        if (human.getAttackMovement() != null && human.getAttackMovement().from == hoverTerritory) {
+        if (human.getAttackMovements().stream().anyMatch(x -> x.from == hoverTerritory)) {
             isMouseLeftButtonValid = true;
             return;
         }
@@ -113,12 +113,18 @@ public class GameEngine extends GameBase implements MouseMotionListener, MouseLi
         }
         if (humanState == PlayerStates.FirstTerritorySelected) {
             boolean isNeighbor = humanSelectedTerritory.getNeighbors().contains(hoverTerritory);
-            isMouseLeftButtonValid = (isNeighbor && hoverOccupant == comp && (humanSelectedTerritory
-                    .getArmyCount() > 1 || (human.getAttackMovement() != null && human
-                    .getAttackMovement().from == humanSelectedTerritory))) || //enemy attack
-                    (human.getAttackMovement() != null && human.getAttackMovement()
-                            .consitsOf(humanSelectedTerritory, hoverTerritory)) || //used to be able to remove an attack
-                    (hoverOccupant == human && hoverTerritory.getArmyCount() > 1); // new selection
+            isMouseLeftButtonValid =
+                    (
+                            // attack able target
+                            isNeighbor && hoverOccupant == comp && humanSelectedTerritory.getArmyCount() > 1
+                                    && !human.getAttackMovements().stream()
+                                    .anyMatch(x -> x.to == hoverTerritory) // avoid double attacks
+                    )
+                            || // attack cancellation
+                            human.getAttackMovements().stream()
+                                    .anyMatch(x -> x.consitsOf(humanSelectedTerritory, hoverTerritory))
+                            || //used to be able to remove an attack
+                            (hoverOccupant == human && hoverTerritory.getArmyCount() > 1); // new selection
             return;
         }
         isMouseLeftButtonValid = false;
@@ -181,22 +187,7 @@ public class GameEngine extends GameBase implements MouseMotionListener, MouseLi
         int button = e.getButton();
 
         if (isMouseOverEndRoundButton && button == MouseEvent.BUTTON1) {
-            if (state.getGamePhase() == Phases.AttackOrMove) {
-                state.setPlayerState(data.getHumanPlayer(), PlayerStates.RoundFinished);
-                state.setPlayerState(data.getCompPlayer(), PlayerStates.FirstTerritorySelection);
-                ki.AttackAndMove();
-                state.setGamePhase(Phases.QuickOverViewBefore);
-            } else if (state.getGamePhase() == Phases.QuickOverViewBefore) {
-                state.executePlayerMovements();
-                state.setGamePhase(Phases.QuickOverViewAfter);
-            } else if (state.getGamePhase() == Phases.QuickOverViewAfter) {
-                if (data.getCompPlayer().getOwnedTerritories().size() == 0 || data.getHumanPlayer()
-                        .getOwnedTerritories().size() == 0)
-                    state.setGamePhase(Phases.End);
-                else
-                    state.setGamePhase(Phases.Reinforcement);
-            }
-            Repaint();
+            ContinueGamePlay();
             return;
         }
         if (button == MouseEvent.BUTTON1 && !isMouseLeftButtonValid)
@@ -215,7 +206,7 @@ public class GameEngine extends GameBase implements MouseMotionListener, MouseLi
             } else if (humanState == PlayerStates.Reinforcing) {
                 state.reinforceTerritory(hoverTerritory);
                 if (data.getCompPlayer().getState() == PlayerStates.Reinforcing)
-                    ki.ReinforceTerritorys();
+                    ki.ReinforceTerritories();
             } else if (humanState == PlayerStates.FirstTerritorySelection) {
                 state.setSelectedTerritory(human, hoverTerritory);
             } else if (humanState == PlayerStates.FirstTerritorySelected) {
@@ -233,9 +224,8 @@ public class GameEngine extends GameBase implements MouseMotionListener, MouseLi
 
         tryRepaint();
     }
-
     @Override
-    public void keyReleased(KeyEvent e) {
+    public void keyTyped(KeyEvent e) {
         if (e.getKeyChar() == ' ') {
             if (state.getGamePhase() == Phases.Landerwerb) {
                 while (state.getGamePhase() == Phases.Landerwerb) {
@@ -249,10 +239,37 @@ public class GameEngine extends GameBase implements MouseMotionListener, MouseLi
                     Repaint();
                 }
                 if (data.getCompPlayer().getState() == PlayerStates.Reinforcing)
-                    ki.ReinforceTerritorys();
+                    ki.ReinforceTerritories();
                 Repaint();
-            }
+            } else
+                ContinueGamePlay();
+
         }
+
+    }
+
+
+    /**
+     * If the game is continue able this method end the round and continues with the game flow this likely happens when
+     * the user presses the button
+     */
+    private void ContinueGamePlay() {
+        if (state.getGamePhase() == Phases.AttackOrMove) {
+            state.setPlayerState(data.getHumanPlayer(), PlayerStates.RoundFinished);
+            state.setPlayerState(data.getCompPlayer(), PlayerStates.FirstTerritorySelection);
+            ki.AttackAndMove();
+            state.setGamePhase(Phases.QuickOverViewBefore);
+        } else if (state.getGamePhase() == Phases.QuickOverViewBefore) {
+            state.executePlayerMovements();
+            state.setGamePhase(Phases.QuickOverViewAfter);
+        } else if (state.getGamePhase() == Phases.QuickOverViewAfter) {
+            if (data.getCompPlayer().getOwnedTerritories().size() == 0 || data.getHumanPlayer()
+                    .getOwnedTerritories().size() == 0)
+                state.setGamePhase(Phases.End);
+            else
+                state.setGamePhase(Phases.Reinforcement);
+        }
+        Repaint();
     }
 
     @Override
@@ -276,13 +293,13 @@ public class GameEngine extends GameBase implements MouseMotionListener, MouseLi
     }
 
     @Override
-    public void keyTyped(KeyEvent e) {
+    public void keyPressed(KeyEvent e) {
 
     }
 
-    @Override
-    public void keyPressed(KeyEvent e) {
 
+    @Override
+    public void keyReleased(KeyEvent e) {
     }
 
 
