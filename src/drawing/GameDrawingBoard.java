@@ -251,7 +251,7 @@ public class GameDrawingBoard extends JComponent {
         Font prevFont = g.getFont();
 
         g.setFont(design.armyFont);
-        DrawLineBetweenCapitalsDescription(g, movement.from, movement.to, String.valueOf(movement.getArmyCount()));
+        DrawDescriptionBetweenCapitals(g, movement.from, movement.to, String.valueOf(movement.getArmyCount()));
 
         g.setFont(prevFont);
     }
@@ -279,9 +279,9 @@ public class GameDrawingBoard extends JComponent {
 
     /**
      * Draws a descriptive text for a line between two capitals. This method takes care of special descriptive text
-     * between alaska and kamchatka.
+     * between alaska and kamchatka. Used to display information for tactical movements.
      */
-    private void DrawLineBetweenCapitalsDescription(Graphics2D g, Territory from, Territory to, String text) {
+    private void DrawDescriptionBetweenCapitals(Graphics2D g, Territory from, Territory to, String text) {
         Point fromPoint = from.getCapital().getPoint();
         Point toPoint = to.getCapital().getPoint();
         String fromName = from.getCapital().getOwner().getName();
